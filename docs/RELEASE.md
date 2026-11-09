@@ -24,8 +24,8 @@
 | OS | Package | Signing | Notes |
 |---|---|---|---|
 | macOS | `.dmg` with a universal `.app` (arm64 + x86_64) | Developer ID + **notarization** (`notarytool`), hardened runtime | Bundle ffmpeg (LGPL build) inside `Contents/MacOS/` |
-| Windows | `.msi` (WiX) + portable `.zip` | Authenticode (code-signing certificate or Azure Trusted Signing) | Bundle `ffmpeg.exe` |
-| Linux | AppImage + `.deb`; Flatpak later | GPG-signed checksums | AppImage bundles ffmpeg; `.deb` depends on the system ffmpeg |
+| Windows | `.msi` (WiX) + portable `.zip`, for **x64 and ARM64** (ARM64 once GPUI support is verified) | Authenticode (code-signing certificate or Azure Trusted Signing) | Bundle `ffmpeg.exe` |
+| Linux | AppImage + `.deb` for **x86-64 and ARM64**; Flatpak later. **riscv64**: CLI-only `.tar.gz`, best-effort | GPG-signed checksums | AppImage bundles ffmpeg; `.deb` depends on the system ffmpeg |
 
 All releases ship `SHA256SUMS` (signed), `LICENSE`, `THIRD_PARTY_NOTICES.md`,
 `OFL.txt` (font), and a link to the ffmpeg source matching the bundled build.
@@ -43,6 +43,7 @@ standalone archive per OS.
 - [ ] Migration tests from every previous schema version pass
 - [ ] UI manual checklist (UI_TESTS §4) done on 3 OSes, EN + VI, light + dark
 - [ ] At least one real-device sync on the ZX300 with this build
+- [ ] DSP benchmarks (B-12…B-17) recorded for x86-64 and ARM64; no regression > 10%
 - [ ] USER_GUIDE.md and USER_GUIDE.vi.md updated
 - [ ] CHANGELOG edited; version bumped; `git tag vX.Y.Z` (signed)
 

@@ -15,7 +15,8 @@
 2. **Fail safe, not silent.** When unsure, stop before writing, never after half-writing. A half-done file operation must be rolled back or recorded in `ops_log` as `pending`.
 3. **One bad file never sinks a batch.** Per-item errors in scans and syncs are collected into a report. A batch aborts only on *safety* errors (§4).
 4. **Errors are data; messages are translations.** Error enums carry codes and context. Text comes from `wt-i18n` using the code as the key.
-5. **A panic is a bug.** It is caught at the job boundary, reported as `WT-QUEUE-0001`, and never exposed as a crash dialog.
+5. **Findings are not errors.** An MD5 mismatch or a "likely lossy source" verdict is a *result* stored in `analyses`, shown as a finding, not raised as an error code. Error codes are for when the check itself could not run.
+6. **A panic is a bug.** It is caught at the job boundary, reported as `WT-QUEUE-0001`, and never exposed as a crash dialog.
 
 ---
 
@@ -82,7 +83,7 @@ going backwards.
 
 ## 5. Error code registry
 
-Format: `WT-<SVC>-<NNNN>`. Service keys: `CORE CONFIG WATCH BUS QUEUE I18N LEDGER VAULT GATE CACHE CRAWL ENRICH FORGE DOCK SYNC SDK KIT UI CLI`.
+Format: `WT-<SVC>-<NNNN>`. Service keys: `CORE CONFIG WATCH BUS QUEUE I18N DSP LEDGER VAULT GATE CACHE CRAWL ENRICH FORGE DOCK INSPECT SYNC SDK KIT UI CLI`.
 Codes are never reused. Retire a code by marking it ~~struck through~~.
 
 | Code | Severity | Recovery | Meaning |
@@ -128,6 +129,11 @@ Codes are never reused. Retire a code by marking it ~~struck through~~.
 | WT-SYNC-0003 | Fatal | Abort | Device disconnected during sync; resume on reattach |
 | WT-SYNC-0004 | Fatal | Abort | Attempt to remove a foreign (non-manifest) file (**safety**) |
 | WT-SYNC-0005 | Warning | UserAction | Conflict: same track differs between library and device |
+| WT-DSP-0001 | Info | — | SIMD path unavailable on this CPU; using scalar kernels (logged once per run) |
+| WT-DSP-0002 | Error | Skip | Input exceeds analysis limits (channels > 8, sample rate > 768 kHz, or FFT size invalid) |
+| WT-INSPECT-0001 | Warning | Skip | File could not be decoded for analysis (recorded as integrity `failed`) |
+| WT-INSPECT-0002 | Info | — | Format not yet supported by the analyzer (for example DSD); integrity `unchecked` |
+| WT-INSPECT-0003 | Warning | Retry | Analysis result could not be saved (Ledger busy) |
 | WT-UI-0001 | Error | — | Font or asset failed to load; fell back to system font |
 | WT-CLI-0001 | Error | — | Invalid arguments (exit 64) |
 

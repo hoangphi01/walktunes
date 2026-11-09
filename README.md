@@ -49,6 +49,7 @@ WalkTunes brings it together:
 - **Real sync.** Pick artists, albums or playlists, **review a dry-run plan**, and copy only the differences. Sync resumes if the cable comes out.
 - **Your player remembers.** A small manifest on the player records what was synced and from which computer. Plug it into any of your machines to see what is there and pull back what that machine is missing.
 - **Device-aware copies.** Artwork the player can display, formats it can play, filenames it accepts. Your originals are never touched.
+- **Check quality, Spek-style.** Verify FLAC integrity (frame CRCs and the built-in MD5), view a spectrogram of any track, and catch fake lossless (FLACs made from MP3 or video-site rips), fake hi-res and padded 24-bit files, across the whole library.
 - **Tidy rips.** Turn `Artist - Song (Official Video) [HD].mp3` into a properly tagged track, with opt-in MusicBrainz, AcoustID, Cover Art Archive and LRCLIB lyrics.
 - **Safe by design.** It never deletes your originals and never removes files it did not put on the player. Every change is logged.
 
@@ -79,16 +80,19 @@ the player.
 
 ## How it's built
 
-WalkTunes is built like a small cloud platform: 19 single-purpose Rust
-crates, each with one job, behind one facade.
+WalkTunes is a **native desktop app, not a web app**. Quality and performance
+are the top priority. It is built like a small cloud platform: 21
+single-purpose Rust crates, each with one job, behind one facade.
 
 ```
 wt-console (GPUI app) ─┐
 wt-cli     (wtunes)   ─┴─► wt-sdk ─► wt-sync ─► wt-dock · wt-forge · wt-crawler · wt-enrich
-                                               └► wt-ledger (SQLite) · wt-vault (files) · wt-gate (network)
+                                 │             └► wt-ledger (SQLite) · wt-vault (files) · wt-gate (network)
+                                 └─► wt-inspect ─► wt-dsp (SIMD: AVX2 · SSE4.1 · NEON · scalar)
 ```
 
 - **Rust** end to end, with **GPUI** (from Zed) and **gpui-component** primitives restyled into the Tile look.
+- **SIMD-accelerated DSP** (rustfft/realfft plus our own kernels) with runtime CPU dispatch: x86-64 and ARM64 (Apple Silicon, Snapdragon, Raspberry Pi) first-class, RISC-V CLI best-effort.
 - **SQLite** library catalog, **lofty** and **symphonia** for tags and audio, **blake3** hashing, and **ffmpeg** as an optional sidecar for transcoding.
 - The CLI (`wtunes`) has full feature parity with the app, so everything is scriptable.
 

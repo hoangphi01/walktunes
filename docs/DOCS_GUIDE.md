@@ -91,6 +91,7 @@ are in [ARCHITECTURE.md §3](ARCHITECTURE.md#3-service-catalog).
 | **Watch** | `wt-watch` | CloudWatch | Logging, tracing, local metrics, diagnostics bundle | OPTIMIZATION, ERROR_CONTROL |
 | **Bus** | `wt-bus` | EventBridge | Typed in-process events between services | ARCHITECTURE |
 | **Queue** | `wt-queue` | SQS + Step Functions | Background jobs: progress, cancel, retry | ARCHITECTURE, OPTIMIZATION |
+| **DSP** | `wt-dsp` | EC2 compute-optimized (Graviton) | Pure SIMD numeric kernels: FFT, STFT, windows, statistics | OPTIMIZATION, TESTING |
 | **i18n** | `wt-i18n` | — | Translated strings (en, vi) | STYLE_RULE, USER_GUIDE* |
 | **Ledger** | `wt-ledger` | RDS / DynamoDB | SQLite catalog, migrations, repositories | DATABASE |
 | **Vault** | `wt-vault` | S3 | Library roots, safe file I/O, content hashing, trash | SECURITY, DATABASE |
@@ -100,6 +101,7 @@ are in [ARCHITECTURE.md §3](ARCHITECTURE.md#3-service-catalog).
 | **Enrich** | `wt-enrich` | Glue Jobs / Lambda | MusicBrainz, AcoustID, Cover Art, LRCLIB, filename parsing | EXTENSION, SECURITY |
 | **Forge** | `wt-forge` | Elemental MediaConvert | Transcoding (ffmpeg), artwork normalization, renditions | EXTENSION, OPTIMIZATION |
 | **Dock** | `wt-dock` | IoT Core | Device detection, pairing, device profiles, manifest I/O | EXTENSION, DATABASE |
+| **Inspect** | `wt-inspect` | Amazon Inspector | FLAC integrity, Spek-like spectrogram, fake-lossless and other detectors | EXTENSION, DATABASE, OPTIMIZATION |
 | **Sync** | `wt-sync` | DataSync | Plan (diff) and execute transfers; pull back from device | ARCHITECTURE, SECURITY |
 | **SDK** | `wt-sdk` | AWS SDK | The single facade that every front end calls | ARCHITECTURE |
 | **Kit** | `wt-kit` | Amplify UI | Tile design system on GPUI: theme, fonts, icons, components, motion | STYLE_RULE, TRANS_ANIMATION |
@@ -132,6 +134,8 @@ Find the row for what you changed and update **every** doc marked ●.
 | An enrichment provider or any network call (`wt-enrich`, `wt-gate`) | ○ | ○ | | ● | ● | | ● | | | ● | | ● | | |
 | File writes, deletes or moves (`wt-vault`, `wt-sync`) | | ○ | | ● | | | ● | | | ● | | ○ | | |
 | The sync planning or execution algorithm | | ● | ○ | ● | | ● | ● | | | ● | | ● | | |
+| DSP kernels, SIMD code or CPU-architecture handling (`wt-dsp`) | | ● | | ○ | | ● | | | | ● | | | ○ | |
+| A quality detector, threshold or integrity check (`wt-inspect`) | ○ | | ● | ○ | ● | ○ | | | | ● | | ● | ○ | |
 | A hot path (scan, hash, list, sync) | | | ○ | | | ● | | | | ● | | | | |
 | A UI screen or component (`wt-console`, `wt-kit`) | ○ | | | | | ○ | | ● | ○ | | ● | ● | | |
 | An animation or transition | | | | | | ○ | | | ● | | ● | | | |

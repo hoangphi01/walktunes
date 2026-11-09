@@ -17,6 +17,7 @@
 | Unusual device behaviour | `DeviceHook` trait in `wt-dock` | Rust | §3.4 |
 | A new audio format | `wt-crawler` (read) + `wt-forge` (convert) + `wt-vault` (`audio_hash`) | Rust | §4 |
 | A new metadata, artwork or lyrics source | `EnrichProvider` trait in `wt-enrich` | Rust | §5 |
+| A new quality detector (for example, a new lossy-codec signature) | `Detector` trait in `wt-inspect` | Rust | §7 |
 | A whole new capability | A new service crate | Rust + ADR | §6 |
 
 There are no runtime plugins in v1. Extensions are compiled in, or shipped as
@@ -167,3 +168,38 @@ Rules:
 2. Create `crates/wt-<name>` with a `README.md` stub that links to its ARCHITECTURE section.
 3. Add it to the §3 table in [DOCS_GUIDE](DOCS_GUIDE.md#3-service-dictionary-the-mini-aws), to the [ERROR_CONTROL](ERROR_CONTROL.md) service keys, and to [GLOSSARY](GLOSSARY.md).
 4. Expose it through `wt-sdk` if front ends need it.
+
+## 7. Adding a quality detector
+
+```rust
+pub trait Detector: Send + Sync {
+    fn id(&self) -> &'static str;                       // "lowpass-cutoff"
+    fn version(&self) -> u32;                           // bump on any threshold change
+    /// Called once per file with the single-pass products of a full check.
+    fn evaluate(&self, input: &AnalysisInput) -> Finding;
+}
+// AnalysisInput: stream info, Welch-averaged spectrum, per-channel statistics,
+// bit-usage histogram, integrity results. Detectors never decode or read files.
+```
+
+Rules:
+1. A detector is a **pure function** of `AnalysisInput`. All heavy work stays in the shared single pass, so adding a detector does not add a decode.
+2. Return evidence (numbers plus an optional overlay for the spectrogram), a verdict contribution and a confidence. **Never** return "delete" or "hide".
+3. Add labelled fixtures for both a positive and a false-positive case ([TESTING §7.2](TESTING.md#72-labelled-inspection-fixtures)), and record the calibration in RESULT.
+4. Bump `analyzer_version` (the sum of detector versions), so that stored results are re-evaluated.
+5. Explain the detector in the "How we decide" panel strings (EN + VI).
+
+### 7.1 Current detectors and thresholds (initial, to be calibrated in R-005)
+
+| Detector | Evidence | Initial rule |
+|---|---|---|
+| `lowpass-cutoff` | Highest frequency where the averaged spectrum sits ≥ 10 dB above the noise floor, plus the edge steepness | A brickwall edge (≥ 30 dB drop within 500 Hz) below 19.5 kHz → `likely_lossy_source`; 19.5–21 kHz → `suspect`; no brickwall → no finding. Typical encoder cutoffs: ~16 kHz (MP3 128 kbps), ~19–20 kHz (MP3 256–320 kbps) `[VERIFY in R-005]` |
+| `upsampled` | Effective bandwidth vs. the declared sample rate | Rate > 48 kHz and no content above ~22–24 kHz → `upsampled` (effective rate 44.1 or 48 kHz) |
+| `padded-bits` | Bit-usage histogram | 24-bit with the lowest 8 bits always zero → `padded_bits` (effective 16) |
+| `fake-stereo` | L/R correlation and difference energy | L = R (difference < -100 dBFS) → finding |
+| `clipping` | Runs of consecutive full-scale samples | Runs ≥ 3 samples counted; reported, not a verdict |
+
+Known false-positive sources: old or analog-mastered recordings with little
+high-frequency content, intentionally low-passed productions, and very quiet
+tracks. That is why verdicts are always "suspect / likely", and why the user
+can mark them as reviewed.

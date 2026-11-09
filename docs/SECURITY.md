@@ -24,7 +24,7 @@ assets to protect, in priority order:
 |---|---|---|
 | **Our own bug destroys files** | A wrong diff removes a user's album | §3 rules, ops log, trash, safety errors |
 | Malicious or corrupted device manifest | `path: "../../Users/me/Documents"` | §4 path confinement |
-| Hostile files in the library | A crafted tag or image crashes a parser | Fuzzing of parsers (TESTING), a panic boundary per job, decode size limits |
+| Hostile files in the library | A crafted tag, image or audio stream crashes a parser or exhausts memory | Fuzzing of parsers and audio decoding entry points (TESTING), a panic boundary per job, decode and analysis limits (§4) |
 | Network eavesdropping or tampering | Fake provider responses | TLS only (rustls); responses treated as untrusted proposals |
 | Privacy leak | Sending a library listing somewhere | No telemetry; consent per provider; minimal queries |
 | Supply-chain compromise | A malicious crate update | `Cargo.lock` committed, `cargo-deny`, `cargo-audit`, review of new dependencies |
@@ -55,6 +55,8 @@ breaks them.
 - Symlinks inside roots are followed only if their target is inside a root (configurable; off by default).
 - Profile `path_template` output is sanitized for the target file system before use.
 - Decoding limits: images larger than 50 MP or 40 MB are rejected, and tag frames larger than 16 MB are skipped.
+- Analysis limits: at most 8 channels, sample rates up to 768 kHz, FFT sizes 256–32768, and a streaming memory cap per job. Inputs outside these limits raise `WT-DSP-0002` and are skipped.
+- `unsafe` SIMD code is confined to `wt-dsp` (ADR-0013), reviewed by two people once there are other contributors, and covered by scalar-equivalence tests and fuzzing.
 
 ## 5. Privacy
 

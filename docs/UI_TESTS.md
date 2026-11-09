@@ -95,5 +95,10 @@ and dark**, in **EN and VI**. Record the results in the release PR.
 - [ ] Unplugging during a sync shows `WT-SYNC-0003` and offers resume on reattach
 - [ ] Safe eject works, or shows `WT-DOCK-0006` with the reason
 
+### Inspect hub
+- [ ] Spectrogram preview paints within 400 ms on the reference machine (B-13); the colormap and legend match STYLE_RULE §10.1 in both themes
+- [ ] Fixtures from TESTING §7.2 show the expected verdict tiles, cutoff overlay and text labels
+- [ ] "Mark as reviewed" persists and never hides or deletes the file
+
 ### Performance
 - [ ] Scrolling 50k rows is smooth (no visible stutter); typing in search does not lag

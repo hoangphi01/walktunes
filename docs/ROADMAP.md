@@ -31,6 +31,7 @@ flowchart LR
 - [ ] CI on macOS, Windows and Linux: fmt, clippy, test, `cargo-deny`
 - [ ] `xtask layers` (dependency rule check) and `xtask docs-check`
 - [ ] `xtask fixtures`: generate test audio with ffmpeg, plus virtual devices
+- [ ] **DSP spike:** STFT + spectrogram of a 5-min FLAC on Apple Silicon (NEON) and x86-64 (AVX2), plus a RISC-V scalar build under QEMU. Record the result as R-004.
 - [ ] **GPUI spike:** a window with Be Vietnam Pro, a Lucide icon, a 50k-row virtual list, and a chart, built on all 3 OSes. Record the result as R-001.
 
 ## M1 — Ledger & Crawler (CLI)
@@ -55,7 +56,9 @@ flowchart LR
 - [ ] Health checks (FR-020) and duplicate detection (FR-005)
 - [ ] Forge: baseline JPEG artwork, filename sanitization, tag simplification
 - [ ] Optional ffmpeg transcoding per profile (FR-048)
-- [ ] `wtunes health`, `wtunes dedupe`
+- [ ] `wt-dsp` kernels + `wt-inspect`: integrity (CRC, MD5, truncation), fake-lossless, upsample and padded-bits detectors (FR-090, 092, 093, 095, 096)
+- [ ] Detector calibration on a labelled fixture set — R-005
+- [ ] `wtunes health`, `wtunes dedupe`, `wtunes inspect`
 
 ## M4 — Console MVP (GPUI)
 **Goal:** the everyday app.
@@ -63,6 +66,7 @@ flowchart LR
 - [ ] Start page (live tiles) and hubs: Library, Device, Sync (plan review), Health, Jobs, Settings
 - [ ] EN/VI switch, light and dark themes, keyboard navigation
 - [ ] Storage charts (FR-054), safe eject (FR-053)
+- [ ] Inspect hub: spectrogram viewer (FR-091), report export (FR-097), pre-sync check (FR-098)
 - [ ] UI test suite and manual checklist ([UI_TESTS](UI_TESTS.md))
 
 ## M5 — Enrich & Playlists
@@ -84,5 +88,7 @@ flowchart LR
 - Tier-2 profiles: older Sony models (community-verified)
 - Tier-3 generic mass-storage players: write-order control (FR-055), 8.3 and FAT quirks
 - Tier-4 MTP support (libmtp / Windows WPD)
+- RISC-V vector (RVV) kernels once Rust intrinsics are stable; GUI on RISC-V once GPUI supports it
+- DSD analysis (DSD → PCM decimation for the spectrogram)
 - Smart playlists, play-count import where devices expose it
 - Profile marketplace: share `profiles/*.toml` through the repository

@@ -13,6 +13,8 @@
 
 | Goal | Consequence |
 |---|---|
+| **Quality and performance are priority #1** | A native, compiled desktop app: no webview, no Electron, no web stack. Audio is handled bit-exactly. Heavy DSP runs SIMD-accelerated with runtime dispatch on x86-64, ARM64 and (best-effort) RISC-V ([ADR-0013](#adr-0013-native-performance-first-multi-architecture-simd)) |
+| Users can trust their files | Integrity checks and fake-lossless detection (`wt-inspect`, [ADR-0012](#adr-0012-built-in-audio-quality-inspection-spek-like)) |
 | Users' music must never be lost | Originals are read-only by default; every destructive operation goes through Vault and is logged and reversible (see [SECURITY §3](SECURITY.md#3-data-safety-the-1-risk)) |
 | Runs on macOS, Windows and Linux | Pure Rust plus GPUI; no platform-specific code outside `wt-config`, `wt-dock` and packaging |
 | Clean, fast UI | GPUI (GPU-rendered) with `gpui-component`; long lists are always virtualized |
@@ -46,6 +48,7 @@ flowchart TB
     enrich[wt-enrich]
     forge[wt-forge]
     dock[wt-dock]
+    inspect[wt-inspect]
   end
   subgraph L2[Layer 2 · Storage & edges]
     ledger[wt-ledger]
@@ -59,18 +62,20 @@ flowchart TB
     bus[wt-bus]
     queue[wt-queue]
     i18n[wt-i18n]
+    dsp[wt-dsp]
   end
   core[wt-core · Layer 0]
 
   console --> sdk & kit
   cli --> sdk
-  sdk --> sync & crawler & enrich & forge & dock
+  sdk --> sync & crawler & enrich & forge & dock & inspect
   kit --> i18n
   sync --> dock & forge & vault & ledger
   crawler --> ledger & vault
   enrich --> gate & ledger & cache
   forge --> vault & cache
   dock --> vault
+  inspect --> dsp & vault & ledger & cache
   L2 --> L1
   L1 --> core
 ```
@@ -168,6 +173,20 @@ and what it must never do.
 
 ---
 
+### 3.18 `wt-dsp` — EC2 compute-optimized (Graviton)
+- **Owns:** pure numeric kernels with **no I/O**: window functions (Hann, Blackman-Harris), real FFT (`realfft` over `rustfft`), streaming STFT, magnitude → dBFS, spectrum averaging (Welch), colormap lookup into RGBA rows, sample statistics (peak, clipping runs, bit usage, L/R correlation).
+- **Performance contract:** SIMD-accelerated with **runtime CPU dispatch** (AVX2/FMA or SSE4.1 on x86-64, NEON on ARM64, scalar elsewhere), no allocations in inner loops, `f32` throughout. See [OPTIMIZATION §4](OPTIMIZATION.md#4-cpu-architectures-x86-64-arm-risc-v).
+- **Parallelism:** may use a bounded `rayon` pool for data-parallel work (columns, files). The pool size comes from `wt-config` ([ADR-0013](#adr-0013-native-performance-first-multi-architecture-simd)).
+- **Never:** reads files, logs per sample, or depends on anything above Layer 1.
+
+### 3.19 `wt-inspect` — Amazon Inspector
+- **Owns:** audio quality inspection, in the spirit of Spek but implemented independently:
+  - **Integrity:** full decode test; for FLAC, the frame CRCs and the STREAMINFO **MD5 signature** of the decoded audio; truncation (decoded samples vs. declared total).
+  - **Spectrogram:** a Spek-like time × frequency image, rendered per channel or mid.
+  - **Authenticity detectors** behind a `Detector` trait: lossy-source lowpass cutoff ("fake lossless"), upsampled hi-res, padded bit depth, fake stereo, clipping.
+- **Persists:** results in the Ledger `analyses` table ([DATABASE §3.6](DATABASE.md#36-audio-analyses)); spectrogram images in `wt-cache`.
+- **Never:** modifies audio files, and never deletes or hides a file because of a verdict. Verdicts are advice; the user decides.
+
 ## 4. Runtime model
 
 ```mermaid
@@ -221,6 +240,24 @@ flowchart LR
 - A file on the device with **no manifest entry** (copied by hand or by another tool) is classified as *foreign*. WalkTunes never removes foreign files. It offers to **adopt** them (hash them and add them to the manifest).
 - Conflicts (the same track with different tags on the two sides) are resolved by user choice. The default is "keep the library version".
 
+### 5.5 Quality inspection
+```mermaid
+flowchart LR
+  F[File] --> D{Mode}
+  D -->|Preview| S[Sparse decode:<br/>seek to each column]
+  D -->|Full check| C[Streaming decode<br/>of the whole file]
+  S --> K[wt-dsp: window · FFT · dBFS · colormap]
+  C --> K
+  C --> I[Integrity: CRC · MD5 · sample count]
+  C --> W[Welch average spectrum]
+  W --> V[Detectors: cutoff · upsample · padding · stereo · clipping]
+  K --> IMG[Spectrogram RGBA → wt-cache]
+  I --> L[(Ledger: analyses)]
+  V --> L
+```
+- **Preview** (opening a track in the Inspect hub) decodes only the windows needed for the visible pixel columns, by seeking. It must paint within the Doherty threshold (B-13).
+- **Full check** (batch or "Check this album") decodes every sample exactly once, feeding the integrity check, the streaming STFT and the averaged spectrum in a single pass. Memory stays O(FFT size × channels), whatever the track length.
+
 ### 5.4 Multi-machine model
 Each machine has its own Ledger. The **device is the carrier** that connects
 them: its manifest records which machine contributed each file. Optionally,
@@ -236,9 +273,9 @@ networking ([ADR-0006](#adr-0006-device-manifest-is-a-json-snapshot-not-a-databa
 walktunes/
 ├── Cargo.toml              # [workspace], shared lints, [workspace.dependencies]
 ├── crates/
-│   ├── wt-core/  wt-config/  wt-watch/  wt-bus/  wt-queue/  wt-i18n/
+│   ├── wt-core/  wt-config/  wt-watch/  wt-bus/  wt-queue/  wt-i18n/  wt-dsp/
 │   ├── wt-ledger/  wt-vault/  wt-gate/  wt-cache/
-│   ├── wt-crawler/  wt-enrich/  wt-forge/  wt-dock/
+│   ├── wt-crawler/  wt-enrich/  wt-forge/  wt-dock/  wt-inspect/
 │   ├── wt-sync/  wt-sdk/  wt-kit/
 │   ├── wt-console/         # bin: walktunes
 │   └── wt-cli/             # bin: wtunes
@@ -269,6 +306,10 @@ walktunes/
 | HTTP | `ureq` + rustls | ADR-0004 |
 | Fingerprint | `rusty-chromaprint` | AcoustID-compatible |
 | Images | `image` + `fast_image_resize` | Baseline JPEG output |
+| FFT | `rustfft` + `realfft` | Runtime-dispatched AVX / SSE4.1 (x86-64) and NEON (ARM64) via the planner; scalar on RISC-V |
+| SIMD kernels (own code) | `pulp` (or `wide`) + `multiversion` | Portable SIMD with runtime dispatch; no `target-cpu=native` in releases |
+| Data-parallel compute | `rayon` (bounded pool) | Only inside `wt-dsp` / `wt-inspect` jobs |
+| FLAC integrity | `symphonia` FLAC decoder + `md-5` | MD5 of decoded samples vs. STREAMINFO |
 | CLI | `clap` | |
 | Logging | `tracing`, `tracing-subscriber`, `tracing-appender` | |
 | i18n | `fluent-bundle` | |
@@ -284,6 +325,16 @@ walktunes/
 | Safe eject | `diskutil eject` | `CM_Request_Device_Eject` | `udisksctl unmount/power-off` |
 | Hidden metadata on device | `._*` AppleDouble files must be avoided or cleaned | — | — |
 | ffmpeg | bundled in the `.app` or Homebrew | bundled `ffmpeg.exe` | system package or bundled in the AppImage |
+
+### 8.1 CPU architectures
+
+| Architecture | Family | GUI app | CLI | SIMD path | Notes |
+|---|---|---|---|---|---|
+| x86-64 | CISC | ✅ macOS (Intel), Windows, Linux | ✅ | AVX2+FMA → SSE4.1 → scalar (runtime) | Release baseline `x86-64-v2` |
+| AArch64 (ARM64) | RISC | ✅ macOS (Apple Silicon), Linux; Windows ARM64 `[VERIFY]` | ✅ | NEON (always present on ARMv8-A) | Apple Silicon is the primary dev machine |
+| RISC-V 64 (RV64GC) | RISC (open ISA) | ❌ until GPUI supports it `[VERIFY]` | ✅ best-effort | Scalar; RVV kernels later | Vector intrinsics not yet stable in Rust |
+
+Details and the research behind this table: [OPTIMIZATION §4](OPTIMIZATION.md#4-cpu-architectures-x86-64-arm-risc-v).
 
 The first version polls mounted volumes every 2 seconds. That is simple,
 works on all three OSes, and is cheap enough. OS notifications are an
@@ -328,3 +379,9 @@ change one, write a new ADR that supersedes it.
 
 #### ADR-0011 Tile design language (Metro-inspired)
 *2026-11-09 · Accepted. Supersedes the "shadcn look" part of ADR-0002.* **Context:** the maintainer wants a square, flat, typographic UI in the spirit of Windows Phone's Metro: tiles, large light headings, solid colour blocks, no rounded corners. **Decision:** `wt-kit` defines the "Tile" language ([STYLE_RULE Part B](STYLE_RULE.md#part-b--design-system-tile-metro-inspired)): radius 0, no shadows, true-black dark theme by default, a Start page of live tiles, pivot hubs with a bottom app bar, and Metro-like motion approximated in 2D ([TRANS_ANIMATION](TRANS_ANIMATION.md)). `gpui-component` stays as the primitive layer, restyled through its theme and wrapped in `Wt*` components. We are inspired by Metro but never use Microsoft fonts, icons or branding. **Consequences:** more custom components (tile, pivot, app bar) than a stock shadcn look, and every `gpui-component` upgrade must be checked for re-introduced radius or shadows (UI_TESTS checklist).
+
+#### ADR-0012 Built-in audio quality inspection (Spek-like)
+*2026-11-09 · Accepted.* **Context:** offline libraries mix CD rips, store purchases and rips from video sites. Users cannot tell whether a FLAC is genuine or was transcoded from a lossy source, and corrupted files are only discovered on the player. Spek shows spectrograms but is a separate, one-file-at-a-time tool. **Decision:** add `wt-inspect` (integrity, spectrogram, detectors) on top of a pure compute crate `wt-dsp`. We implement the analyzer ourselves (Spek is a UX reference only; no code is copied). Verdicts are stored per `content_hash` with an analyzer version, so re-runs happen only when the file or the analyzer changes. **Consequences:** two more crates; numerical code that must be benchmarked and tested across architectures (TESTING §7).
+
+#### ADR-0013 Native performance first, multi-architecture SIMD
+*2026-11-09 · Accepted.* **Context:** quality and performance are the project's top priority. Audio analysis is CPU-heavy, and users run Apple Silicon, x86-64 PCs, ARM64 Windows/Linux machines and, in future, RISC-V boards. **Decision:** (1) native compiled app only, never a web stack; (2) algorithms before micro-optimizations (sparse seeking for previews, single-pass full checks, streaming STFT); (3) use proven SIMD libraries (`rustfft`) and portable SIMD with **runtime dispatch** for our own kernels; (4) release builds never use `target-cpu=native`: x86-64 baseline is `x86-64-v2`, ARM64 relies on NEON, RISC-V builds are scalar `RV64GC` until RVV intrinsics are stable; (5) `wt-dsp` may use a bounded `rayon` pool, which is an explicit exception to ADR-0004's "queue workers only" model for pure compute; (6) analysis results must agree across architectures within documented tolerances. **Consequences:** CI must build and test on x86-64 and ARM64, plus cross-built RISC-V under QEMU; every DSP change carries a benchmark (RESULT).

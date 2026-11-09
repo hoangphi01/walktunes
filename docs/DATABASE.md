@@ -45,6 +45,7 @@ erDiagram
   DEVICES ||--o{ SYNC_RUNS : history
   SYNC_RUNS ||--o{ OPS_LOG : performed
   TRACKS ||--o{ PROPOSALS : suggested
+  FILES ||--o| ANALYSES : inspected
 ```
 
 ---
@@ -270,6 +271,38 @@ CREATE TABLE jobs (
 ```
 
 ---
+
+### 3.6 Audio analyses
+
+```sql
+-- One row per analyzed file version. Keyed by content_hash so a moved file keeps its result,
+-- and by analyzer_version so improved detectors trigger a re-check.
+CREATE TABLE analyses (
+  file_id           TEXT NOT NULL REFERENCES files(id) ON DELETE CASCADE,
+  content_hash      TEXT NOT NULL,
+  analyzer_version  INTEGER NOT NULL,
+  mode              TEXT NOT NULL CHECK (mode IN ('preview','full')),
+  integrity         TEXT NOT NULL CHECK (integrity IN ('ok','warning','failed','unchecked')),
+  md5_status        TEXT NOT NULL CHECK (md5_status IN ('match','mismatch','absent','not_applicable')),
+  decode_errors     INTEGER NOT NULL DEFAULT 0,
+  samples_expected  INTEGER, samples_decoded INTEGER,     -- truncation check
+  verdict           TEXT NOT NULL CHECK (verdict IN
+                    ('genuine','suspect','likely_lossy_source','upsampled','padded_bits','not_applicable')),
+  confidence        REAL,                                  -- 0..1
+  cutoff_hz         INTEGER,                               -- detected lowpass, NULL if none
+  effective_bits    INTEGER,                               -- bits actually used
+  effective_rate_hz INTEGER,                               -- highest real content x 2
+  clipped_samples   INTEGER, fake_stereo INTEGER, peak_dbfs REAL,
+  details           TEXT,                                  -- JSON: per-detector evidence
+  user_reviewed     INTEGER NOT NULL DEFAULT 0,            -- user marked "checked, OK"
+  analyzed_at       INTEGER NOT NULL,
+  PRIMARY KEY (file_id, analyzer_version)
+);
+CREATE INDEX idx_analyses_verdict ON analyses(verdict);
+```
+
+Spectrogram images are **not** stored in the Ledger. They live in `wt-cache`,
+keyed by `(audio_hash, width, height, fft_size, window, channel_mode, analyzer_version)`.
 
 ## 4. Track identity ladder
 

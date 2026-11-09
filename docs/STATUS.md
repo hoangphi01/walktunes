@@ -35,7 +35,8 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 | wt-ledger | ⬜ | wt-kit | ⬜ |
 | wt-vault | ⬜ | wt-console | ⬜ |
 | wt-gate | ⬜ | wt-cli | ⬜ |
-| wt-cache | ⬜ | | |
+| wt-cache | ⬜ | wt-dsp | ⬜ |
+| wt-inspect | ⬜ | | |
 
 ## Device verification
 
@@ -46,7 +47,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 ## Blockers / decisions needed
 - None. (PRD Q1 resolved: the product is named **WalkTunes**, 2026-11-09.)
 
-## Next 3 actions
-1. GPUI spike (M0): font, icons, virtual list, chart on macOS, Windows and Linux.
-2. Workspace skeleton and CI.
-3. Fixture generator and the first virtual device.
+## Next actions
+1. GPUI spike (M0): font, icons, tiles, virtual list, chart on macOS, Windows and Linux.
+2. DSP spike (M0, R-004): spectrogram speed on NEON vs AVX2, RISC-V scalar build.
+3. Workspace skeleton, CI (x86-64 + ARM64) and the fixture generator.

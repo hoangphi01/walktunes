@@ -97,6 +97,13 @@ bật), và có thể tải ảnh bìa cùng lời bài hát. Bạn duyệt từ
 có bất kỳ thay đổi nào. Bạn cũng có thể đánh dấu các file này là *nguồn
 lossy* để sau này thay bằng bản chất lượng tốt hơn.
 
+### Kiểm tra chất lượng âm thanh (kiểm tra FLAC và spectrogram) *(dự kiến, M3–M4)*
+Mở một bài hoặc một album rồi chọn **Kiểm tra**. Muốn kiểm tra nhiều file một lúc, vào **Sức khoẻ thư viện → Kiểm tra chất lượng**.
+- **Tính toàn vẹn:** WalkTunes giải mã toàn bộ file. Với FLAC, ứng dụng còn kiểm tra mã kiểm tra của từng frame và **chữ ký MD5** có sẵn trong file. Kết quả có thể là *OK*, *Thiếu MD5*, hoặc *Lỗi* (file hỏng hoặc bị cắt cụt).
+- **Spectrogram:** hình ảnh của âm thanh, giống Spek: thời gian chạy từ trái sang phải, tần số từ dưới lên trên, độ lớn thể hiện bằng màu. Đổi kênh (mid · left · right) bằng các tiêu đề pivot.
+- **FLAC này có thật không?** Nếu spectrogram bị cắt ngang thành một đường thẳng ở khoảng 16–20 kHz, file nhiều khả năng được làm từ MP3 hoặc từ bản tải trên trang video. WalkTunes vẽ đường cắt đó và gắn nhãn *Đáng ngờ* hoặc *Có thể từ nguồn lossy*. Ứng dụng cũng phát hiện file "hi-res" giả (upsample) và 24-bit giả (chỉ đệm thêm bit).
+- Đây là **gợi ý, không phải phán quyết**. Các bản thu cũ hoặc thu analog có thể trông tương tự. Không có file nào bị xoá hay bị ẩn đi; khi đã yên tâm, bấm **Đánh dấu đã xem**.
+
 ## 9. Playlist và lời bài hát *(dự kiến, M5)*
 - Tạo playlist ngay trong WalkTunes. Playlist được chép sang máy nghe nhạc dưới dạng file `.m3u8`.
 - Lời bài hát (`.lrc`) được chép cạnh từng bài để máy hiển thị được.
@@ -130,4 +137,6 @@ wtunes sync plan  --device "ZX300 của tôi"
 wtunes sync run   --device "ZX300 của tôi"
 wtunes pull       --device "ZX300 của tôi"
 wtunes health --json
+wtunes inspect ~/Music/Album --json      # tính toàn vẹn + kết luận
+wtunes inspect track.flac --png out.png  # lưu ảnh spectrogram
 ```

@@ -46,7 +46,7 @@ it: we use our own font (Be Vietnam Pro), our own icons (Lucide) and our own
 colours, and never Microsoft fonts, icons or branding. See
 [ADR-0011](ARCHITECTURE.md#adr-0011-tile-design-language-metro-inspired).
 
-1. **Square and flat.** Corner radius is **0 everywhere**. There are no drop shadows, no gloss, and no gradients, except the logo itself. Depth comes from solid colour blocks, spacing and type size.
+1. **Square and flat.** Corner radius is **0 everywhere**. There are no drop shadows, no gloss, and no gradients, except the logo itself and the spectrogram colormap (§10.1), where colour is data. Depth comes from solid colour blocks, spacing and type size.
 2. **Typography is the interface.** Large, light headings carry the structure. Chrome (lines, boxes, frames) is kept to a minimum.
 3. **Content before chrome.** Album art is shown full-bleed in square tiles. Text aligns to a strong left edge.
 4. **Alive, not busy.** Tiles show live information (free space, tracks to sync, health issues). Motion is quick and purposeful ([TRANS_ANIMATION](TRANS_ANIMATION.md)).
@@ -173,6 +173,7 @@ Tiles sit on a grid with **unit = 72 px** and **gutter = 8 px**:
 | `WtBadge` | Small solid rectangle, `text-caption` |
 | `WtEmptyState` | 48 px icon + `text-header` Light line + one action |
 | `WtChart` | §10 |
+| `WtSpectrogram` | §10.1; GPU-uploaded RGBA image, axes and legend drawn in Tile style |
 
 Each component wraps a `gpui-component` primitive where one exists. Screens
 use only `Wt*` components.
@@ -182,9 +183,19 @@ use only `Wt*` components.
 - Use the `chart-1…5` tokens in a fixed order per category, so the same format always has the same colour.
 - Always label values directly. Tooltips add detail but never hold the only copy of a value.
 
+### 10.1 Spectrogram (Inspect hub)
+The spectrogram is the **one place where a colour gradient is allowed**,
+because there it *is* the data.
+- **Colormap:** a perceptually uniform, colour-blind-safe sequential map (an "inferno"-like black → purple → orange → pale yellow), defined as a 256-entry table in `wt-kit`. Silence is black in both themes, so the plot reads like Spek. A grayscale map is available for printing and accessibility.
+- **Scale:** -120 dBFS (black) to 0 dBFS (brightest), with a vertical legend on the right labelled every 20 dB.
+- **Axes:** time along the bottom (`m:ss`), frequency on the left in kHz (linear by default, log optional), Light weight `text-caption`, ticks outside the plot. The plot area has square edges and no frame.
+- **Evidence overlays:** a detected lowpass cutoff is a 1 px horizontal line in `warning` with a label ("cutoff ≈ 16.0 kHz"). The Nyquist frequency is a dashed `muted-foreground` line. Overlays never change the underlying colours.
+- **Verdict tile:** above the plot, a wide tile shows the verdict in words and colour ("Likely lossy source · 82%" in `warning`, "Integrity OK · MD5 match" in `success`, "Integrity failed" in `destructive`), the format line (`FLAC · 24-bit · 96 kHz · effective 16-bit / 44.1 kHz`), and the "Mark as reviewed" action. Never show colour alone (UX rule, §6).
+- **Interaction:** the hover readout shows time, frequency and dB under the pointer. Use pivots for the channel view: "mid · left · right".
+
 ## 11. Layout
 - **Start** (home): the app name in `text-display`, then a tile grid: one wide tile per paired device (free space, tracks pending), plus Library, Health, Jobs and Settings tiles. This is the landing page.
-- **Hubs** (Library, Device, Health): a `WtPivot` across the top ("albums · artists · tracks · folders"), the content below, and a `WtAppBar` at the bottom with the page's actions (for example, Sync, Eject).
+- **Hubs** (Library, Device, Health, Inspect): a `WtPivot` across the top ("albums · artists · tracks · folders"), the content below, and a `WtAppBar` at the bottom with the page's actions (for example, Sync, Eject).
 - A back button (top-left arrow) and `Esc` / `Alt+←` return to Start. There is no persistent sidebar.
 - Minimum window 960×600. At widths ≥ 1280, hubs may show two pivot sections side by side.
 

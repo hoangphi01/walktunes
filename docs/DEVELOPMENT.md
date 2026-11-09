@@ -58,6 +58,7 @@ cargo run -p wt-cli -- --help # CLI (binary: wtunes)
 | `WT_CACHE_DIR` | Override the cache directory |
 | `WT_LOG` | `tracing` filter, e.g. `wt_sync=debug,info` |
 | `WT_OFFLINE=1` | Force offline mode (Gate refuses all requests) |
+| `WT_FORCE_SIMD=scalar\|sse41\|avx2\|neon` | Force a DSP code path (tests and benchmarks) |
 | `WT_FAKE_VOLUMES=path1,path2` | Treat these folders as mounted volumes (virtual devices) |
 
 **Never develop against your real library or your real player** until M2 is
@@ -76,6 +77,8 @@ done. Use `WT_DATA_DIR` and virtual devices ([TESTING §4](TESTING.md#4-virtual-
 | `cargo xtask docs-check` | Check doc headers, links, error-code registry |
 | `cargo xtask ci` | Everything CI runs, locally |
 | `cargo xtask bench` | Macro benchmarks ([OPTIMIZATION §3](OPTIMIZATION.md#3-how-to-measure)) |
+| `cargo xtask bench-dsp` | DSP and inspection benchmarks (B-12…B-17); prints the active SIMD path |
+| `cargo xtask cross riscv64` | Cross-build the CLI for RISC-V and run its tests under QEMU |
 | `cargo deny check` | Licenses, advisories, bans |
 
 ---
@@ -104,7 +107,9 @@ done. Use `WT_DATA_DIR` and virtual devices ([TESTING §4](TESTING.md#4-virtual-
 | Job | OS | Steps |
 |---|---|---|
 | `check` | ubuntu | fmt, clippy, `xtask layers`, `xtask docs-check`, `cargo deny` |
-| `test` | macOS-14, windows-2022, ubuntu-24.04 | build, fixtures, nextest |
+| `test` | macOS-14 (ARM64), macOS-13 (x86-64), windows-2022 (x64), ubuntu-24.04 (x64), ubuntu-24.04-arm (ARM64) | build, fixtures, nextest, numerical tests ([TESTING §7](TESTING.md#7-numerical-and-cross-architecture-tests)) |
+| `test-arm-windows` | windows-11-arm `[VERIFY runner availability]` | build + nextest (GUI smoke when GPUI supports it) |
+| `cross-riscv` | ubuntu (cross + QEMU) | build `riscv64gc-unknown-linux-gnu` CLI, run core and DSP unit tests under QEMU |
 | `ui-smoke` | all 3 | build the console, run GPUI tests ([UI_TESTS](UI_TESTS.md)) |
 | `audit` (nightly) | ubuntu | `cargo audit`, `cargo deny check advisories` |
 | `release` (tags) | all 3 | see [RELEASE](RELEASE.md) |

@@ -95,6 +95,13 @@ suggests a clean title and artist, tries to identify the song online
 suggestion before anything changes. You can also mark these files as
 *lossy source* to replace them with better versions later.
 
+### Check audio quality (FLAC check and spectrogram) *(planned, M3–M4)*
+Open a track or album and choose **Inspect**, or run **Health → Check quality** for many files at once.
+- **Integrity:** WalkTunes decodes the whole file. For FLAC it also checks every frame's checksum and the built-in **MD5 signature** of the audio. Results: *OK*, *MD5 missing*, *Failed* (corrupted or truncated).
+- **Spectrogram:** a picture of the sound, like Spek: time left to right, frequency bottom to top, loudness as colour. Change the channel (mid · left · right) with the pivots.
+- **Is this FLAC genuine?** If the spectrogram stops at a hard line around 16–20 kHz, the file was probably made from an MP3 or a video-site rip. WalkTunes draws that line and labels the file *Suspect* or *Likely lossy source*. It also spots fake "hi-res" (upsampled) and fake 24-bit (padded) files.
+- These are **hints, not judgements**. Old or analog recordings can look similar. Nothing is ever deleted or hidden; press **Mark as reviewed** when you are satisfied.
+
 ## 9. Playlists and lyrics *(planned, M5)*
 - Create playlists in WalkTunes. They are copied to the player as `.m3u8` files.
 - Lyrics (`.lrc`) are copied next to each song so the player can show them.
@@ -127,4 +134,6 @@ wtunes sync plan  --device "My ZX300"
 wtunes sync run   --device "My ZX300"
 wtunes pull       --device "My ZX300"
 wtunes health --json
+wtunes inspect ~/Music/Album --json      # integrity + verdicts
+wtunes inspect track.flac --png out.png  # save a spectrogram
 ```
