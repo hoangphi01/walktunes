@@ -7,7 +7,8 @@
 | Last reviewed | 2026-11-09 |
 | Related | [TRANS_ANIMATION](TRANS_ANIMATION.md) · [UI_TESTS](UI_TESTS.md) · [ERROR_CONTROL](ERROR_CONTROL.md) |
 
-Part A covers how the code looks. Part B covers how the app looks.
+Part A covers how the code looks. Part B covers how the app looks. Part C
+covers how the app behaves for people (UX laws as decision rules).
 
 ---
 
@@ -192,3 +193,76 @@ use only `Wt*` components.
 - **English:** plain, friendly, no jargon ("Couldn't reach MusicBrainz", not "HTTP 503").
 - **Vietnamese:** natural, polite and concise. Keep established technical terms where Vietnamese users expect them (FLAC, lossless, playlist). Use "bạn" for the user.
 - Strings live only in `assets/i18n/{en,vi}/*.ftl`. Keys are `area-element-state`, for example `sync-button-run`.
+
+---
+
+# Part C — UX laws (decision rules)
+
+These research-backed rules of thumb turn design debates into checkable
+decisions. Each law below is translated into **concrete WalkTunes rules**
+with stable IDs (`UX-01` …). Cite them in design reviews and PRs ("violates
+UX-07"). They support user research but never replace it. When a rule
+conflicts with a real user need (for example, a long track list that a user
+came to see), the user need wins, and the exception is noted in the PR.
+
+## 13. Rules by law
+
+### 13.1 Familiarity and choice
+
+| ID | Law | Rule for WalkTunes |
+|---|---|---|
+| UX-01 | **Jakob's Law**: users expect your product to work like others they already know | The Tile look is the *visual skin*, not a reinvention of behaviour. Keep the platform conventions: `Cmd/Ctrl+F` search, `Cmd/Ctrl+,` settings, the native menu bar on macOS, native file pickers, Back = `Esc` / `Alt+←` / top-left arrow, double-click opens, right-click shows a context menu, drag and drop for adding folders. Pivot headers are always visible text labels, never icon-only. |
+| UX-02 | **Hick's Law**: more choices means slower decisions | The Start page shows at most **7 tiles** by default (devices first; users may pin more). The app bar shows at most **4 primary actions** plus an overflow `…`. Advanced options (codecs, path templates, profile overrides) live behind "Advanced" disclosure. Pairing asks one question per step. |
+| UX-03 | **Miller's Law**: working memory holds about 7 (±2) items | Chunk everything: the sync plan is grouped into Add / Replace / Remove, each with a count and a size. Health issues are grouped by type, not shown as a flat list. Long numbers are formatted (`1,204 tracks · 38.2 GB`), and hashes and IDs are shortened (`b3:9f2c…`) with copy-to-clipboard. |
+| UX-04 | **Serial Position Effect**: the first and last items are remembered best | Order matters. Start tiles: **devices first**, Settings last. Library pivots: albums · artists · tracks · folders (most used first). Sync plan summary: the **Remove** group appears first when it is not empty, so it is never buried in the middle. |
+
+### 13.2 Targets and grouping
+
+| ID | Law | Rule for WalkTunes |
+|---|---|---|
+| UX-05 | **Fitts's Law**: larger, closer targets are faster to hit | Minimum interactive target **32×32 px** (40×40 for app-bar buttons and tiles; the small tile is 72). The primary action sits where the eye ends: bottom-right of dialogs and at the first position of the app bar. **Destructive actions** are never adjacent to the primary action, are never the default button, and in dialogs sit on the left, separated by space. |
+| UX-06 | **Law of Proximity**: elements close together are seen as related | Spacing does the grouping, since Tile has no cards or shadows. Within a group, use ≤ 8 px; between groups, use ≥ 24 px. Labels sit directly above their inputs (4 px). A button acts on the element closest to it. |
+| UX-07 | **Law of Common Region**: a shared boundary groups elements | When grouping is critical (for example, the Remove group in a sync plan, or one device's two volumes), use a **solid fill region** (`subtle` band or a tile), not a border box or a shadow. One region level only: no nested regions. |
+| UX-08 | **Law of Prägnanz**: people see the simplest interpretation of a shape | One Lucide icon per concept (§8), with no decorative icons. Tiles are plain rectangles on one grid. At most one emphasis style per text block (weight *or* colour, not both). |
+
+### 13.3 Feedback, speed and endings
+
+| ID | Law | Rule for WalkTunes |
+|---|---|---|
+| UX-09 | **Doherty Threshold**: productivity rises when responses stay under 400 ms | Visual feedback within **100 ms** for every input (press tilt, hover). Results within **400 ms**, or else show progress: a skeleton after 300 ms (TRANS_ANIMATION A-11), and progress with counts for jobs. Use optimistic UI for safe, reversible actions (rename a playlist, tick an album), **never for destructive ones**. These match budgets B-04 and B-11 in [OPTIMIZATION](OPTIMIZATION.md#1-performance-budgets). |
+| UX-10 | **Peak-End Rule**: experiences are judged by their peak and their end | Every flow ends on a designed screen. A finished sync shows **"Done: 1,204 tracks · 38.2 GB · safe to eject"** with the Eject action ready. A failed sync shows what succeeded, what did not, and one clear next action, never a bare error code. The peak moment (the first time a newly paired device lights up its live tile) gets the A-05 flash. |
+| UX-11 | **Zeigarnik Effect**: unfinished tasks are remembered better | Interrupted work is visible but not nagging: an interrupted sync appears as a Start tile ("Resume sync: 312 left") and in Jobs, until it is resumed or dismissed. No pop-up reminders and no badges that cannot be cleared. |
+| UX-12 | **Goal-Gradient Effect**: motivation increases near the goal | **Long jobs start at 10%**: sync, pull, import, export, artwork normalization, transcoding, tag batches and scans. The first 10% is the **preparation phase**, which is real work: enumerating files, checking free space and building the plan. For sync and pull, the dry-run plan is already finished when the user presses the button, so the bar opens at 10% immediately; for other jobs it fills 0 → 10% as preparation runs. The remaining 90% maps to the main work, weighted by bytes for copies and by items otherwise. The text always shows real counts ("312 of 1,204 · 4.1 of 38.2 GB"). Multi-step flows (pairing, first run) show "Step 2 of 3", counting finished steps. **Never** advance the bar for work that has not happened, and never let it go backwards: if a re-plan is needed, start a new job. See §13.6. |
+
+### 13.4 Complexity and input
+
+| ID | Law | Rule for WalkTunes |
+|---|---|---|
+| UX-13 | **Tesler's Law**: complexity can be moved, not removed | The system absorbs it: auto-suggest the device profile, auto-normalize artwork, auto-pick a transcode target from the profile, auto-choose the volume with free space. The user only decides *what* music goes *where*. Each new setting needs a PR justification: "why can't the system decide?" |
+| UX-14 | **Postel's Law**: be liberal in what you accept, strict in what you produce | **Accept** search with or without diacritics, typos via prefix matching, paths with `~` or pasted with quotes, dates and track numbers in any common form (`3/12`, `03`, `3 of 12`), and dropped folders or files. **Produce** canonical output: consistent tag casing rules, normalized track numbers, locale-formatted numbers, and one date format per locale. |
+| UX-15 | **Occam's Razor**: the simplest solution that works is usually right | Between two designs that both solve the need, ship the one with fewer screens, fewer custom patterns and less copy. "Clever" interactions (gestures, hidden shortcuts) are extras, never the only way. |
+| UX-16 | **Parkinson's Law**: work expands to fill the time available | Applied **inward only**: time-box design spikes and milestones (see [ROADMAP](ROADMAP.md)). Towards users, artificial urgency is **banned**: no countdowns, no "limited time" prompts, no pressure to act. WalkTunes is a tool, not a funnel. |
+
+### 13.5 Look and emphasis
+
+| ID | Law | Rule for WalkTunes |
+|---|---|---|
+| UX-17 | **Aesthetic-Usability Effect**: pleasing designs are perceived as easier to use | Visual polish is part of "done": the token-only colours, the type scale, the tile grid and the motion catalog are acceptance criteria for any screen (checked in [UI_TESTS §4](UI_TESTS.md#4-manual-qa-checklists)). Polish never hides a broken flow, so a pretty screen with an unclear next step fails review. |
+| UX-18 | **Von Restorff Effect**: the item that stands out is remembered | **One accent-filled primary action per screen** (for example, "Sync" on a device hub). Everything else is outline or ghost. Accent colour on text is reserved for links and the active pivot. If two things compete for accent, one of them is demoted. |
+
+### 13.6 Progress model (UX-12 in detail)
+
+| Phase | Bar range | Real work it represents | Label example |
+|---|---|---|---|
+| Prepare | 0 → 10% | Enumerate files, read manifest, check free space, build the plan (already done for sync and pull, so they open at 10%) | "Preparing… 2,310 files found" |
+| Work | 10 → 95% | The main operation: copy, transcode, resize artwork, write tags, hash. Weighted by bytes for copies, by items otherwise | "312 of 1,204 · 4.1 of 38.2 GB" |
+| Finish | 95 → 100% | Verify hashes, write the manifest, update the Ledger | "Verifying…" |
+
+- `wt-queue` jobs report `(phase, done, total)`. `wt-kit::WtProgress` converts that to the bar position, so every screen uses the same mapping.
+- A job that fails or is cancelled keeps its bar at the last real value and switches to the `destructive` or `muted` colour. The bar never jumps to 100% on failure.
+
+## 14. Using the laws in review
+
+- Design or UI PRs list the UX rules they touch, for example "UX-05, UX-10".
+- A reviewer may block a PR by citing a rule **and** describing the concrete user problem. Citing a law alone is not an argument.
+- Proposed exceptions are recorded in the PR. If an exception repeats, update the rule here and record why in [LESSONS](LESSONS.md).

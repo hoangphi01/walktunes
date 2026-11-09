@@ -74,6 +74,12 @@ and dark**, in **EN and VI**. Record the results in the release PR.
 - [ ] Theme follows the OS and the toggle; contrast spot-check with a picker (≥ 4.5:1)
 - [ ] Lucide icons are crisp at 16 and 20 px
 
+### UX rules ([STYLE_RULE Part C](STYLE_RULE.md#part-c--ux-laws-decision-rules))
+- [ ] Exactly one accent-filled primary action per screen (UX-18); destructive actions never adjacent to it or default (UX-05)
+- [ ] Every input gives visual feedback within 100 ms; anything slower than 400 ms shows a skeleton or progress (UX-09)
+- [ ] Every flow ends on a designed result screen with a clear next action (UX-10); progress bars open at the 10% prepare mark and every further step matches real work (UX-12, STYLE_RULE §13.6)
+- [ ] Start shows ≤ 7 default tiles, app bars ≤ 4 primary actions (UX-02); platform shortcuts work (UX-01)
+
 ### Keyboard and accessibility
 - [ ] Every action is reachable by keyboard; the focus ring is always visible
 - [ ] Esc closes dialogs; Enter confirms only non-destructive defaults

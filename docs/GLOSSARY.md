@@ -55,4 +55,5 @@ Terms are listed alphabetically. Service names are listed in
 | **Track** | A logical recording, independent of files. |
 | **`[VERIFY]`** | A doc marker for a hardware claim that has not yet been tested on a real device. |
 | **Virtual device** | A folder that acts as a mounted device in tests. See [TESTING §4](TESTING.md#4-virtual-devices). |
+| **UX rule** | A numbered design decision rule (`UX-01`…) derived from a UX law. See [STYLE_RULE Part C](STYLE_RULE.md#part-c--ux-laws-decision-rules). |
 | **Volume** | One mounted file system (for example, a Walkman's internal storage or its SD card). |

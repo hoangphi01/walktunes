@@ -17,6 +17,7 @@ from the edge it belongs to, items arrive in a short stagger, and pressed
 tiles respond physically. Everything stays flat: there are no shadows or
 blur, and motion uses only opacity, offset and scale.
 
+0. **Feedback first.** Every input gets visible feedback within 100 ms, and anything slower than 400 ms shows progress ([UX-09, Doherty Threshold](STYLE_RULE.md#133-feedback-speed-and-endings)).
 1. **Motion explains change.** Use it only to show where something came from, where it went, or that something is happening.
 2. **Fast and calm.** No single animation lasts longer than 300 ms, and a staggered group finishes within 500 ms (progress excepted). No bounce, no overshoot. This is a tool, not a toy.
 3. **Never block input.** Interaction is possible while an animation runs. A new action interrupts the current animation.
@@ -50,7 +51,7 @@ listed, add a row in the same PR.
 | A-04 | Toast (top band) | Slides down from the top edge | Slides up | base |
 | A-05 | Device attached | Device tile enters with A-13; accent fill flashes **once** | — | slow |
 | A-06 | Device detached | Tile switches to `subtle` fill and shows "Disconnected" | — | base |
-| A-07 | Sync progress | Flat bar width animates linearly; count text updates at most 10×/s | — | progress |
+| A-07 | Job progress (sync, pull, import, export, artwork, transcode) | Opens at the 10% prepare mark ([STYLE_RULE §13.6](STYLE_RULE.md#136-progress-model-ux-12-in-detail)); flat bar width animates linearly between real values; count text updates at most 10×/s | — | progress |
 | A-08 | Row status change (pending → synced) | Row background flashes the `success` tint for 600 ms, then fades | — | slow |
 | A-09 | Sync plan diff | Add / replace / remove groups expand with a height and opacity transition | Collapse | base |
 | A-10 | Hover | Fill changes to `subtle` (or a 10% lighter accent on accent tiles) | — | fast |

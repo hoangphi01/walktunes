@@ -61,7 +61,7 @@ are at the repo root.
 | Doc | Purpose | Read when |
 |---|---|---|
 | [DEVELOPMENT.md](DEVELOPMENT.md) | Setup on macOS/Windows/Linux, workspace, commands, git flow | First day; any tooling change |
-| [STYLE_RULE.md](STYLE_RULE.md) | Rust code style and the "Tile" design system (Metro-inspired: square, flat; Be Vietnam Pro, Lucide) | Writing any code or UI |
+| [STYLE_RULE.md](STYLE_RULE.md) | Rust code style, the "Tile" design system (Metro-inspired: square, flat; Be Vietnam Pro, Lucide) and UX laws as decision rules (`UX-01`…`UX-18`) | Writing any code or UI |
 | [TRANS_ANIMATION.md](TRANS_ANIMATION.md) | Motion system: durations, easing, which transitions exist | Adding any animation or transition |
 | [TESTING.md](TESTING.md) | Test strategy, fixtures, virtual devices, CI gates | Writing or changing tests |
 | [UI_TESTS.md](UI_TESTS.md) | GPUI test harness, interaction tests, manual QA checklists | Changing any screen |
@@ -190,7 +190,7 @@ Two columns are left out of the table because the rule for them never changes:
    in English.
 3. **One fact, one home.** Define each fact once and link to it everywhere
    else. Do not copy tables between docs.
-4. **Stable IDs.** Requirements (`FR-012`), errors (`WT-SYNC-0003`), ADRs
+4. **Stable IDs.** Requirements (`FR-012`), UX rules (`UX-05`), errors (`WT-SYNC-0003`), ADRs
    (`ADR-0007`), lessons (`L-004`) and results (`R-003`) are never renumbered
    or reused. Deprecate them instead of deleting.
 5. **`[VERIFY]` marker.** Any claim about real hardware that has not yet been
