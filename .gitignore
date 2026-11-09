@@ -1,0 +1,5 @@
+.DS_Store
+/target/
+/fixtures/media/
+/fixtures/large/
+*.bak-v*

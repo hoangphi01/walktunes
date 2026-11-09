@@ -1,0 +1,133 @@
+# Hướng dẫn sử dụng
+
+| Mục | Giá trị |
+|---|---|
+| Trạng thái | Bản xem trước: mô tả tính năng dự kiến; ứng dụng chưa phát hành |
+| Phụ trách | Maintainer |
+| Cập nhật | 2026-11-09 |
+| Bản gốc | [USER_GUIDE.md](USER_GUIDE.md) (luôn cập nhật song song) |
+
+> WalkTunes đang được phát triển. Tài liệu này mô tả cách phiên bản 1.0
+> được thiết kế để hoạt động. Các mục ghi *(dự kiến)* hiện chưa có.
+
+---
+
+## 1. WalkTunes làm gì
+
+WalkTunes quản lý nhạc offline của bạn và giữ máy nghe nhạc luôn đồng bộ.
+Ứng dụng ghi nhớ trên máy nghe nhạc đang có những gì. Nhờ vậy, cắm máy vào
+bất kỳ máy tính nào của bạn, bạn cũng thấy ngay máy có gì, thiếu gì và cái
+gì đã thay đổi.
+
+- **Thư viện:** gom mọi thư mục nhạc về một chỗ, tìm kiếm được, tự phát hiện bài trùng và tag lộn xộn.
+- **Đồng bộ:** chọn nghệ sĩ, album hoặc playlist, xem trước kế hoạch rồi đồng bộ. Chỉ phần khác biệt được chép.
+- **Máy nghe nhạc tự ghi nhớ:** một thư mục ẩn nhỏ trên máy lưu lại những gì đã đồng bộ và từ máy tính nào.
+- **Dọn dẹp:** sửa tag và ảnh bìa, chỉnh lại các file tải từ trang video.
+- **An toàn ngay từ thiết kế:** file gốc của bạn không bao giờ bị xoá, và file bạn tự chép vào máy nghe nhạc cũng không bao giờ bị gỡ.
+
+## 2. Máy nghe nhạc được hỗ trợ
+
+| Máy | Trạng thái |
+|---|---|
+| Sony NW-ZX300 | Mục tiêu chính (1.0) |
+| Sony NW-A30 / A40 / A50, NW-WM1A / WM1Z | Mục tiêu (1.0), đang kiểm chứng |
+| Các máy Sony đời cũ hơn, máy MP3 phổ thông dạng ổ USB | Sau 1.0 *(dự kiến)*; dùng cơ bản qua chế độ "Máy phổ thông" |
+| Walkman chạy Android, điện thoại | Không nằm trong mục tiêu (hãy dùng ứng dụng riêng của chúng) |
+
+Máy nghe nhạc của bạn cần hiện lên như một **ổ USB** trên máy tính. Với
+ZX300, chỉ cần cắm cáp USB là máy hiện ra như một ổ đĩa (trên macOS, máy
+xuất hiện trong Finder).
+
+## 3. Cài đặt *(dự kiến)*
+- **macOS:** mở file `.dmg` rồi kéo WalkTunes vào thư mục Applications.
+- **Windows:** chạy file `.msi`.
+- **Linux:** tải file AppImage, cấp quyền thực thi rồi chạy.
+
+Tính năng chuyển định dạng (đổi những định dạng máy không phát được) dùng
+**ffmpeg**, và ffmpeg đã có sẵn trong bộ cài.
+
+## 4. Lần chạy đầu tiên
+1. **Chọn ngôn ngữ** (English / Tiếng Việt) và giao diện sáng hoặc tối.
+2. **Thêm thư mục nhạc:** *Thư viện → Thêm thư mục*. Thêm bao nhiêu cũng được (ổ trong, ổ ngoài, NAS).
+3. WalkTunes **quét** các thư mục. Bạn vẫn duyệt thư viện được trong lúc quét.
+4. Tuỳ chọn: **Dịch vụ trực tuyến** (*Cài đặt → Dịch vụ trực tuyến*). Mỗi dịch vụ đều tắt cho đến khi bạn bật: MusicBrainz (tag), Cover Art Archive (ảnh bìa), AcoustID (nhận diện bài không có tag) và LRCLIB (lời bài hát).
+
+## 5. Ghép đôi máy nghe nhạc
+1. Cắm máy nghe nhạc vào. WalkTunes hiện thông báo *"Tìm thấy thiết bị mới"*.
+2. Xác nhận đúng dòng máy (ví dụ *Sony NW-ZX300*). Nếu có thẻ microSD, WalkTunes coi thẻ là một phần của cùng thiết bị.
+3. Đặt tên cho máy, ví dụ "ZX300 của tôi".
+
+WalkTunes tạo một thư mục tên `.walktunes` trên máy nghe nhạc. **Vui lòng đừng
+xoá thư mục này.** Nhờ nó mà các máy tính của bạn biết trên máy nghe nhạc
+đang có gì.
+
+## 6. Đồng bộ nhạc sang máy nghe nhạc
+1. Mở **Thiết bị → máy của bạn → Lựa chọn** và đánh dấu những gì bạn muốn: tất cả, nghệ sĩ, album hoặc playlist. Với mỗi lựa chọn, chọn lưu vào bộ nhớ trong hay thẻ SD.
+2. Bấm **Lập kế hoạch đồng bộ**. Bạn sẽ thấy:
+   - **Thêm:** bài mới sẽ được chép
+   - **Thay thế:** bài đã thay đổi trong thư viện
+   - **Gỡ bỏ:** bài bạn đã bỏ chọn (chỉ áp dụng cho file do WalkTunes chép vào)
+   - Tổng dung lượng và dung lượng còn trống sau khi đồng bộ
+3. Bấm **Đồng bộ**. Bạn vẫn dùng ứng dụng bình thường trong lúc chờ; tiến độ hiện ở mục **Tác vụ**.
+4. Khi xong, bấm **Tháo thiết bị** trước khi rút cáp.
+
+Nếu cáp bị tuột giữa chừng, dữ liệu không bị hỏng. Cắm lại máy và bấm
+**Tiếp tục**.
+
+**Những gì WalkTunes làm với bản sao (không bao giờ với bản gốc):** thu nhỏ ảnh bìa
+để máy hiển thị được, chuyển những định dạng máy không phát được, và đặt
+lại tên file cho an toàn với máy.
+
+## 7. Dùng một máy nghe nhạc với nhiều máy tính
+Cắm máy nghe nhạc vào một máy tính khác có cài WalkTunes:
+- WalkTunes đọc bản ghi trên máy và hiện ra những bài **có trên máy nghe nhạc nhưng chưa có trên máy tính này**.
+- Bấm **Kéo về** để chép các bài đó vào thư mục *Inbox* của máy tính này.
+- File bạn tự chép vào máy nghe nhạc sẽ hiện là *Chưa quản lý*. Bạn có thể bấm **Nhận quản lý**, và từ đó WalkTunes sẽ quản lý chúng.
+
+## 8. Dọn dẹp thư viện
+Mở mục **Sức khoẻ thư viện** để xem:
+- Bài thiếu ảnh bìa, thiếu tag hoặc tag không thống nhất (ví dụ một album bị tách làm hai vì "Album Artist" khác nhau)
+- Bài trùng: bản sao y hệt, hoặc cùng một bài ở các chất lượng khác nhau
+- Ảnh bìa mà máy nghe nhạc thường không hiển thị được
+
+### Bài tải từ trang video
+Với các file tên kiểu `Ca sĩ - Bài hát (Official Video) [HD].mp3`, WalkTunes gợi ý
+tên bài và ca sĩ đã được làm gọn, thử nhận diện bài hát qua mạng (nếu bạn đã
+bật), và có thể tải ảnh bìa cùng lời bài hát. Bạn duyệt từng gợi ý trước khi
+có bất kỳ thay đổi nào. Bạn cũng có thể đánh dấu các file này là *nguồn
+lossy* để sau này thay bằng bản chất lượng tốt hơn.
+
+## 9. Playlist và lời bài hát *(dự kiến, M5)*
+- Tạo playlist ngay trong WalkTunes. Playlist được chép sang máy nghe nhạc dưới dạng file `.m3u8`.
+- Lời bài hát (`.lrc`) được chép cạnh từng bài để máy hiển thị được.
+
+## 10. Cam kết an toàn
+- WalkTunes **không bao giờ xoá file nhạc gốc của bạn**. Lệnh "Xoá file" chỉ chuyển file vào thùng rác của hệ thống, và chỉ sau khi bạn xác nhận.
+- Trên máy nghe nhạc, WalkTunes chỉ gỡ những file **do chính WalkTunes chép vào**, và chỉ khi file đó chưa bị thay đổi.
+- Mọi thay đổi đều được ghi lại, và chỉnh sửa tag có thể hoàn tác trong 30 ngày.
+
+## 11. Xử lý sự cố
+Lỗi hiển thị kèm mã, ví dụ **WT-SYNC-0002**. Một số lỗi thường gặp:
+
+| Mã | Ý nghĩa | Cách xử lý |
+|---|---|---|
+| WT-SYNC-0002 | Máy nghe nhạc không đủ dung lượng | Bỏ chọn bớt album, hoặc chuyển sang thẻ SD |
+| WT-SYNC-0003 | Máy bị ngắt kết nối khi đang đồng bộ | Cắm lại và bấm Tiếp tục |
+| WT-FORGE-0001 | Không tìm thấy ffmpeg | Cài lại WalkTunes hoặc cài ffmpeg |
+| WT-DOCK-0004 | Bản ghi trên máy bị hỏng | Bấm **Dựng lại** (WalkTunes đọc lại toàn bộ máy) |
+| WT-GATE-0001 | Dịch vụ trực tuyến đang tắt | Bật trong Cài đặt → Dịch vụ trực tuyến |
+
+Nếu cần hỗ trợ, vào *Cài đặt → Xuất thông tin chẩn đoán* và đính kèm file vào
+một issue trên GitHub. File này không chứa nhạc và không chứa đường dẫn cá
+nhân của bạn.
+
+## 12. Dòng lệnh *(dự kiến)*
+```bash
+wtunes root add ~/Music
+wtunes scan
+wtunes device list
+wtunes sync plan  --device "ZX300 của tôi"
+wtunes sync run   --device "ZX300 của tôi"
+wtunes pull       --device "ZX300 của tôi"
+wtunes health --json
+```
