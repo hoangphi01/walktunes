@@ -110,7 +110,12 @@ on `hoangphi01/walktunes`. Do not open public issues for security bugs.
 Expect an acknowledgement within 7 days. Fixes are released as patch versions
 and credited in the changelog unless you prefer otherwise.
 
-## 9. Trademarks
+## 9. Content sources
+
+- WalkTunes contains **no code that downloads audio from streaming or video platforms**, and no integration with ripping services ([ADR-0016](ARCHITECTURE.md#adr-0016-discover--get-legal-sources-and-inbox-no-built-in-ripping-proposed), PRD Q6). It links to legal sources and imports files the user provides.
+- Imported files are treated as untrusted input (§2, §4) and inspected before sync.
+
+## 10. Trademarks
 
 "Sony" and "Walkman" are trademarks of Sony Group Corporation. This project
 is independent and is not affiliated with, endorsed by or sponsored by Sony.

@@ -36,7 +36,8 @@ Terms are listed alphabetically. Service names are listed in
 | **Generation** | A counter in the device manifest that increases by one on every successful write. Used to detect rollbacks. |
 | **Identity ladder** | The ordered evidence used to decide that two files are the same track (MBID → audio_hash → fingerprint → heuristic). |
 | **Helper (WalkTunes Helper)** | The planned background login item (`wt-helper`) that notices a player being plugged in and opens WalkTunes or shows a notification, like iTunesHelper. See [ARCHITECTURE §3.17.1](ARCHITECTURE.md#3171-wt-helper--plug-in-detection-planned-adr-0015). |
-| **Inbox root** | A root where files pulled from a device land on this machine. |
+| **Discover & Get** | Planned post-1.0 flow (M8): search library + catalog, get missing albums from legal sources, auto-import via the Inbox. See [PRD §10](PRD.md#10-future-vision-after-10-discover-get-and-update-on-the-go). |
+| **Inbox root** | A root where new files land: pulls from a device and, from M8, files the user saves for automatic import (watch folder). |
 | **Ledger** | The local SQLite catalog (`wt-ledger`). |
 | **iSerialNumber / iProduct** | USB string descriptors with the device's serial number and product name. WalkTunes uses the serial to group volumes and recognize a player again. |
 | **Live tile** | A tile on the Start page that shows current information (for example, free space on a device) and may occasionally "peek" to a second face. |
@@ -52,6 +53,7 @@ Terms are listed alphabetically. Service names are listed in
 | **MSC / Mass storage** | USB Mass Storage Class. The device mounts like a USB drive. Tier 1–3 devices use it. |
 | **MTP** | Media Transfer Protocol. Devices that do not mount as drives. **Tier 4**, after 1.0. |
 | **NEON** | The SIMD unit present on every ARMv8-A (ARM64) CPU, including Apple Silicon. |
+| **On-the-go update** | Planned (FR-103): plugging a paired player into any computer with WalkTunes offers the pending additions as a ready sync plan. |
 | **Origin** | The machine that first put a file on a device (recorded in the manifest). |
 | **Padded bit depth** | A 24-bit file whose lowest 8 bits are always zero, so it really carries only 16-bit audio. |
 | **Pivot** | A hub's horizontal set of large lowercase headers (for example "albums · artists · tracks"); switching pivots slides the content. |

@@ -140,6 +140,14 @@ the Mac as a backup. Every device write is listed in `ops_log`.
 - [ ] User guides complete
 - [ ] Release 1.0.0
 
+## M8 — Discover & on the go *(after 1.0, vision)*
+**Goal:** find music in the app and have it reach the player with no manual steps.
+- [ ] Unified search: library + MusicBrainz "missing albums" (FR-100)
+- [ ] Legal "Get" links (FR-101); Q6 decided by the maintainer (ADR-0016)
+- [ ] Inbox watch folder with automatic tagging and inspection (FR-102)
+- [ ] On-the-go updates through the Helper (FR-103), wish list (FR-104)
+- [ ] Mobile companion feasibility study (FR-105)
+
 ## M7+ — After 1.0
 - Tier-2 profiles: older Sony models (community-verified)
 - Tier-3 generic mass-storage players: write-order control (FR-055), 8.3 and FAT quirks
