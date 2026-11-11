@@ -51,7 +51,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 - None. (PRD Q1 resolved: the product is named **WalkTunes**, 2026-11-09.)
 
 ## Next actions
-1. GPUI spike (M0): font, icons, tiles, virtual list, chart on macOS, Windows and Linux.
-2. DSP spike (M0, R-004): spectrogram speed on NEON vs AVX2, RISC-V scalar build.
-3. ZX300 part 2 (R-003): playlist location, artwork limits, DB rebuild time.
-4. Fixture generator (`xtask fixtures`).
+**Prototype sprint P1** (7 days, 2026-11-12 → 2026-11-18): see [ROADMAP](ROADMAP.md#prototype-sprint-p1-first-working-prototype-in-7-days-2026-11-12--2026-11-18).
+1. Day 1 (2026-11-12): `wt-ledger` + `wt-vault` safety core, minimal `xtask fixtures`.
+2. Day 2: crawler, search, R-002 lite.
+3. Day 3: pairing + manifest (first `.walktunes/` write on the real ZX300).
