@@ -13,7 +13,7 @@
 
 | Area | State | Notes |
 |---|---|---|
-| Docs system | ✅ Done | 21 docs + README, GPL-3.0 LICENSE |
+| Docs system | ✅ Done | 21 docs + README, license: MIT OR Apache-2.0 (since 2026-11-12) |
 | Brand & design language | ✅ Done | Name WalkTunes, logo (`assets/brand/`), Tile design language (ADR-0011). Needs SVG / 1024 px logo before M4 |
 | Cargo workspace | ✅ Done (2026-11-11) | 21 crates; 36 tests; `xtask layers` + `docs-check` pass |
 | CI (3 OS) | 🟡 Written | `.github/workflows/ci.yml` (macOS ARM64/x64, Linux x64/ARM64, Windows); first run after push |

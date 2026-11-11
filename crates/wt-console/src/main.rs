@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! **wt-console** — The WalkTunes desktop app (GPUI).
 //!
 //! Layer 6 service (AWS analogy: Management Console). See `docs/ARCHITECTURE.md`.

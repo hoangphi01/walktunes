@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! Probe backends: produce one [`DeviceFingerprint`] per mounted volume.
 //!
 //! All backends are passive and read-only (SECURITY S-10). The full USB/SCSI

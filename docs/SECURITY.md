@@ -82,22 +82,23 @@ breaks them.
 
 ## 7. Licenses and supply chain
 
-**Project license: GPL-3.0-or-later** ([ADR-0009](ARCHITECTURE.md#adr-0009-license-gpl-30-or-later)). Every source file starts with:
+**Project license: MIT OR Apache-2.0** (dual license, at the user's option; [ADR-0017](ARCHITECTURE.md#adr-0017-license-mit-or-apache-20-supersedes-adr-0009)). Every source file starts with:
 
 ```rust
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 ```
 
-| Component | License | Compatible | Notes |
+| Component | License | Usable | Notes |
 |---|---|---|---|
 | GPUI (Zed) | Apache-2.0 | ✅ | |
 | gpui-component | Apache-2.0 | ✅ | verify at pin time |
 | Lucide icons | ISC | ✅ | keep its license notice in `THIRD_PARTY_NOTICES` |
 | Be Vietnam Pro | SIL OFL 1.1 | ✅ | ship `OFL.txt` with the font; do not sell the font alone |
-| ffmpeg (sidecar) | LGPL-2.1+ or GPL-2.0+ (build-dependent) | ✅ | ship a matching source link / offer with bundled binaries |
+| ffmpeg (sidecar) | LGPL-2.1+ or GPL-2.0+ (build-dependent) | ✅ as a separate program | never linked; when bundled, ship its license and a matching source link / offer |
 | SQLite | Public domain | ✅ | |
 
-- `deny.toml` allow-list: MIT, Apache-2.0, Apache-2.0 WITH LLVM-exception, BSD-2/3-Clause, ISC, Zlib, MPL-2.0, Unicode-3.0, CC0-1.0, OFL-1.1, GPL-3.0-or-later, LGPL-2.1+ (sidecar only).
+- `deny.toml` allow-list: MIT, Apache-2.0, Apache-2.0 WITH LLVM-exception, BSD-2/3-Clause, ISC, Zlib, MPL-2.0, Unicode-3.0, CC0-1.0, OFL-1.1, Unlicense, BSL-1.0. **No copyleft crates** (GPL, LGPL, AGPL): linking them would impose their terms on a permissively licensed project. Copyleft tools may only be used as separate programs (ffmpeg sidecar, user-installed tools behind the external-tool adapter).
+- Third-party notices are still required: the MIT/Apache-2.0 license covers WalkTunes' own code only, so `THIRD_PARTY_NOTICES.md` lists every dependency's license (MIT/Apache/ISC/OFL attribution).
 - CI runs `cargo deny check` (licenses, bans, advisories, sources) and `cargo audit` on every PR and every night.
 - **Vendor firmware and copyrighted binaries are never committed** (no `.UPG`, `.exe`, `.dll`, firmware images). Research copies live outside the repository; `.gitignore` guards against accidents (L-003).
 - A new dependency needs a reason in its PR, a license check, and a maintenance check (recent release, more than one maintainer if possible).

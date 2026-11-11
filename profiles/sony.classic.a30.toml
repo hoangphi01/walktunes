@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # NW-A30 series (2016). Model names and capacities [VERIFY].
 id = "sony.classic.a30"
 name = "Sony NW-A30 series"

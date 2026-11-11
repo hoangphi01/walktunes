@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR Apache-2.0
 [package]
 name = "wt-forge"
 description = "WalkTunes — Device renditions: transcoding via ffmpeg, artwork normalization, filename sanitizing."

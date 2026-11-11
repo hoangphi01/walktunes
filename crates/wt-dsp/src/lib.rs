@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! **wt-dsp** — pure SIMD numeric kernels with runtime CPU dispatch
 //! (EC2 compute-optimized / Graviton; `docs/ARCHITECTURE.md` §3.18, ADR-0013).
 //!

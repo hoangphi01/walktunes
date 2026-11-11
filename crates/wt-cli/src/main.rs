@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! **wt-cli** — the `wtunes` command-line front end (AWS CLI;
 //! `docs/ARCHITECTURE.md` §3.17). It talks to `wt-sdk` only.
 //!

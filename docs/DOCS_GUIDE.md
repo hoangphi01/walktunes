@@ -219,6 +219,7 @@ Two columns are left out of the table because the rule for them never changes:
 - [ ] User-visible change reflected in USER_GUIDE.md AND USER_GUIDE.vi.md
 - [ ] Tests added (TESTING.md), UI checklist run if a screen changed (UI_TESTS.md)
 - [ ] STATUS.md updated if a roadmap item moved
+- [ ] I license this contribution under MIT OR Apache-2.0, at the user's option (ADR-0017)
 ```
 
 ---

@@ -16,7 +16,7 @@ covers how the app behaves for people (UX laws as decision rules).
 
 ## 1. General
 - `rustfmt` defaults; maximum width 100 (`rustfmt.toml`).
-- Every source file starts with `// SPDX-License-Identifier: GPL-3.0-or-later`.
+- Every source file starts with `// SPDX-License-Identifier: MIT OR Apache-2.0`.
 - Use English for identifiers, comments and commit messages.
 
 ## 2. Rust code style

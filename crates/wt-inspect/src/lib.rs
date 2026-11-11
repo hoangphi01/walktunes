@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! **wt-inspect** — Audio quality inspection: FLAC integrity, Spek-like spectrogram, fake-lossless detectors.
 //!
 //! Layer 3 service (AWS analogy: Amazon Inspector). See `docs/ARCHITECTURE.md`.

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! **wt-core** — the shared kernel of WalkTunes.
 //!
 //! Typed IDs, shared value types and the error-code model used by every other

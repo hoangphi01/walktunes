@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Model names from the Sony updater's SWUpdate.xml (R-006).
 id = "sony.classic.zx300"
 name = "Sony NW-ZX300"

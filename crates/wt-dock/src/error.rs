@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! Errors and warnings raised by `wt-dock` (registry: `docs/ERROR_CONTROL.md` §5).
 
 use thiserror::Error;

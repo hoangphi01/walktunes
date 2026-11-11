@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! Typed identifiers. IDs never cross crate boundaries as bare `Uuid` or `String`
 //! (STYLE_RULE §2). New IDs are UUIDv7, so they sort by creation time.
 

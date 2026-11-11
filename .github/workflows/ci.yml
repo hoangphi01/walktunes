@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # CI gates: docs/TESTING.md §6 and docs/DEVELOPMENT.md §6.
 name: CI
 

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! Repository tasks for WalkTunes.
 //!
 //! - `cargo xtask layers`: enforce the crate layer rules of `docs/ARCHITECTURE.md` §2.

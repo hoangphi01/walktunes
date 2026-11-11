@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! Reading `.walktunes/device.json` (`docs/DATABASE.md` §6.1). Writing it is M2.
 
 use std::path::Path;

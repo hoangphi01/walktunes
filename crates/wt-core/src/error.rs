@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! The error-code model shared by every service (`docs/ERROR_CONTROL.md` §2).
 
 use std::fmt;

@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Fallback for any USB mass-storage player (Tier 3). Every value is editable when pairing.
 id = "generic.msc"
 name = "Generic USB music player"

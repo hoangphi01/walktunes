@@ -21,7 +21,7 @@ countless no-name players that are just a circuit board and a headphone jack,
 are left with nothing but drag-and-drop copying.
 
 WalkTunes is the missing companion app: **an iTunes-like experience without
-the iTunes weight**, built in Rust, free under GPL-3.0, and available on macOS,
+the iTunes weight**, built in Rust, dual-licensed MIT OR Apache-2.0, and available on macOS,
 Windows and Linux.
 
 **Quality and performance are priority #1.** WalkTunes is a native desktop
@@ -164,7 +164,7 @@ Priority: **P0** = required for 1.0, **P1** = should be in 1.0,
 | NFR-005 | **Portability:** macOS 13+ (Apple Silicon and Intel), Windows 10 22H2+ x64 and ARM64 `[VERIFY GPUI]`, Linux x64 and ARM64 (Wayland and X11). RISC-V 64 Linux: CLI best-effort. See [ARCHITECTURE §8.1](ARCHITECTURE.md#81-cpu-architectures). |
 | NFR-006 | **Accessibility:** keyboard-navigable, a visible focus ring, contrast ≥ 4.5:1, and reduced-motion respected. |
 | NFR-007 | **Resilience:** unplugging a device mid-sync never corrupts the manifest, and the next attach resumes or rolls back cleanly. |
-| NFR-008 | **License:** GPL-3.0-or-later, with dependencies compatible with it. |
+| NFR-008 | **License:** MIT OR Apache-2.0 (dual). Dependencies must be permissive (no copyleft crates); copyleft tools only as separate programs. |
 | NFR-009 | **Native performance:** native compiled app only (no webview / Electron). DSP is SIMD-accelerated with runtime CPU dispatch; inspection budgets B-12…B-16 in [OPTIMIZATION](OPTIMIZATION.md#1-performance-budgets). |
 | NFR-010 | **Bit-exactness and numerical consistency:** copies without a rendition are bit-identical (hash-verified). Analysis verdicts are identical across x86-64 and ARM64, and spectrogram values agree within 0.1 dB. |
 

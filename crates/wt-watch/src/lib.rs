@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! **wt-watch** — logging and tracing (CloudWatch; `docs/ARCHITECTURE.md` §3.2).
 //!
 //! Skeleton scope (M0): a `tracing` subscriber on stderr filtered by `WT_LOG`.

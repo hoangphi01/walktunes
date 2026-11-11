@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! **wt-kit** — The Tile design system on GPUI: theme tokens, fonts, Lucide icons, components and motion.
 //!
 //! Layer 5 service (AWS analogy: Amplify UI). See `docs/ARCHITECTURE.md`.

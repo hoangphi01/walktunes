@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR Apache-2.0
 [package]
 name = "wt-watch"
 description = "WalkTunes — Logging and tracing setup; local metrics and diagnostics later."

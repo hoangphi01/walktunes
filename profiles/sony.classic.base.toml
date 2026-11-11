@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # Shared defaults for classic (non-Android) Sony Walkmans (Tier 1).
 # Evidence: R-006 (Sony updater) and R-003 part 1 (real NW-ZX300 probe, 2026-11-11).
 id = "sony.classic.base"

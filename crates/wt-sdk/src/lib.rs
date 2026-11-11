@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! **wt-sdk** — the single facade every front end calls (AWS SDK;
 //! `docs/ARCHITECTURE.md` §3.15). The console and the CLI depend on this crate only.
 //!

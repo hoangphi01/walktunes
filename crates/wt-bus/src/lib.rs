@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! **wt-bus** — typed in-process events (EventBridge; `docs/ARCHITECTURE.md` §3.3).
 //!
 //! Events are **notifications, not commands**: nothing may depend on an event

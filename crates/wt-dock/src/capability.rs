@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! Sony's device self-description: `default-capability.xml` at each volume root.
 //!
 //! Found on the NW-ZX300 (R-003 part 1, 2026-11-11): it names the model series, the

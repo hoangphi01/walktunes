@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! The passive identity of one mounted volume (`docs/ARCHITECTURE.md` §3.13).
 
 use std::path::{Path, PathBuf};

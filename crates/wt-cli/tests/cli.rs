@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! End-to-end tests of `wtunes` against virtual devices (`docs/TESTING.md` §4).
 
 // Test helpers may panic: unwrap is allowed in tests (ERROR_CONTROL §2).

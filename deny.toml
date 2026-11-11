@@ -1,11 +1,13 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR Apache-2.0
 # License and supply-chain policy. See docs/SECURITY.md §7.
 [licenses]
 allow = [
   "MIT", "Apache-2.0", "Apache-2.0 WITH LLVM-exception", "BSD-2-Clause", "BSD-3-Clause",
-  "ISC", "Zlib", "MPL-2.0", "Unicode-3.0", "CC0-1.0", "OFL-1.1", "GPL-3.0-or-later",
+  "ISC", "Zlib", "MPL-2.0", "Unicode-3.0", "CC0-1.0", "OFL-1.1",
   "Unlicense", "BSL-1.0",
 ]
+# No copyleft (GPL/LGPL/AGPL) crates: they would impose their terms on a permissively licensed project.
+# ffmpeg is a separate sidecar program, not a linked dependency (ADR-0008).
 confidence-threshold = 0.9
 
 [bans]

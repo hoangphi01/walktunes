@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR Apache-2.0
 [workspace]
 members = ["crates/*", "xtask"]
 resolver = "3"
@@ -7,7 +7,7 @@ resolver = "3"
 version = "0.0.1"
 edition = "2024"
 rust-version = "1.99"
-license = "GPL-3.0-or-later"
+license = "MIT OR Apache-2.0"
 repository = "https://github.com/hoangphi01/walktunes"
 authors = ["WalkTunes contributors"]
 publish = false

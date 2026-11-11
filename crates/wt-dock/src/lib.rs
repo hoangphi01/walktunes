@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! **wt-dock** — device detection and pairing (IoT Core; `docs/ARCHITECTURE.md` §3.13).
 //!
 //! Skeleton scope (M0):

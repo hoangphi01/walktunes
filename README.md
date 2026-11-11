@@ -12,7 +12,7 @@
 
 <p align="center">
   <img alt="Status: pre-alpha" src="https://img.shields.io/badge/status-pre--alpha-lightgrey">
-  <img alt="License: GPL-3.0-or-later" src="https://img.shields.io/badge/license-GPL--3.0--or--later-blue">
+  <img alt="License: MIT OR Apache-2.0" src="https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue">
   <img alt="Built with Rust" src="https://img.shields.io/badge/built%20with-Rust-B7410E">
   <img alt="UI: GPUI" src="https://img.shields.io/badge/UI-GPUI-21A89B">
   <img alt="Platforms: macOS, Windows, Linux" src="https://img.shields.io/badge/platforms-macOS%20%7C%20Windows%20%7C%20Linux-555555">
@@ -129,12 +129,18 @@ security issues privately ([SECURITY](docs/SECURITY.md#8-reporting-a-vulnerabili
 
 ## License
 
-Copyright © 2026 the WalkTunes contributors.
+WalkTunes is dual-licensed under either of
 
-WalkTunes is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version. See [LICENSE](LICENSE).
+- the [MIT License](LICENSE-MIT), or
+- the [Apache License, Version 2.0](LICENSE-APACHE),
+
+at your option.
+
+Unless you explicitly state otherwise, any contribution you intentionally
+submit for inclusion in WalkTunes, as defined in the Apache-2.0 license, is
+dual-licensed as above, without any additional terms or conditions.
+
+Third-party components keep their own licenses.
 
 Be Vietnam Pro is licensed under the SIL Open Font License 1.1. Lucide icons
 are licensed under the ISC License.

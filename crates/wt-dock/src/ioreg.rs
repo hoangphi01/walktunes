@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! Parsing macOS IORegistry trees (`ioreg -a -r -l -c IOUSBHostDevice`).
 //!
 //! The tree for a Walkman (R-003 part 1) is:

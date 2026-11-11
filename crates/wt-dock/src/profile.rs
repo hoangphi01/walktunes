@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: MIT OR Apache-2.0
 //! Device profiles (`docs/EXTENSION.md` §3), embedded from `profiles/*.toml`.
 
 use serde::{Deserialize, Serialize};

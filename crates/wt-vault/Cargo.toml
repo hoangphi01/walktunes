@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-3.0-or-later
+# SPDX-License-Identifier: MIT OR Apache-2.0
 [package]
 name = "wt-vault"
 description = "WalkTunes — Library roots and every user-file write, move and delete: atomic writes, hashing, trash, ops log."

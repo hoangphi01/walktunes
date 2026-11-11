@@ -78,7 +78,7 @@ the Mac as a backup. Every device write is listed in `ops_log`.
 
 ## M0 — Foundation
 **Goal:** a repository where good work is easy.
-- [x] Docs system (this set), GPL-3.0 license
+- [x] Docs system (this set), license (MIT OR Apache-2.0 since 2026-11-12; GPL-3.0 before)
 - [x] Cargo workspace with the empty crates from [ARCHITECTURE §6](ARCHITECTURE.md#6-workspace-layout), shared lints, `rust-toolchain.toml`
 - [x] CI on macOS, Windows and Linux (x86-64 + ARM64): fmt, clippy, test, `cargo-deny`
 - [x] `xtask layers` (dependency rule check) and `xtask docs-check`
