@@ -185,6 +185,18 @@ and what it must never do.
 - **Console:** GPUI windows, views and navigation. Contains no business logic.
 - **CLI (`wtunes`):** `clap` subcommands mirroring the SDK, plus `--json` output for scripting.
 
+### 3.17.1 `wt-helper` — plug-in detection *(planned, ADR-0015)*
+- **Decision record:** [ADR-0015](#adr-0015-background-helper-for-plug-in-detection-planned).
+- **Job:** the iTunesHelper equivalent. A tiny background process started at login that notices when a player is plugged in and reacts, so the user never has to open WalkTunes first.
+- **Start at login (no admin rights):** macOS LaunchAgent in `~/Library/LaunchAgents` (or `SMAppService` login item); Windows `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`; Linux XDG autostart `.desktop` or a `systemd --user` unit.
+- **Mount events:** macOS DiskArbitration disk-appeared/disappeared callbacks; Windows `WM_DEVICECHANGE` (`DBT_DEVICEARRIVAL`, volume class); Linux `poll()` on `/proc/self/mountinfo` (it signals changes) or udisks2 D-Bus. The first version may poll every 2 s, within budget B-18.
+- **On a new volume:** run the same probe as `wtunes device probe` (`wt-sdk` → `wt-dock`, read-only). If the device is **paired** or **recognized** (score ≥ 85), act per the user setting *When a player is connected*:
+  - **Open WalkTunes** on that device's hub. **Default for paired devices.**
+  - **Show a notification** "Sony NW-ZX300 connected", with *Open* and *Sync now* actions. **Default for new devices.**
+  - **Do nothing.**
+- **Single instance:** if the console is already running, the helper sends it a "focus device X" message over local IPC (a Unix socket in the data dir, a named pipe on Windows) instead of launching a second window.
+- **Never:** writes to a device, syncs without the normal plan + confirmation (a future "auto-sync paired device" option still shows the plan unless the user opted out of review for that device), or uses the network.
+
 ---
 
 ### 3.18 `wt-dsp` — EC2 compute-optimized (Graviton)
@@ -403,3 +415,6 @@ change one, write a new ADR that supersedes it.
 
 #### ADR-0014 Passive hardware fingerprinting; never send vendor SCSI commands
 *2026-11-11 · Accepted. Amends ADR-0010.* **Context:** static analysis of Sony's updater (R-006) shows how Sony identifies a Walkman: INQUIRY vendor `SONY`, USB iProduct / iSerialNumber, and a vendor `REQUEST DEVINFO` command. Rockbox research shows that Sony vendor commands can also *write* device NVP (model ID, destination). **Decision:** `wt-dock` identifies devices **only from data the OS already exposes** (cached INQUIRY strings, USB descriptors, volume metadata), through per-OS backends that need no admin rights. It never issues vendor SCSI commands, raw SCSI pass-through or USB control transfers. Auto-detection becomes the normal path: a confident match is recognized within 3 s and the user only confirms the name. Pairing (`device.json`) remains the final authority, and it now records the USB serial, the model and the firmware revision. **Consequences:** three small platform backends (macOS IOKit/DiskArbitration, Windows SetupAPI, Linux sysfs). The model may stay ambiguous until the PID / iProduct table is filled from real devices (R-003); the pairing dialog then preselects the best guess. Zero risk of altering device state.
+
+#### ADR-0015 Background helper for plug-in detection *(planned)*
+*2026-11-11 · Proposed, to be built after the GPUI spike (R-001).* **Context:** the user expects iTunes-like behaviour: plug the Walkman in and the app reacts by itself. Neither macOS nor Linux offers a reliable "AutoPlay" for mass-storage players, and Windows AutoPlay handlers are clumsy for this. **Decision:** ship a separate front end `wt-helper` (layer 6, depends on `wt-sdk` only): a login item that listens for mount events, probes new volumes passively, and opens the console or posts a notification according to a user setting. **Consequences:** a third binary to package and sign on every OS, with per-OS login-item and notification code. The helper is opt-out (Settings → *Start WalkTunes Helper at login*), and its idle cost is budgeted (B-18).

@@ -35,6 +35,7 @@ Terms are listed alphabetically. Service names are listed in
 | **Foreign file** | A file on a device that is not in the WalkTunes manifest (copied by hand or by another tool). WalkTunes never removes it. |
 | **Generation** | A counter in the device manifest that increases by one on every successful write. Used to detect rollbacks. |
 | **Identity ladder** | The ordered evidence used to decide that two files are the same track (MBID → audio_hash → fingerprint → heuristic). |
+| **Helper (WalkTunes Helper)** | The planned background login item (`wt-helper`) that notices a player being plugged in and opens WalkTunes or shows a notification, like iTunesHelper. See [ARCHITECTURE §3.17.1](ARCHITECTURE.md#3171-wt-helper--plug-in-detection-planned-adr-0015). |
 | **Inbox root** | A root where files pulled from a device land on this machine. |
 | **Ledger** | The local SQLite catalog (`wt-ledger`). |
 | **iSerialNumber / iProduct** | USB string descriptors with the device's serial number and product name. WalkTunes uses the serial to group volumes and recognize a player again. |

@@ -106,6 +106,7 @@ are in [ARCHITECTURE.md §3](ARCHITECTURE.md#3-service-catalog).
 | **SDK** | `wt-sdk` | AWS SDK | The single facade that every front end calls | ARCHITECTURE |
 | **Kit** | `wt-kit` | Amplify UI | Tile design system on GPUI: theme, fonts, icons, components, motion | STYLE_RULE, TRANS_ANIMATION |
 | **Console** | `wt-console` | Management Console | The desktop app (GPUI) | UI_TESTS, USER_GUIDE* |
+| **Helper** *(planned, after R-001)* | `wt-helper` | CloudWatch Events / EventBridge rule | Background login item: notices a player being plugged in and opens WalkTunes or notifies (like iTunesHelper) | ARCHITECTURE, SECURITY, OPTIMIZATION |
 | **CLI** | `wt-cli` (binary `wtunes`) | AWS CLI | Command-line front end | USER_GUIDE*, TESTING |
 
 **Rule of one job:** if a change makes a crate do two unrelated jobs, it

@@ -123,6 +123,8 @@ Priority: **P0** = required for 1.0, **P1** = should be in 1.0,
 | FR-054 | Device storage view: used and free space by format and quality (charts) | P1 | M4 |
 | FR-055 | Write-order control for players that play in FAT directory order | P2 | M7+ |
 | FR-056 | `wtunes device probe --json`: dump the passive fingerprint of each connected volume (for support and community profiles) | P0 | M2 |
+| FR-058 | Background helper (login item) detects a recognized or paired player being plugged in and, per setting, opens WalkTunes on that device, shows a notification (*Open* / *Sync now*), or does nothing (ADR-0015). Defaults: open for paired devices, notify for new ones | P1 | M4 (after R-001) |
+| FR-059 | Settings: "When a player is connected" and "Start WalkTunes Helper at login" (on by default, can be turned off) | P1 | M4 |
 | FR-057 | When a Sony device is connected in MTP mode only, tell the user how to switch to mass storage | P1 | M2 |
 
 ### 5.4 Quality inspection

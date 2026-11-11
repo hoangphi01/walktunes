@@ -33,6 +33,7 @@ Stretch library: 50k tracks.
 | B-14 | Spectrogram full-resolution render, same track | < 1.5 s | — |
 | B-15 | Batch inspection of 10k tracks | Scales near-linearly with cores, UI stays at 60 fps | — |
 | B-16 | Memory per open spectrogram | < 64 MB | — |
+| B-18 | `wt-helper` while waiting | < 10 MB RAM, < 0.1% CPU; reacts to a plug-in within 3 s | — |
 | B-17 | Cross-architecture agreement | Identical verdicts; spectrogram values within 0.1 dB | — |
 
 Exceeding a budget is a bug. Make a budget looser only through a RESULT

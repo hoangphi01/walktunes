@@ -86,6 +86,16 @@ Nếu cáp bị tuột giữa chừng, dữ liệu không bị hỏng. Cắm l�
 để máy hiển thị được, chuyển những định dạng máy không phát được, và đặt
 lại tên file cho an toàn với máy.
 
+### Khi bạn cắm máy nghe nhạc vào *(dự kiến)*
+Giống iTunes với iPod, WalkTunes sẽ tự phản ứng khi bạn cắm máy nghe nhạc vào.
+Một tiến trình nhỏ tên **WalkTunes Helper** chạy nền sau khi bạn đăng nhập:
+- máy đã ghép đôi: WalkTunes tự mở thẳng vào trang của máy đó;
+- máy mới: hiện thông báo kèm hai nút *Mở* và *Đồng bộ ngay*.
+
+Bạn đổi cách phản ứng trong *Cài đặt → Khi cắm máy nghe nhạc* (Mở WalkTunes /
+Chỉ thông báo / Không làm gì), hoặc tắt *Chạy WalkTunes Helper khi đăng nhập*.
+Helper không bao giờ chép gì mà không cho bạn xem kế hoạch trước.
+
 ## 7. Dùng một máy nghe nhạc với nhiều máy tính
 Cắm máy nghe nhạc vào một máy tính khác có cài WalkTunes:
 - WalkTunes đọc bản ghi trên máy và hiện ra những bài **có trên máy nghe nhạc nhưng chưa có trên máy tính này**.

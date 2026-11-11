@@ -84,6 +84,16 @@ player and press **Resume**.
 the player shows it, converts formats the player cannot play, and makes
 filenames safe for the player.
 
+### When you plug the player in *(planned)*
+Like iTunes with an iPod, WalkTunes will react by itself when you connect your
+player. A small **WalkTunes Helper** runs in the background after you log in:
+- a player you have already paired opens WalkTunes straight on its page;
+- a new player shows a notification with *Open* and *Sync now*.
+
+Change this in *Settings → When a player is connected* (Open WalkTunes / Show
+a notification / Do nothing), or turn off *Start WalkTunes Helper at login*.
+The helper never copies anything without showing you the plan first.
+
 ## 7. Use your player with several computers
 Plug the player into another computer that has WalkTunes installed:
 - WalkTunes reads the player's record and shows the songs **on the player but not on this computer**.

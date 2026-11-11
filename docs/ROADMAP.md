@@ -70,6 +70,7 @@ flowchart LR
 - [ ] EN/VI switch, light and dark themes, keyboard navigation
 - [ ] Storage charts (FR-054), safe eject (FR-053)
 - [ ] Inspect hub: spectrogram viewer (FR-091), report export (FR-097), pre-sync check (FR-098)
+- [ ] `wt-helper`: plug-in detection like iTunesHelper: login item, mount events, open app / notify, IPC to a running console (FR-058, FR-059, ADR-0015); macOS first, then Windows and Linux
 - [ ] UI test suite and manual checklist ([UI_TESTS](UI_TESTS.md))
 
 ## M5 — Enrich & Playlists
