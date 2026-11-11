@@ -1,0 +1,13 @@
+{
+  "format": "walktunes/device",
+  "version": 1,
+  "device_id": "0193f1c2-0000-7000-8000-000000000300",
+  "name": "My ZX300",
+  "profile_id": "sony.classic.zx300",
+  "volume_role": "internal",
+  "paired_at": "2026-11-11T06:00:00Z",
+  "paired_by_machine": "0193f0aa-0000-7000-8000-000000000001",
+  "model": "NW-ZX300",
+  "usb_serial": "FIXTURE-ZX300-0001",
+  "firmware_rev": "2.03"
+}

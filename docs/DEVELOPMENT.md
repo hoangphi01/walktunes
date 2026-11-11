@@ -27,6 +27,10 @@
 - `winget install Gyan.FFmpeg` (optional).
 - Enable long paths: `git config --global core.longpaths true`.
 
+> The GUI crates do not depend on GPUI yet. From the GPUI spike (R-001) on,
+> macOS needs the **full Xcode** (for `metal`), or GPUI's `runtime_shaders`
+> feature as a fallback. The headless crates build with the Command Line Tools only.
+
 ### Linux
 GPUI needs the Wayland/X11, Vulkan and font libraries. On Debian/Ubuntu:
 ```bash
@@ -45,10 +49,18 @@ The exact list changes with GPUI versions. When in doubt, follow Zed's
 ```bash
 git clone https://github.com/hoangphi01/walktunes.git
 cd walktunes
-cargo xtask fixtures          # generate test audio + virtual devices (needs ffmpeg)
-cargo build                   # whole workspace
-cargo run -p wt-console       # desktop app
-cargo run -p wt-cli -- --help # CLI (binary: wtunes)
+cargo build                                  # whole workspace
+cargo run -p wt-cli -- info                  # version, CPU/SIMD path, data locations
+cargo run -p wt-cli -- profiles list         # built-in device profiles
+cargo run -p wt-cli -- device probe          # detect connected players (read-only)
+
+# Try detection without hardware (virtual devices, see TESTING §4):
+Z=fixtures/devices/sony.classic.zx300; A=fixtures/devices/sony.classic.a40
+WT_DATA_DIR=$(mktemp -d) WT_FAKE_VOLUMES=$Z/internal,$Z/sd,$A/internal \
+  cargo run -p wt-cli -- device probe
+
+cargo run -p wt-console       # desktop app (GPUI window arrives with R-001)
+cargo xtask fixtures          # planned: generate test audio (needs ffmpeg)
 ```
 
 ### Useful environment variables

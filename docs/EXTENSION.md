@@ -29,14 +29,18 @@ profile data. This keeps the security surface small ([SECURITY](SECURITY.md)).
 
 | Tier | Devices | Connection | Status |
 |---|---|---|---|
-| **1 — Classic Walkman** | Sony NW-A30, NW-A40, NW-A50 series, **NW-ZX300**, NW-WM1A, NW-WM1Z (non-Android firmware, about 2016–2018) | USB Mass Storage `[VERIFY per model]` | Target for 1.0. The ZX300 is the reference device |
-| **2 — Older Sony** | Earlier NW-A, NWZ-A/E/S/X series and others | Mix of mass storage and MTP (per model) | After 1.0. Community-verified profiles |
+| **1 — Classic Walkman** | **NW-ZX300** (ZX300A); A30 series: NW-A35/A35HN, NW-A36HN, NW-A37HN; A40 series: NW-A45/A45HN, NW-A46HN, NW-A47; A50 series: NW-A55/A55HN/A55L, NW-A56HN, NW-A57; NW-WM1A, NW-WM1Z (non-Android firmware, about 2016–2018; A-series names `[VERIFY]`) | USB Mass Storage `[VERIFY per model]` | Target for 1.0. The ZX300 is the reference device |
+| **2 — Older Sony** | Earlier NW-A (A10/A20 series, same `sony.classic` detection `[VERIFY]`), NWZ-A/E/S/X series and others | Mix of mass storage and MTP (per model) | After 1.0. Community-verified profiles |
 | **3 — Generic mass-storage players** | No-name / budget players, Rockbox devices, and anything that mounts as a USB drive | USB Mass Storage | After 1.0 via `generic.msc`; usable earlier with manual pairing |
 | **4 — MTP players** | Devices that do not mount as a drive | MTP | Later (needs libmtp / Windows WPD) |
 
 Note: Tier-1 Walkmans are often called "RTOS Walkmans" in the community.
 Technically they run Sony's embedded (Linux-based) firmware rather than
 Android. WalkTunes calls them **Classic** and never modifies their firmware.
+
+**Android Walkmans** (for example NW-A100/A300, NW-ZX500/ZX700) are not a target.
+They usually appear as MTP devices with Sony's USB vendor ID. WalkTunes shows the
+`WT-DOCK-0009` hint and explains that they should use their own apps.
 
 ---
 
@@ -62,12 +66,16 @@ usb_vendor_id    = 0x054c                # Sony; strong
 usb_product_ids  = []                    # [VERIFY] fill from the R-003 probe dump
 scsi_vendor      = "SONY"                # INQUIRY vendor, confirmed by R-006 (updater checks "SONY    ")
 product_contains = ["WALKMAN"]           # INQUIRY product or USB iProduct  [VERIFY exact string]
-model_names      = ["NW-ZX300", "NW-ZX300A"]   # from the updater's SWUpdate.xml (R-006)
 volume_labels    = ["WALKMAN"]           # weak  [VERIFY]
 sd_volume_labels = ["SD_CARD"]           # weak  [VERIFY]
 required_dirs    = ["MUSIC"]             # weak
 group_by         = "usb_serial"          # internal + SD = one device; LUN order [VERIFY]
 protected_root_files = ["NW_WM_FW.UPG"]  # firmware update file: never create, modify or delete
+
+[[models]]                               # model names from the updater's SWUpdate.xml (R-006)
+name        = "NW-ZX300"
+aliases     = ["NW-ZX300A"]
+capacity_gb = 64                         # nominal; used only to order candidates
 
 [layout]
 music_dir       = "MUSIC"
@@ -119,7 +127,7 @@ Each `[detect]` rule contributes evidence. The probe sums the weights per profil
 | `scsi_vendor` matches | 25 |
 | `product_contains` matches (INQUIRY product or USB iProduct) | 20 |
 | `usb_product_ids` contains the PID | 30 (identifies the model) |
-| `model_names` string found in iProduct / INQUIRY product | 30 (identifies the model) |
+| A `[[models]]` name or alias found in iProduct / INQUIRY product | 30 (identifies the model) |
 | Volume label matches | 5 |
 | `required_dirs` present | 5 |
 | A `device.json` on the volume names this profile | 100 (paired) |
@@ -129,7 +137,33 @@ Each `[detect]` rule contributes evidence. The probe sums the weights per profil
 - **< 50** → generic. The user picks a profile, or `generic.msc`.
 - Within a family (for example `sony.classic.*`), the model-identifying rules decide. If none matches, the family's models are offered with the best guess first.
 
+### 3.1.2 Family match and model candidates
+When the evidence identifies the **family** (`sony.classic`, score ≥ 85) but no
+model rule matches, the device is still *recognized*:
+- A family match is **enough to sync safely**. Every Tier-1 profile inherits
+  `sony.classic.base` (folders, protected files, conventions).
+- The model is offered as **candidates**, ordered by how close each model's
+  nominal `capacity_gb` (× 0.93 for formatting overhead) is to the internal
+  volume's size. For a 64 GB player that gives NW-ZX300, NW-A47, NW-A57 and
+  NW-A37HN first. This is only a hint for the pairing dialog; the user's choice
+  is stored in `device.json` and wins from then on.
+- Once R-003 fills `usb_product_ids`, the PID will identify the series without asking.
+
+Implemented in `crates/wt-dock/src/detect.rs`; the profiles live in `profiles/*.toml`.
+
 ### 3.2 Profile inheritance
+Built-in profiles (embedded at compile time):
+
+| Profile | Models |
+|---|---|
+| `sony.classic.base` (abstract) | Shared Tier-1 detection, `MUSIC/` layout, protected `NW_WM_FW.UPG` |
+| `sony.classic.zx300` | NW-ZX300 (NW-ZX300A) |
+| `sony.classic.a30` | NW-A35 (A35HN), NW-A36HN, NW-A37HN |
+| `sony.classic.a40` | NW-A45 (A45HN), NW-A46HN, NW-A47 |
+| `sony.classic.a50` | NW-A55 (A55HN, A55L), NW-A56HN, NW-A57 |
+| `sony.classic.wm1` | NW-WM1A, NW-WM1Z |
+| `generic.msc` | Any USB mass-storage player |
+
 - `sony.classic.base`: shared defaults for Tier 1.
 - `generic.msc`: the Tier-3 baseline. Every field is user-editable in the pairing dialog (music folder, formats, artwork size, write order, filename charset, `8.3` names).
 - A child profile overrides keys. Arrays replace the parent's array; they do not merge.

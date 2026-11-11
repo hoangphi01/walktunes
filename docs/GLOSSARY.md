@@ -26,6 +26,7 @@ Terms are listed alphabetically. Service names are listed in
 | **Destination / SubIdentification** | Sony's regional variant code for a model (for example `00010000`). Changing the region changes it; WalkTunes treats all destinations of a model as the same model. |
 | **Device file** | A file on a device that is tracked in the device manifest. |
 | **Dry run** | A sync plan shown to the user without executing anything. |
+| **Family match** | Detection that is sure about the device family (for example `sony.classic`) but not yet the exact model. Enough to sync safely; the model is chosen from capacity-ordered candidates. See [EXTENSION §3.1.2](EXTENSION.md#312-family-match-and-model-candidates). |
 | **Fake lossless** | A lossless file (for example FLAC) made from a lossy source (MP3, AAC, a YouTube rip). It is bigger but no better than the source. Detected by its lowpass cutoff. |
 | **FFT / STFT** | Fast Fourier Transform turns a block of samples into frequencies; the Short-Time Fourier Transform repeats it along the track to build a spectrogram. |
 | **FLAC MD5 signature** | An MD5 of the decoded audio stored in the FLAC STREAMINFO block; recomputing it proves the audio is intact. |

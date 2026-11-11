@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# NW-A50 series (2018). Model names and capacities [VERIFY].
+id = "sony.classic.a50"
+name = "Sony NW-A50 series"
+family = "sony.classic"
+tier = 1
+inherits = "sony.classic.base"
+
+[detect]
+usb_product_ids = []                    # [VERIFY]
+
+[[models]]
+name = "NW-A55"
+aliases = ["NW-A55HN", "NW-A55L"]
+capacity_gb = 16
+
+[[models]]
+name = "NW-A56HN"
+capacity_gb = 32
+
+[[models]]
+name = "NW-A57"
+capacity_gb = 64

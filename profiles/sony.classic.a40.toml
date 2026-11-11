@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# NW-A40 series (2017). Model names and capacities [VERIFY].
+id = "sony.classic.a40"
+name = "Sony NW-A40 series"
+family = "sony.classic"
+tier = 1
+inherits = "sony.classic.base"
+
+[detect]
+usb_product_ids = []                    # [VERIFY]
+
+[[models]]
+name = "NW-A45"
+aliases = ["NW-A45HN"]
+capacity_gb = 16
+
+[[models]]
+name = "NW-A46HN"
+capacity_gb = 32
+
+[[models]]
+name = "NW-A47"
+capacity_gb = 64

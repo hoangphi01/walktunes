@@ -1,0 +1,14 @@
+{
+  "_comment": "Synthetic fixture. Strings, PID and LUN order are [VERIFY] until the R-003 probe dump.",
+  "usb_vid": 1356,
+  "usb_serial": "FIXTURE-ZX300-0001",
+  "usb_manufacturer": "Sony",
+  "usb_product": "WALKMAN",
+  "scsi_vendor": "SONY",
+  "scsi_product": "WALKMAN",
+  "scsi_revision": "2.03",
+  "lun": 0,
+  "volume_label": "WALKMAN",
+  "fs_type": "exfat",
+  "capacity": 59000000000
+}

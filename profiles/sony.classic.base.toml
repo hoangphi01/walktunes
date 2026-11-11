@@ -1,0 +1,21 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Shared defaults for classic (non-Android) Sony Walkmans (Tier 1).
+# Evidence sources: R-006 (Sony updater checks INQUIRY vendor "SONY"); others [VERIFY] in R-003.
+id = "sony.classic.base"
+name = "Sony Walkman (classic)"
+family = "sony.classic"
+tier = 1
+abstract = true
+
+[detect]
+usb_vendor_id = 0x054c
+scsi_vendor = "SONY"
+product_contains = ["WALKMAN"]          # [VERIFY] INQUIRY product / USB iProduct
+volume_labels = ["WALKMAN"]             # [VERIFY]
+sd_volume_labels = ["SD_CARD"]          # [VERIFY]
+required_dirs = ["MUSIC"]
+group_by = "usb_serial"
+protected_root_files = ["NW_WM_FW.UPG"] # firmware update file: never touched
+
+[layout]
+music_dir = "MUSIC"

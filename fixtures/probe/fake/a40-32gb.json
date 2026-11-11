@@ -1,0 +1,12 @@
+{
+  "_comment": "Synthetic fixture: an unpaired 32 GB A-series Walkman without a model in iProduct.",
+  "usb_vid": 1356,
+  "usb_serial": "FIXTURE-A40-0001",
+  "usb_product": "WALKMAN",
+  "scsi_vendor": "SONY",
+  "scsi_product": "WALKMAN",
+  "lun": 0,
+  "volume_label": "WALKMAN",
+  "fs_type": "exfat",
+  "capacity": 29500000000
+}

@@ -153,6 +153,7 @@ and what it must never do.
 
 ### 3.13 `wt-dock` — IoT Core
 - **Owns:** volume discovery (polling mounted volumes plus OS notifications where available), the **device probe**, **pairing** (writing `/.walktunes/device.json`), matching a volume to a `DeviceProfile`, multi-volume devices (internal storage + SD card), and reading and writing the device manifest ([DATABASE §6](DATABASE.md#6-device-manifest)).
+- **Implementation status (M0 skeleton):** `FakeBackend` (`WT_FAKE_VOLUMES` + `fingerprint.json`), `SysinfoBackend` (all OSes: mounted removable volumes, labels, file system, capacity, root markers) and, on macOS, an **interim** enrichment from `diskutil info -plist` (`MediaName` → INQUIRY vendor/product, `VolumeUUID`). The IOKit/DiskArbitration, SetupAPI and sysfs backends that add VID/PID/serial/LUN are M2.
 - **Device probe (passive, read-only, unprivileged):** for each mounted volume it builds a `DeviceFingerprint`, using a small backend per OS (§8):
 
   ```rust

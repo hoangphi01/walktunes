@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Fallback for any USB mass-storage player (Tier 3). Every value is editable when pairing.
+id = "generic.msc"
+name = "Generic USB music player"
+family = "generic"
+tier = 3
+
+[layout]
+music_dir = "MUSIC"

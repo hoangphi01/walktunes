@@ -106,7 +106,7 @@ Priority: **P0** = required for 1.0, **P1** = should be in 1.0,
 ### 5.3 Devices and sync
 | ID | Requirement | P | M |
 |---|---|---|---|
-| FR-040 | Recognize a connected player automatically from passive USB/SCSI identity (ADR-0014): a classic Sony Walkman is identified within 3 s and the user only confirms its name; weaker matches are suggested | P0 | M2 |
+| FR-040 | Recognize a connected player automatically from passive USB/SCSI identity (ADR-0014): a classic Sony Walkman (ZX and A series) is identified within 3 s and the user only confirms its name; weaker matches are suggested | P0 | M2 |
 | FR-041 | One device with several volumes (internal + SD); choose the target volume for each selection | P0 | M2 |
 | FR-042 | Sync selection by all / artist / album / playlist / track / smart rule | P0 | M2 |
 | FR-043 | Dry-run plan showing adds, replaces, removes and sizes, with free-space check, before execution | P0 | M2 |
@@ -198,4 +198,4 @@ Priority: **P0** = required for 1.0, **P1** = should be in 1.0,
 | Q2 | Does the ZX300 read `.m3u8` playlists from `MUSIC/`, and which path forms does it accept? `[VERIFY]` | Hardware test | M2 |
 | Q3 | Maximum embedded artwork size or resolution that the ZX300 displays reliably `[VERIFY]` | Hardware test | M2 |
 | Q4 | Smart-selection rule language (simple filters vs. a small DSL) | Design | M5 |
-| Q5 | ZX300 USB PID, exact iProduct and INQUIRY product strings, LUN order of internal vs SD, and whether INQUIRY revision equals the firmware version `[VERIFY]` | Hardware test | M2 (R-003) |
+| Q5 | ZX300 and A30/A40/A50 USB PIDs, exact iProduct and INQUIRY product strings, LUN order of internal vs SD, and whether INQUIRY revision equals the firmware version `[VERIFY]` | Hardware test | M2 (R-003) |

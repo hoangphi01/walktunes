@@ -27,9 +27,10 @@ flowchart LR
 ## M0 — Foundation
 **Goal:** a repository where good work is easy.
 - [x] Docs system (this set), GPL-3.0 license
-- [ ] Cargo workspace with the empty crates from [ARCHITECTURE §6](ARCHITECTURE.md#6-workspace-layout), shared lints, `rust-toolchain.toml`
-- [ ] CI on macOS, Windows and Linux: fmt, clippy, test, `cargo-deny`
-- [ ] `xtask layers` (dependency rule check) and `xtask docs-check`
+- [x] Cargo workspace with the empty crates from [ARCHITECTURE §6](ARCHITECTURE.md#6-workspace-layout), shared lints, `rust-toolchain.toml`
+- [x] CI on macOS, Windows and Linux (x86-64 + ARM64): fmt, clippy, test, `cargo-deny`
+- [x] `xtask layers` (dependency rule check) and `xtask docs-check`
+- [x] Skeleton: real `wt-core`, `wt-config`, `wt-watch`, `wt-bus`, `wt-dsp` (SIMD detection), `wt-dock` (fingerprints, ZX + A-series profiles, scoring, grouping), `wt-sdk`, `wtunes info | profiles list | device probe`
 - [ ] `xtask fixtures`: generate test audio with ffmpeg, plus virtual devices
 - [ ] **DSP spike:** STFT + spectrogram of a 5-min FLAC on Apple Silicon (NEON) and x86-64 (AVX2), plus a RISC-V scalar build under QEMU. Record the result as R-004.
 - [ ] **GPUI spike:** a window with Be Vietnam Pro, a Lucide icon, a 50k-row virtual list, and a chart, built on all 3 OSes. Record the result as R-001.

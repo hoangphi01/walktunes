@@ -1,0 +1,18 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Signature series (2016). Model names and capacities [VERIFY].
+id = "sony.classic.wm1"
+name = "Sony NW-WM1 series"
+family = "sony.classic"
+tier = 1
+inherits = "sony.classic.base"
+
+[detect]
+usb_product_ids = []                    # [VERIFY]
+
+[[models]]
+name = "NW-WM1A"
+capacity_gb = 128
+
+[[models]]
+name = "NW-WM1Z"
+capacity_gb = 256

@@ -15,8 +15,8 @@
 |---|---|---|
 | Docs system | ✅ Done | 21 docs + README, GPL-3.0 LICENSE |
 | Brand & design language | ✅ Done | Name WalkTunes, logo (`assets/brand/`), Tile design language (ADR-0011). Needs SVG / 1024 px logo before M4 |
-| Cargo workspace | ⬜ Not started | |
-| CI (3 OS) | ⬜ Not started | |
+| Cargo workspace | ✅ Done (2026-11-11) | 21 crates; 36 tests; `xtask layers` + `docs-check` pass |
+| CI (3 OS) | 🟡 Written | `.github/workflows/ci.yml` (macOS ARM64/x64, Linux x64/ARM64, Windows); first run after push |
 | GPUI spike (R-001) | ⬜ Not started | Highest-risk item; do it first |
 | Fixtures tooling | ⬜ Not started | |
 
@@ -26,16 +26,16 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 
 | Service | State | Service | State |
 |---|---|---|---|
-| wt-core | ⬜ | wt-crawler | ⬜ |
-| wt-config | ⬜ | wt-enrich | ⬜ |
-| wt-watch | ⬜ | wt-forge | ⬜ |
-| wt-bus | ⬜ | wt-dock | ⬜ |
+| wt-core | 🟡 skeleton | wt-crawler | ⬜ |
+| wt-config | 🟡 skeleton | wt-enrich | ⬜ |
+| wt-watch | 🟡 skeleton | wt-forge | ⬜ |
+| wt-bus | 🟡 skeleton | wt-dock | 🟡 probe + scoring (fake, sysinfo, macOS diskutil) |
 | wt-queue | ⬜ | wt-sync | ⬜ |
-| wt-i18n | ⬜ | wt-sdk | ⬜ |
+| wt-i18n | ⬜ | wt-sdk | 🟡 skeleton |
 | wt-ledger | ⬜ | wt-kit | ⬜ |
 | wt-vault | ⬜ | wt-console | ⬜ |
-| wt-gate | ⬜ | wt-cli | ⬜ |
-| wt-cache | ⬜ | wt-dsp | ⬜ |
+| wt-gate | ⬜ | wt-cli | 🟡 skeleton |
+| wt-cache | ⬜ | wt-dsp | 🟡 SIMD detection |
 | wt-inspect | ⬜ | | |
 
 ## Device verification
@@ -53,4 +53,5 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 ## Next actions
 1. GPUI spike (M0): font, icons, tiles, virtual list, chart on macOS, Windows and Linux.
 2. DSP spike (M0, R-004): spectrogram speed on NEON vs AVX2, RISC-V scalar build.
-3. Workspace skeleton, CI (x86-64 + ARM64) and the fixture generator.
+3. Probe dump from the real ZX300 (R-003, part 1) to fill PIDs and strings.
+4. Fixture generator (`xtask fixtures`).

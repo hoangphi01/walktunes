@@ -1,0 +1,12 @@
+{
+  "_comment": "Synthetic fixture: the SD card LUN of the same USB device (same serial).",
+  "usb_vid": 1356,
+  "usb_serial": "FIXTURE-ZX300-0001",
+  "usb_product": "WALKMAN",
+  "scsi_vendor": "SONY",
+  "scsi_product": "WALKMAN",
+  "lun": 1,
+  "volume_label": "SD_CARD",
+  "fs_type": "exfat",
+  "capacity": 127800000000
+}

@@ -1,0 +1,15 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Model names from the Sony updater's SWUpdate.xml (R-006).
+id = "sony.classic.zx300"
+name = "Sony NW-ZX300"
+family = "sony.classic"
+tier = 1
+inherits = "sony.classic.base"
+
+[detect]
+usb_product_ids = []                    # [VERIFY] fill from the R-003 probe dump
+
+[[models]]
+name = "NW-ZX300"
+aliases = ["NW-ZX300A"]
+capacity_gb = 64

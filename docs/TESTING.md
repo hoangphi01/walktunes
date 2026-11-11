@@ -73,6 +73,7 @@ fixtures/devices/sony.classic.zx300/
 ```
 
 - Set `WT_FAKE_VOLUMES=fixtures/devices/sony.classic.zx300/internal,…` and `wt-dock` treats these folders as attached volumes. Removing a path from the variable during a test simulates unplugging.
+- Committed virtual devices: `fixtures/devices/sony.classic.zx300/{internal,sd}` (paired, with `.walktunes/device.json`, same USB serial on both LUNs) and `fixtures/devices/sony.classic.a40/internal` (unpaired, 32 GB). Their identity strings are synthetic until R-003. End-to-end tests: `crates/wt-cli/tests/cli.rs`.
 - **Fingerprints:** a `fingerprint.json` next to each virtual volume supplies the probe result (`DeviceFingerprint`), so detection and grouping are tested without hardware. Recorded real outputs (DiskArbitration descriptions, sysfs trees, SetupAPI instance IDs; serials anonymized) live in `fixtures/probe/<os>/` and are parsed by backend unit tests.
 - **Fault injection:** in test builds, `wt-vault` accepts a `FaultPlan` (fail the Nth write, return ENOSPC, disconnect after N bytes, slow I/O) to test errors and resume.
 - **Filesystem rules:** virtual devices apply the profile's `[filesystem]` rules (illegal characters, path length, case-insensitivity) in software, so they behave like FAT/exFAT even on APFS or ext4.
