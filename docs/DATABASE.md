@@ -193,7 +193,7 @@ CREATE TABLE devices (
   model            TEXT,                   -- e.g. "NW-ZX300" (from probe or user)
   usb_vid          INTEGER, usb_pid INTEGER,
   usb_serial       TEXT,                   -- iSerialNumber; groups volumes, re-recognizes after reformat
-  firmware_rev     TEXT,                   -- INQUIRY revision, last seen [VERIFY = firmware version]
+  firmware_rev     TEXT,                   -- from default-capability.xml (INQUIRY revision is NOT firmware, R-003)
   last_seen_at     INTEGER,
   last_generation  INTEGER,                -- manifest generation we last read
   created_at       INTEGER NOT NULL
@@ -202,6 +202,7 @@ CREATE TABLE device_volumes (
   device_id   TEXT NOT NULL REFERENCES devices(id),
   role        TEXT NOT NULL CHECK (role IN ('internal','sd','single')),
   lun         INTEGER,                     -- SCSI LUN of this volume on the USB device
+  storage_type TEXT,                       -- INTERNAL / CARD from default-capability.xml
   volume_uid  TEXT,                        -- FS UUID/serial when available
   label       TEXT,
   capacity    INTEGER, free INTEGER, fs_type TEXT,
@@ -380,7 +381,7 @@ Location: `<volume>/.walktunes/` on **each** volume of a paired device.
   "paired_by_machine": "0193f0aa-…",
   "model": "NW-ZX300",
   "usb_serial": "<iSerialNumber>",
-  "firmware_rev": "<INQUIRY revision at pairing>"
+  "firmware_rev": "2.02"
 }
 ```
 

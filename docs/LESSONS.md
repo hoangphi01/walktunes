@@ -44,3 +44,10 @@ Entries are append-only, numbered `L-001`, `L-002`, …
 - **Why:** research material and project code shared one folder.
 - **Lesson:** analyze vendor binaries statically, **outside** the working tree, and never execute them.
 - **Action:** moved them to `../research/`; `.gitignore` now blocks `/research/`, `*.UPG`, `*StockRevert*`, `*.exe` and `*.dll`; rule added to [SECURITY §7](SECURITY.md#7-licenses-and-supply-chain).
+
+### L-004 — Ask the device before guessing
+- **Date:** 2026-11-11   **Area:** Devices, `wt-dock`
+- **What happened:** the first real probe of the ZX300 failed: the interim macOS code guessed how `diskutil` formats media names, and the docs guessed the SD label (`SD_CARD`) and that the INQUIRY revision is the firmware version. All three guesses were wrong.
+- **Why:** design from static analysis only, before touching hardware.
+- **Lesson:** look for what the device publishes about itself first (`default-capability.xml` here), then OS-level identity, and only then heuristics. Test against a real device as early as possible.
+- **Action:** capability parser + `ioreg` backend; real-device fixtures; R-003 part 1.

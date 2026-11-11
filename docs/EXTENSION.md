@@ -63,14 +63,17 @@ maintainers = ["@hoangphi01"]
 
 [detect]                                 # passive evidence, scored (ADR-0014); see §3.6
 usb_vendor_id    = 0x054c                # Sony; strong
-usb_product_ids  = []                    # [VERIFY] fill from the R-003 probe dump
+usb_product_ids  = [0x0c70]              # R-003 part 1 (mass-storage mode)
 scsi_vendor      = "SONY"                # INQUIRY vendor, confirmed by R-006 (updater checks "SONY    ")
-product_contains = ["WALKMAN"]           # INQUIRY product or USB iProduct  [VERIFY exact string]
-volume_labels    = ["WALKMAN"]           # weak  [VERIFY]
-sd_volume_labels = ["SD_CARD"]           # weak  [VERIFY]
+product_contains = ["WALKMAN"]           # INQUIRY product and USB iProduct are both "WALKMAN" (R-003)
+volume_labels    = ["WALKMAN"]           # internal label (R-003); SD cards keep their own label
 required_dirs    = ["MUSIC"]             # weak
-group_by         = "usb_serial"          # internal + SD = one device; LUN order [VERIFY]
-protected_root_files = ["NW_WM_FW.UPG"]  # firmware update file: never create, modify or delete
+group_by         = "usb_serial"          # internal = LUN 0, SD = LUN 1 (R-003)
+marker_files     = ["default-capability.xml", "DevIcon.fil", "DevLogo.fil"]
+capability_vendor = "Sony"               # default-capability.xml (§3.6)
+capability_class  = "WALKMAN"
+capability_models = ["NW-ZX300Series"]
+protected_root_files = ["NW_WM_FW.UPG", "default-capability.xml", "DevIcon.fil", "DevLogo.fil"]  # never touched
 
 [[models]]                               # model names from the updater's SWUpdate.xml (R-006)
 name        = "NW-ZX300"
@@ -123,6 +126,9 @@ Each `[detect]` rule contributes evidence. The probe sums the weights per profil
 
 | Evidence | Weight |
 |---|---|
+| `default-capability.xml` vendor + class match (`capability_vendor`, `capability_class`) | 45 |
+| `default-capability.xml` model in `capability_models` | 40 (identifies the model) |
+| All `marker_files` present | 10 |
 | `usb_vendor_id` matches | 40 |
 | `scsi_vendor` matches | 25 |
 | `product_contains` matches (INQUIRY product or USB iProduct) | 20 |
@@ -150,6 +156,17 @@ model rule matches, the device is still *recognized*:
 - Once R-003 fills `usb_product_ids`, the PID will identify the series without asking.
 
 Implemented in `crates/wt-dock/src/detect.rs`; the profiles live in `profiles/*.toml`.
+
+### 3.1.3 Device self-description (`default-capability.xml`)
+Classic Walkmans put `default-capability.xml` at the root of **every** volume
+(R-003 part 1). WalkTunes reads it (never writes it) and uses it as:
+- **identity:** vendor, class (`WALKMAN/…`), model series (`NW-ZX300Series`), firmware version;
+- **volume role:** `<storage><type>` is `INTERNAL` or `CARD`, which beats LUN order and labels;
+- **capabilities:** playable formats with maximum sample rate and bit depth, playlist format
+  and extension (`m3u8` written as `.m3u` on the ZX300), lyrics (`LRC`), music folder (`MUSIC`).
+
+When present, profile `[formats]` values are only defaults: the device's own file wins.
+Parser: `crates/wt-dock/src/capability.rs`; fixtures: `fixtures/probe/capability/`.
 
 ### 3.2 Profile inheritance
 Built-in profiles (embedded at compile time):
@@ -194,7 +211,7 @@ must not delete files.
 2. On the device, record: which tracks appear, the artwork shown for each variant, title and diacritics rendering, album grouping, multi-disc order, playlist visibility, lyrics display, and database rebuild time.
 3. Unplug during a sync, re-attach, and resume.
 4. **Probe dump** (read-only) with the device connected and each volume mounted:
-   - WalkTunes: `wtunes device probe --json > probe-<model>.json`
+   - WalkTunes: `wtunes device probe --raw > probe-<model>.json` (serials and UUIDs are redacted by default; `--show-serial` keeps them)
    - macOS: `diskutil info -plist /Volumes/<vol>`, `ioreg -p IOUSB -l -w0`, `system_profiler SPUSBDataType -json`
    - Linux: `udevadm info --query=all --name=/dev/sdX`, `lsusb -v -d 054c:`
    - Windows: `pnputil /enum-devices /connected /class DiskDrive /properties`

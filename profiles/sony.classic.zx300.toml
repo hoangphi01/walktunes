@@ -7,7 +7,8 @@ tier = 1
 inherits = "sony.classic.base"
 
 [detect]
-usb_product_ids = []                    # [VERIFY] fill from the R-003 probe dump
+usb_product_ids = [0x0c70]              # R-003 part 1 (mass-storage mode)
+capability_models = ["NW-ZX300Series"]  # default-capability.xml (R-003 part 1)
 
 [[models]]
 name = "NW-ZX300"

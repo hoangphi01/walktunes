@@ -24,6 +24,8 @@ Terms are listed alphabetically. Service names are listed in
 | **dBFS** | Decibels relative to full scale; 0 dBFS is the loudest possible digital level. Spectrograms show -120…0 dBFS. |
 | **Device** | A paired player. It may expose several *volumes*. Identified by `device_id` in `device.json`. |
 | **Destination / SubIdentification** | Sony's regional variant code for a model (for example `00010000`). Changing the region changes it; WalkTunes treats all destinations of a model as the same model. |
+| **default-capability.xml** | Sony's self-description file at the root of every Walkman volume: model series, firmware, storage type (`INTERNAL`/`CARD`), formats, playlists, lyrics. Read-only for WalkTunes. |
+| **DevIcon.fil / DevLogo.fil** | Icon and logo files Sony places at each volume root. Markers for detection; protected. |
 | **Device file** | A file on a device that is tracked in the device manifest. |
 | **Dry run** | A sync plan shown to the user without executing anything. |
 | **Family match** | Detection that is sure about the device family (for example `sony.classic`) but not yet the exact model. Enough to sync safely; the model is chosen from capacity-ordered candidates. See [EXTENSION §3.1.2](EXTENSION.md#312-family-match-and-model-candidates). |
@@ -76,6 +78,6 @@ Terms are listed alphabetically. Service names are listed in
 | **`[VERIFY]`** | A doc marker for a hardware claim that has not yet been tested on a real device. |
 | **Virtual device** | A folder that acts as a mounted device in tests. See [TESTING §4](TESTING.md#4-virtual-devices). |
 | **UX rule** | A numbered design decision rule (`UX-01`…) derived from a UX law. See [STYLE_RULE Part C](STYLE_RULE.md#part-c--ux-laws-decision-rules). |
-| **SCSI INQUIRY** | Standard identity data (vendor, product, revision) a USB drive reports; the OS caches it. Sony players report vendor `SONY`. |
+| **SCSI INQUIRY** | Standard identity data (vendor, product, revision) a USB drive reports; the OS caches it. The ZX300 reports `SONY` / `WALKMAN` / `1.00` (the revision is not the firmware version). |
 | **VID / PID** | USB Vendor ID and Product ID. Sony's VID is `0x054C`; the PID identifies the model and mode. |
 | **Volume** | One mounted file system (for example, a Walkman's internal storage or its SD card). |

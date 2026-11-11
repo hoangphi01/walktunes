@@ -58,6 +58,10 @@ which is included in the packages.
 
 WalkTunes only *reads* the identity your computer already sees. It never sends special commands to the player and never touches its firmware files.
 
+Classic Walkmans describe themselves in a small file (`default-capability.xml`) at the root of each storage. WalkTunes reads it to know the exact model, firmware version and which formats the player can play. Please do not delete it, nor `DevIcon.fil` and `DevLogo.fil`.
+
+On the NW-ZX300 the internal storage uses FAT32, which cannot hold files of 4 GB or more. WalkTunes puts such files (long DSD or hi-res tracks) on the microSD card instead, or tells you.
+
 If WalkTunes says the player is connected in **MTP mode**, change the player's USB connection setting to mass storage (USB drive) and reconnect.
 
 WalkTunes creates a folder named `.walktunes` on the player. **Please do not

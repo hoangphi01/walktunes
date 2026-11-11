@@ -1,0 +1,335 @@
+[
+  {
+    "mount_point": "/Volumes/Untitled",
+    "bsd_name": "disk5s1",
+    "parent_disk": "disk5",
+    "usb_vid": 1356,
+    "usb_pid": 3184,
+    "usb_serial": "REDACTED…1955",
+    "usb_manufacturer": "Sony",
+    "usb_product": "WALKMAN",
+    "usb_bcd_device": 256,
+    "usb_location_id": 1048576,
+    "usb_speed_mbps": 480,
+    "scsi_vendor": "SONY",
+    "scsi_product": "WALKMAN",
+    "scsi_revision": "1.00",
+    "lun": 1,
+    "volume_label": "Untitled",
+    "volume_uuid": "REDACTED…4393",
+    "fs_type": "exfat",
+    "fs_name": "ExFAT",
+    "capacity": 124906504192,
+    "free": 72955723776,
+    "writable": true,
+    "root_markers": [
+      "DevIcon.fil",
+      "DevLogo.fil",
+      "MUSIC",
+      "default-capability.xml"
+    ],
+    "os_litter": [
+      ".Spotlight-V100",
+      ".fseventsd",
+      ".Trashes"
+    ],
+    "capability": {
+      "version": "3.0",
+      "class": "WALKMAN/Standard/AudioOnly",
+      "model": "NW-ZX300Series",
+      "marketing_name": "WALKMAN NW-ZX300Series",
+      "vendor": "Sony Corporation",
+      "firmware_version": "2.02",
+      "storage_type": "CARD",
+      "fw_update_supported": false,
+      "display": [
+        800,
+        480
+      ],
+      "audio": [
+        {
+          "id": "MP3",
+          "extension": "mp3",
+          "codec": null,
+          "max_sample_rate": null,
+          "max_bits": null
+        },
+        {
+          "id": "MP4",
+          "extension": "mp4",
+          "codec": null,
+          "max_sample_rate": null,
+          "max_bits": null
+        },
+        {
+          "id": "3GPP",
+          "extension": "3gp",
+          "codec": null,
+          "max_sample_rate": null,
+          "max_bits": null
+        },
+        {
+          "id": "M4A",
+          "extension": "m4a",
+          "codec": null,
+          "max_sample_rate": null,
+          "max_bits": null
+        },
+        {
+          "id": "Windows Media",
+          "extension": "wma",
+          "codec": null,
+          "max_sample_rate": null,
+          "max_bits": null
+        },
+        {
+          "id": "WAV",
+          "extension": "wav",
+          "codec": null,
+          "max_sample_rate": 384000,
+          "max_bits": 32
+        },
+        {
+          "id": "FLAC",
+          "extension": "flac",
+          "codec": null,
+          "max_sample_rate": 384000,
+          "max_bits": 24
+        },
+        {
+          "id": "AIFF1",
+          "extension": "aif",
+          "codec": null,
+          "max_sample_rate": 384000,
+          "max_bits": 32
+        },
+        {
+          "id": "AIFF2",
+          "extension": "aiff",
+          "codec": null,
+          "max_sample_rate": 384000,
+          "max_bits": 32
+        },
+        {
+          "id": "ALAC1",
+          "extension": "mp4",
+          "codec": "alac",
+          "max_sample_rate": 384000,
+          "max_bits": 32
+        },
+        {
+          "id": "ALAC2",
+          "extension": "m4a",
+          "codec": "alac",
+          "max_sample_rate": 384000,
+          "max_bits": 32
+        },
+        {
+          "id": "DSD-1",
+          "extension": "dsf",
+          "codec": null,
+          "max_sample_rate": 11289600,
+          "max_bits": 1
+        },
+        {
+          "id": "DSD-2",
+          "extension": "dff",
+          "codec": null,
+          "max_sample_rate": 11289600,
+          "max_bits": 1
+        },
+        {
+          "id": "APE",
+          "extension": "ape",
+          "codec": null,
+          "max_sample_rate": 192000,
+          "max_bits": 24
+        }
+      ],
+      "playlists": [
+        {
+          "id": "m3u8",
+          "extension": "m3u"
+        }
+      ],
+      "lyrics": [
+        {
+          "id": "LRC",
+          "extension": "LRC"
+        }
+      ],
+      "music_path": "MUSIC",
+      "drm_marlin": false,
+      "sensme": true
+    },
+    "paired": null,
+    "source": "sysinfo+diskutil+ioreg"
+  },
+  {
+    "mount_point": "/Volumes/WALKMAN",
+    "bsd_name": "disk4",
+    "parent_disk": "disk4",
+    "usb_vid": 1356,
+    "usb_pid": 3184,
+    "usb_serial": "REDACTED…1955",
+    "usb_manufacturer": "Sony",
+    "usb_product": "WALKMAN",
+    "usb_bcd_device": 256,
+    "usb_location_id": 1048576,
+    "usb_speed_mbps": 480,
+    "scsi_vendor": "SONY",
+    "scsi_product": "WALKMAN",
+    "scsi_revision": "1.00",
+    "lun": 0,
+    "volume_label": "WALKMAN",
+    "volume_uuid": "REDACTED…0D48",
+    "fs_type": "msdos",
+    "fs_name": "MS-DOS FAT32",
+    "capacity": 60055650304,
+    "free": 54062841856,
+    "writable": true,
+    "root_markers": [
+      "DevIcon.fil",
+      "DevLogo.fil",
+      "MUSIC",
+      "default-capability.xml"
+    ],
+    "os_litter": [
+      ".Spotlight-V100",
+      ".fseventsd",
+      ".Trashes",
+      "System Volume Information"
+    ],
+    "capability": {
+      "version": "3.0",
+      "class": "WALKMAN/Standard/AudioOnly",
+      "model": "NW-ZX300Series",
+      "marketing_name": "WALKMAN NW-ZX300Series",
+      "vendor": "Sony Corporation",
+      "firmware_version": "2.02",
+      "storage_type": "INTERNAL",
+      "fw_update_supported": true,
+      "display": [
+        800,
+        480
+      ],
+      "audio": [
+        {
+          "id": "MP3",
+          "extension": "mp3",
+          "codec": null,
+          "max_sample_rate": null,
+          "max_bits": null
+        },
+        {
+          "id": "MP4",
+          "extension": "mp4",
+          "codec": null,
+          "max_sample_rate": null,
+          "max_bits": null
+        },
+        {
+          "id": "3GPP",
+          "extension": "3gp",
+          "codec": null,
+          "max_sample_rate": null,
+          "max_bits": null
+        },
+        {
+          "id": "M4A",
+          "extension": "m4a",
+          "codec": null,
+          "max_sample_rate": null,
+          "max_bits": null
+        },
+        {
+          "id": "Windows Media",
+          "extension": "wma",
+          "codec": null,
+          "max_sample_rate": null,
+          "max_bits": null
+        },
+        {
+          "id": "WAV",
+          "extension": "wav",
+          "codec": null,
+          "max_sample_rate": 384000,
+          "max_bits": 32
+        },
+        {
+          "id": "FLAC",
+          "extension": "flac",
+          "codec": null,
+          "max_sample_rate": 384000,
+          "max_bits": 24
+        },
+        {
+          "id": "AIFF1",
+          "extension": "aif",
+          "codec": null,
+          "max_sample_rate": 384000,
+          "max_bits": 32
+        },
+        {
+          "id": "AIFF2",
+          "extension": "aiff",
+          "codec": null,
+          "max_sample_rate": 384000,
+          "max_bits": 32
+        },
+        {
+          "id": "ALAC1",
+          "extension": "mp4",
+          "codec": "alac",
+          "max_sample_rate": 384000,
+          "max_bits": 32
+        },
+        {
+          "id": "ALAC2",
+          "extension": "m4a",
+          "codec": "alac",
+          "max_sample_rate": 384000,
+          "max_bits": 32
+        },
+        {
+          "id": "DSD-1",
+          "extension": "dsf",
+          "codec": null,
+          "max_sample_rate": 11289600,
+          "max_bits": 1
+        },
+        {
+          "id": "DSD-2",
+          "extension": "dff",
+          "codec": null,
+          "max_sample_rate": 11289600,
+          "max_bits": 1
+        },
+        {
+          "id": "APE",
+          "extension": "ape",
+          "codec": null,
+          "max_sample_rate": 192000,
+          "max_bits": 24
+        }
+      ],
+      "playlists": [
+        {
+          "id": "m3u8",
+          "extension": "m3u"
+        }
+      ],
+      "lyrics": [
+        {
+          "id": "LRC",
+          "extension": "LRC"
+        }
+      ],
+      "music_path": "MUSIC",
+      "drm_marlin": false,
+      "sensme": true
+    },
+    "paired": null,
+    "source": "sysinfo+diskutil+ioreg"
+  }
+]

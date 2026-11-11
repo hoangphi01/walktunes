@@ -5,23 +5,28 @@
 //! - [`DeviceFingerprint`]: the passive identity of a mounted volume (ADR-0014).
 //! - [`Profile`]s embedded from `profiles/*.toml` (ZX300, A30/A40/A50, WM1, generic).
 //! - [`detect`]: scoring per `docs/EXTENSION.md` §3.1.1, grouping volumes into devices.
+//! - [`DeviceCapability`]: Sony's `default-capability.xml` self-description (R-003).
 //! - Probe backends: [`FakeBackend`] (tests, `WT_FAKE_VOLUMES`), [`SysinfoBackend`]
-//!   (all OSes, weak evidence) and, on macOS, an interim `diskutil` enrichment.
+//!   (all OSes) with, on macOS, `ioreg` (USB/SCSI identity) and `diskutil` (volume facts).
 //!
 //! The probe is **read-only**: it never sends SCSI or USB commands and never writes
 //! to a device (SECURITY S-10). Pairing and manifests arrive in M2.
 
 mod backend;
+mod capability;
 mod detect;
 mod error;
 mod fingerprint;
+mod ioreg;
 mod paired;
 mod profile;
 
 pub use backend::{FakeBackend, ProbeBackend, SysinfoBackend, default_backend};
-pub use detect::{DetectedDevice, DetectedVolume, MatchStatus, VolumeRole, detect};
+pub use capability::{AudioFormatCap, CAPABILITY_FILE, DeviceCapability, FileFormatCap};
+pub use detect::{DetectedDevice, DetectedVolume, MatchStatus, UsbSummary, VolumeRole, detect};
 pub use error::DockError;
-pub use fingerprint::DeviceFingerprint;
+pub use fingerprint::{DeviceFingerprint, OS_LITTER};
+pub use ioreg::UsbMedia;
 pub use paired::PairedInfo;
 pub use profile::{DetectRules, ModelSpec, Profile, ProfileSet};
 

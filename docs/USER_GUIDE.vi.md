@@ -59,6 +59,10 @@ Tính năng chuyển định dạng (đổi những định dạng máy không p
 
 WalkTunes chỉ *đọc* thông tin nhận dạng mà máy tính vốn đã thấy. Ứng dụng không bao giờ gửi lệnh đặc biệt tới máy nghe nhạc và không bao giờ đụng vào file firmware của máy.
 
+Walkman classic tự mô tả chính nó trong một file nhỏ (`default-capability.xml`) ở thư mục gốc của mỗi bộ nhớ. WalkTunes đọc file này để biết chính xác model, phiên bản firmware và các định dạng máy phát được. Vui lòng đừng xoá file này, cũng như `DevIcon.fil` và `DevLogo.fil`.
+
+Trên NW-ZX300, bộ nhớ trong dùng FAT32 nên không chứa được file từ 4 GB trở lên. WalkTunes sẽ đặt những file như vậy (bài DSD hoặc hi-res dài) vào thẻ microSD, hoặc báo cho bạn biết.
+
 Nếu WalkTunes báo máy đang kết nối ở **chế độ MTP**, hãy đổi chế độ kết nối USB của máy nghe nhạc sang dạng ổ đĩa (mass storage) rồi cắm lại.
 
 WalkTunes tạo một thư mục tên `.walktunes` trên máy nghe nhạc. **Vui lòng đừng

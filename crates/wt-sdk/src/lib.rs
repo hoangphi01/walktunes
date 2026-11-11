@@ -14,7 +14,10 @@ use wt_core::{ErrorCode, MachineId, Recovery, Severity, WtError};
 use wt_dock::{DockError, Profile, ProfileSet};
 use wt_dsp::SimdPath;
 
-pub use wt_dock::{DetectedDevice, DetectedVolume, MatchStatus, VolumeRole};
+pub use wt_dock::{
+    DetectedDevice, DetectedVolume, DeviceCapability, DeviceFingerprint, MatchStatus, UsbSummary,
+    VolumeRole,
+};
 
 /// Errors surfaced by the SDK; each wraps a service error and keeps its code.
 #[derive(Debug, Error)]
@@ -141,9 +144,7 @@ impl Devices<'_> {
     /// Publishes `DeviceAttached` for every non-generic device found.
     #[must_use]
     pub fn probe(&self) -> Vec<DetectedDevice> {
-        let backend = wt_dock::default_backend(&self.sdk.profiles);
-        tracing::debug!(backend = backend.name(), "probing volumes");
-        let fingerprints = backend.probe();
+        let fingerprints = self.fingerprints();
         let devices = wt_dock::detect(&fingerprints, &self.sdk.profiles);
         for d in devices.iter().filter(|d| d.status != MatchStatus::Generic) {
             self.sdk.bus.publish(&WtEvent::DeviceAttached {
@@ -152,5 +153,13 @@ impl Devices<'_> {
             });
         }
         devices
+    }
+
+    /// The raw passive fingerprints of mounted volumes (FR-056 probe dump).
+    #[must_use]
+    pub fn fingerprints(&self) -> Vec<DeviceFingerprint> {
+        let backend = wt_dock::default_backend(&self.sdk.profiles);
+        tracing::debug!(backend = backend.name(), "probing volumes");
+        backend.probe()
     }
 }

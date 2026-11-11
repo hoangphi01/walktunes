@@ -29,6 +29,7 @@ pub fn marker_names(profiles: &ProfileSet) -> Vec<String> {
             d.required_dirs
                 .iter()
                 .chain(d.protected_root_files.iter())
+                .chain(d.marker_files.iter())
                 .flatten()
                 .cloned()
                 .chain(p.layout.music_dir.clone())
@@ -158,6 +159,8 @@ impl ProbeBackend for SysinfoBackend {
                 return Vec::new();
             }
         };
+        #[cfg(target_os = "macos")]
+        let usb_media = macos::usb_media();
         disks
             .iter()
             .filter(|d| looks_external(d.mount_point(), d.is_removable()))
@@ -168,11 +171,13 @@ impl ProbeBackend for SysinfoBackend {
                     volume_label: (!label.is_empty()).then_some(label),
                     fs_type: Some(d.file_system().to_string_lossy().into_owned()),
                     capacity: d.total_space(),
+                    free: Some(d.available_space()),
+                    writable: Some(!d.is_read_only()),
                     source: "sysinfo".into(),
                     ..DeviceFingerprint::default()
                 };
                 #[cfg(target_os = "macos")]
-                macos::enrich(&mut fp);
+                macos::enrich(&mut fp, &usb_media);
                 fp.read_root_markers(&names);
                 fp
             })
@@ -182,58 +187,93 @@ impl ProbeBackend for SysinfoBackend {
 
 #[cfg(target_os = "macos")]
 mod macos {
-    //! Interim macOS enrichment: `diskutil info -plist <mount>` (read-only, unprivileged).
-    //! Replaced in M2 by DiskArbitration + IOKit, which also yield VID/PID/serial (ADR-0014).
+    //! Interim macOS backend (read-only, unprivileged subprocesses):
+    //! - `ioreg -a -r -l -c IOUSBHostDevice` once per probe: USB + SCSI identity per BSD name;
+    //! - `diskutil info -plist <mount>` per volume: BSD name, UUID, file system, sizes.
+    //!
+    //! Replaced in M2 by native DiskArbitration + IOKit calls (ADR-0014). Same data.
 
+    use std::collections::BTreeMap;
     use std::process::Command;
 
     use crate::fingerprint::DeviceFingerprint;
+    use crate::ioreg::{self, UsbMedia};
 
-    pub(super) fn enrich(fp: &mut DeviceFingerprint) {
-        let Ok(out) = Command::new("/usr/sbin/diskutil")
-            .arg("info")
-            .arg("-plist")
-            .arg(&fp.mount_point)
-            .output()
-        else {
+    fn plist_of(cmd: &str, args: &[&std::ffi::OsStr]) -> Option<plist::Value> {
+        let out = Command::new(cmd).args(args).output().ok()?;
+        if !out.status.success() {
+            return None;
+        }
+        plist::Value::from_reader(std::io::Cursor::new(out.stdout)).ok()
+    }
+
+    pub(super) fn usb_media() -> BTreeMap<String, UsbMedia> {
+        let args: Vec<&std::ffi::OsStr> = ["-a", "-r", "-l", "-w0", "-c", "IOUSBHostDevice"]
+            .iter()
+            .map(std::ffi::OsStr::new)
+            .collect();
+        match plist_of("/usr/sbin/ioreg", &args) {
+            Some(v) => ioreg::parse(&v),
+            None => {
+                tracing::info!(code = "WT-DOCK-0007", "ioreg unavailable; no USB identity");
+                BTreeMap::new()
+            }
+        }
+    }
+
+    pub(super) fn enrich(fp: &mut DeviceFingerprint, usb: &BTreeMap<String, UsbMedia>) {
+        let args = [
+            std::ffi::OsStr::new("info"),
+            std::ffi::OsStr::new("-plist"),
+            fp.mount_point.as_os_str(),
+        ];
+        let Some(plist::Value::Dictionary(d)) = plist_of("/usr/sbin/diskutil", &args) else {
             tracing::info!(code = "WT-DOCK-0007", mount = %fp.mount_point.display(), "diskutil unavailable");
             return;
         };
-        if !out.status.success() {
-            return;
-        }
-        let Ok(plist::Value::Dictionary(dict)) =
-            plist::Value::from_reader(std::io::Cursor::new(out.stdout))
-        else {
-            return;
-        };
         let text = |k: &str| {
-            dict.get(k)
+            d.get(k)
                 .and_then(plist::Value::as_string)
+                .map(str::trim)
+                .filter(|v| !v.is_empty())
                 .map(str::to_owned)
         };
+        let num = |k: &str| d.get(k).and_then(plist::Value::as_unsigned_integer);
+        fp.bsd_name = text("DeviceIdentifier");
+        fp.parent_disk = text("ParentWholeDisk");
+        fp.volume_uuid = text("VolumeUUID").or(fp.volume_uuid.take());
+        fp.fs_type = text("FilesystemType").or(fp.fs_type.take());
+        fp.fs_name = text("FilesystemName");
+        fp.volume_label = text("VolumeName").or(fp.volume_label.take());
+        if let Some(total) = num("TotalSize") {
+            fp.capacity = total;
+        }
+        fp.free = num("FreeSpace").or(fp.free);
+        if let Some(w) = d.get("WritableVolume").and_then(plist::Value::as_boolean) {
+            fp.writable = Some(w);
+        }
+        fp.source = "sysinfo+diskutil".into();
 
-        // Only USB-attached media are candidates for SCSI identity.
-        let bus = text("BusProtocol").unwrap_or_default();
-        if let Some(uuid) = text("VolumeUUID") {
-            fp.volume_uuid = Some(uuid);
-        }
-        if let Some(fs) = text("FilesystemType") {
-            fp.fs_type = Some(fs);
-        }
-        if bus.eq_ignore_ascii_case("USB") {
-            // MediaName is "<INQUIRY vendor> <INQUIRY product> Media" on macOS  [VERIFY on the ZX300].
-            if let Some(media) = text("MediaName") {
-                let media = media.trim_end_matches(" Media").trim().to_owned();
-                let mut parts = media.splitn(2, ' ');
-                fp.scsi_vendor = parts.next().map(str::to_owned).filter(|s| !s.is_empty());
-                fp.scsi_product = parts
-                    .next()
-                    .map(str::trim)
-                    .map(str::to_owned)
-                    .filter(|s| !s.is_empty());
-            }
-            fp.source = "sysinfo+diskutil".into();
+        // USB/SCSI identity: the partition first, then its whole disk.
+        let media = fp
+            .bsd_name
+            .as_ref()
+            .and_then(|b| usb.get(b))
+            .or_else(|| fp.parent_disk.as_ref().and_then(|b| usb.get(b)));
+        if let Some(m) = media {
+            fp.usb_vid = m.usb_vid;
+            fp.usb_pid = m.usb_pid;
+            fp.usb_serial.clone_from(&m.usb_serial);
+            fp.usb_manufacturer.clone_from(&m.usb_manufacturer);
+            fp.usb_product.clone_from(&m.usb_product);
+            fp.usb_bcd_device = m.usb_bcd_device;
+            fp.usb_location_id = m.usb_location_id;
+            fp.usb_speed_mbps = m.usb_speed_mbps;
+            fp.scsi_vendor.clone_from(&m.scsi_vendor);
+            fp.scsi_product.clone_from(&m.scsi_product);
+            fp.scsi_revision.clone_from(&m.scsi_revision);
+            fp.lun = m.lun;
+            fp.source = "sysinfo+diskutil+ioreg".into();
         }
     }
 }
@@ -245,7 +285,13 @@ mod tests {
     #[test]
     fn markers_include_music_protected_file_and_walktunes_dir() {
         let names = marker_names(&ProfileSet::builtin().unwrap());
-        for n in ["MUSIC", "NW_WM_FW.UPG", ".walktunes"] {
+        for n in [
+            "MUSIC",
+            "NW_WM_FW.UPG",
+            ".walktunes",
+            "default-capability.xml",
+            "DevIcon.fil",
+        ] {
             assert!(names.iter().any(|x| x == n), "{n}");
         }
     }

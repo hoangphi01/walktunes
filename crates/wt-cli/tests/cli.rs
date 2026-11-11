@@ -49,6 +49,9 @@ fn paired_zx300_with_sd_card_is_one_device() {
     assert_eq!(d["profile_id"], "sony.classic.zx300");
     assert_eq!(d["model"], "NW-ZX300");
     assert_eq!(d["display_name"], "My ZX300");
+    assert_eq!(d["firmware_version"], "2.02");
+    assert_eq!(d["model_series"], "NW-ZX300Series");
+    assert_eq!(d["usb"]["pid"], 3184);
     let roles: Vec<&str> = d["volumes"]
         .as_array()
         .unwrap()
@@ -108,6 +111,22 @@ fn profiles_list_includes_zx_and_a_series() {
     ] {
         assert!(text.contains(id), "{id}");
     }
+}
+
+#[test]
+fn raw_dump_redacts_serials_by_default() {
+    let zx = fixtures().join("sony.classic.zx300");
+    let data = tempfile::tempdir().unwrap();
+    let out = wtunes(&data)
+        .env("WT_FAKE_VOLUMES", zx.join("internal").display().to_string())
+        .args(["device", "probe", "--raw"])
+        .output()
+        .unwrap();
+    let text = String::from_utf8_lossy(&out.stdout);
+    assert!(out.status.success());
+    assert!(!text.contains("FIXTURE-ZX300-0001"));
+    assert!(text.contains("REDACTED"));
+    assert!(text.contains("NW-ZX300Series"));
 }
 
 #[test]

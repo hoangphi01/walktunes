@@ -48,7 +48,7 @@ breaks them.
 | S-6 | Destructive plans need a reviewed dry run. The CLI requires `--yes` or an interactive confirmation; the GUI requires a confirm dialog listing the removal count and size. | `wt-sync`, front ends |
 | S-7 | Device removals in a run are capped (default: 30% of manifest entries, or more than 500 files). Exceeding the cap needs a second confirmation. | `wt-sync` |
 | S-8 | Tag writes to originals create an in-Ledger undo record (old tag values) and are undoable for 30 days. | Vault + Ledger |
-| S-10 | Device probing is **passive and read-only**: no vendor or raw SCSI commands, no USB control transfers, no admin rights. Files listed in a profile's `protected_root_files` (for example `NW_WM_FW.UPG`) and anything at a volume root outside `.walktunes/` and the profile's music / playlist / lyrics folders are never created, modified or deleted. | `wt-dock` API has no command channel; Vault scope check |
+| S-10 | Device probing is **passive and read-only**: no vendor or raw SCSI commands, no USB control transfers, no admin rights. Files listed in a profile's `protected_root_files` (for Sony: `NW_WM_FW.UPG`, `default-capability.xml`, `DevIcon.fil`, `DevLogo.fil`) and anything at a volume root outside `.walktunes/` and the profile's music / playlist / lyrics folders are never created, modified or deleted. | `wt-dock` API has no command channel; Vault scope check |
 | S-9 | Any safety error (`Abort` class, [ERROR_CONTROL §4](ERROR_CONTROL.md#4-recovery-classes)) stops the job immediately. | Queue |
 
 ## 4. File-system confinement

@@ -57,6 +57,12 @@ enum DeviceCommand {
         /// Also list volumes that do not look like a music player.
         #[arg(long)]
         all: bool,
+        /// Dump the raw fingerprints of every volume (for support and community profiles).
+        #[arg(long)]
+        raw: bool,
+        /// With --raw: keep USB serials and volume UUIDs (redacted by default).
+        #[arg(long, requires = "raw")]
+        show_serial: bool,
     },
 }
 
@@ -84,8 +90,20 @@ fn run(cli: Cli) -> Result<(), SdkError> {
             command: ProfilesCommand::List,
         } => profiles(&sdk),
         Command::Device {
-            command: DeviceCommand::Probe { json, all },
-        } => probe(&sdk, json, all),
+            command:
+                DeviceCommand::Probe {
+                    json,
+                    all,
+                    raw,
+                    show_serial,
+                },
+        } => {
+            if raw {
+                raw_dump(&sdk, show_serial);
+            } else {
+                probe(&sdk, json, all);
+            }
+        }
     }
     Ok(())
 }
@@ -132,6 +150,30 @@ fn profiles(sdk: &Sdk) {
     }
 }
 
+fn raw_dump(sdk: &Sdk, show_serial: bool) {
+    let fps: Vec<_> = sdk
+        .devices()
+        .fingerprints()
+        .into_iter()
+        .map(|fp| if show_serial { fp } else { fp.redacted() })
+        .collect();
+    print_json(&fps);
+}
+
+fn gb(bytes: u64) -> String {
+    #[allow(clippy::cast_precision_loss)]
+    let v = bytes as f64 / 1e9;
+    format!("{v:.1} GB")
+}
+
+fn khz(hz: u32) -> String {
+    if hz >= 1_000_000 {
+        format!("{:.1} MHz", f64::from(hz) / 1e6)
+    } else {
+        format!("{} kHz", f64::from(hz) / 1e3)
+    }
+}
+
 fn probe(sdk: &Sdk, json: bool, all: bool) {
     let devices: Vec<_> = sdk
         .devices()
@@ -156,10 +198,35 @@ fn probe(sdk: &Sdk, json: bool, all: bool) {
             "● {}  [{} · score {} · {}]",
             d.display_name, status, d.score, d.profile_id
         );
-        if let Some(m) = &d.model {
-            println!("  model      {m}");
-        } else if !d.candidates.is_empty() {
-            println!("  model?     {}", d.candidates.join(", "));
+        match (&d.model, &d.model_series) {
+            (Some(m), Some(s)) => println!("  model      {m}  (device reports {s})"),
+            (Some(m), None) => println!("  model      {m}"),
+            (None, _) if !d.candidates.is_empty() => {
+                println!("  model?     {}", d.candidates.join(", "))
+            }
+            _ => {}
+        }
+        if let Some(fw) = &d.firmware_version {
+            println!("  firmware   {fw}");
+        }
+        if let Some(u) = &d.usb {
+            let id = match (u.vid, u.pid) {
+                (Some(v), Some(p)) => format!("{v:04x}:{p:04x}"),
+                _ => "?".into(),
+            };
+            let speed = u
+                .speed_mbps
+                .map(|s| format!(" · {s} Mbit/s"))
+                .unwrap_or_default();
+            let names = [u.manufacturer.as_deref(), u.product.as_deref()]
+                .into_iter()
+                .flatten()
+                .collect::<Vec<_>>()
+                .join(" ");
+            println!("  usb        {id} {names}{speed}");
+            if let Some([v, p, r]) = &u.scsi {
+                println!("  scsi       {v} / {p} / rev {r}");
+            }
         }
         for v in &d.volumes {
             let role = match v.role {
@@ -167,16 +234,74 @@ fn probe(sdk: &Sdk, json: bool, all: bool) {
                 VolumeRole::Sd => "sd",
                 VolumeRole::Single => "volume",
             };
+            let fs = v.fs_name.as_deref().or(v.fs_type.as_deref()).unwrap_or("?");
+            let free = v
+                .free
+                .map(|f| format!(", {} free", gb(f)))
+                .unwrap_or_default();
+            let label = v
+                .label
+                .as_deref()
+                .map(|l| format!(" \"{l}\""))
+                .unwrap_or_default();
             println!(
-                "  {:<10} {}  ({}, {:.1} GB)",
-                role,
+                "  {role:<10} {}{label}  ({fs}, {}{free})",
                 v.mount_point.display(),
-                v.fs_type.as_deref().unwrap_or("?"),
-                v.capacity as f64 / 1e9
+                gb(v.capacity)
             );
+        }
+        if let Some(cap) = &d.capability {
+            let formats: Vec<String> = {
+                let mut seen = Vec::new();
+                for f in &cap.audio {
+                    let lim = match (f.max_sample_rate, f.max_bits) {
+                        (Some(r), Some(b)) if b > 1 => format!(" ≤{}/{}-bit", khz(r), b),
+                        (Some(r), _) => format!(" ≤{}", khz(r)),
+                        _ => String::new(),
+                    };
+                    let item = format!("{}{lim}", f.extension);
+                    if !seen.iter().any(|s: &String| {
+                        s.starts_with(&format!("{} ", f.extension)) || *s == f.extension
+                    }) {
+                        seen.push(item);
+                    }
+                }
+                seen
+            };
+            println!("  formats    {}", formats.join(", "));
+            let pl: Vec<String> = cap
+                .playlists
+                .iter()
+                .map(|p| format!("{} (.{})", p.id, p.extension))
+                .collect();
+            let ly: Vec<String> = cap
+                .lyrics
+                .iter()
+                .map(|l| format!(".{}", l.extension))
+                .collect();
+            println!(
+                "  playlists  {}   lyrics {}   music folder {}",
+                if pl.is_empty() {
+                    "-".into()
+                } else {
+                    pl.join(", ")
+                },
+                if ly.is_empty() {
+                    "-".into()
+                } else {
+                    ly.join(", ")
+                },
+                cap.music_path.as_deref().unwrap_or("?")
+            );
+            if let Some((w, h)) = cap.display {
+                println!("  display    {w}×{h}");
+            }
         }
         if !d.protected_root_files.is_empty() {
             println!("  protected  {}", d.protected_root_files.join(", "));
+        }
+        for n in &d.notes {
+            println!("  note       {n}");
         }
         if !d.evidence.is_empty() {
             println!("  evidence   {}", d.evidence.join("; "));

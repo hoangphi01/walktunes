@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Device Speed</key>
+		<integer>2</integer>
+		<key>IOObjectClass</key>
+		<string>IOUSBHostDevice</string>
+		<key>IORegistryEntryChildren</key>
+		<array>
+			<dict>
+				<key>IOObjectClass</key>
+				<string>AppleUSBHostCompositeDevice</string>
+				<key>IORegistryEntryName</key>
+				<string>AppleUSBHostCompositeDevice</string>
+			</dict>
+			<dict>
+				<key>IOObjectClass</key>
+				<string>IOUSBHostInterface</string>
+				<key>IORegistryEntryChildren</key>
+				<array>
+					<dict>
+						<key>IOObjectClass</key>
+						<string>IOUSBMassStorageInterfaceNub</string>
+						<key>IORegistryEntryChildren</key>
+						<array>
+							<dict>
+								<key>IOObjectClass</key>
+								<string>IOUSBMassStorageDriverNub</string>
+								<key>IORegistryEntryChildren</key>
+								<array>
+									<dict>
+										<key>IOObjectClass</key>
+										<string>IOUSBMassStorageDriver</string>
+										<key>IORegistryEntryChildren</key>
+										<array>
+											<dict>
+												<key>IOObjectClass</key>
+												<string>IOSCSILogicalUnitNub</string>
+												<key>IORegistryEntryChildren</key>
+												<array>
+													<dict>
+														<key>IOObjectClass</key>
+														<string>IOSCSIPeripheralDeviceType00</string>
+														<key>IORegistryEntryChildren</key>
+														<array>
+															<dict>
+																<key>IOObjectClass</key>
+																<string>IOBlockStorageServices</string>
+																<key>IORegistryEntryChildren</key>
+																<array>
+																	<dict>
+																		<key>IOObjectClass</key>
+																		<string>IOBlockStorageDriver</string>
+																		<key>IORegistryEntryChildren</key>
+																		<array>
+																			<dict>
+																				<key>BSD Name</key>
+																				<string>disk4</string>
+																				<key>Content</key>
+																				<string></string>
+																				<key>Ejectable</key>
+																				<true/>
+																				<key>IOObjectClass</key>
+																				<string>IOMedia</string>
+																				<key>IORegistryEntryName</key>
+																				<string>SONY WALKMAN Media</string>
+																				<key>Leaf</key>
+																				<true/>
+																				<key>Removable</key>
+																				<true/>
+																				<key>Size</key>
+																				<integer>60070297600</integer>
+																				<key>Whole</key>
+																				<true/>
+																				<key>Writable</key>
+																				<true/>
+																			</dict>
+																		</array>
+																		<key>IORegistryEntryName</key>
+																		<string>IOBlockStorageDriver</string>
+																	</dict>
+																</array>
+																<key>IORegistryEntryName</key>
+																<string>IOBlockStorageServices</string>
+															</dict>
+														</array>
+														<key>IORegistryEntryName</key>
+														<string>IOSCSIPeripheralDeviceType00</string>
+													</dict>
+												</array>
+												<key>IORegistryEntryName</key>
+												<string>IOSCSILogicalUnitNub</string>
+												<key>Product Identification</key>
+												<string>WALKMAN</string>
+												<key>Product Revision Level</key>
+												<string>1.00</string>
+												<key>SCSI Logical Unit Number</key>
+												<integer>0</integer>
+												<key>Vendor Identification</key>
+												<string>SONY</string>
+											</dict>
+											<dict>
+												<key>IOObjectClass</key>
+												<string>IOSCSILogicalUnitNub</string>
+												<key>IORegistryEntryChildren</key>
+												<array>
+													<dict>
+														<key>IOObjectClass</key>
+														<string>IOSCSIPeripheralDeviceType00</string>
+														<key>IORegistryEntryChildren</key>
+														<array>
+															<dict>
+																<key>IOObjectClass</key>
+																<string>IOBlockStorageServices</string>
+																<key>IORegistryEntryChildren</key>
+																<array>
+																	<dict>
+																		<key>IOObjectClass</key>
+																		<string>IOBlockStorageDriver</string>
+																		<key>IORegistryEntryChildren</key>
+																		<array>
+																			<dict>
+																				<key>BSD Name</key>
+																				<string>disk5</string>
+																				<key>Content</key>
+																				<string>FDisk_partition_scheme</string>
+																				<key>Ejectable</key>
+																				<true/>
+																				<key>IOObjectClass</key>
+																				<string>IOMedia</string>
+																				<key>IORegistryEntryChildren</key>
+																				<array>
+																					<dict>
+																						<key>IOObjectClass</key>
+																						<string>IOFDiskPartitionScheme</string>
+																						<key>IORegistryEntryChildren</key>
+																						<array>
+																							<dict>
+																								<key>BSD Name</key>
+																								<string>disk5s1</string>
+																								<key>Content</key>
+																								<string>Windows_NTFS</string>
+																								<key>Ejectable</key>
+																								<true/>
+																								<key>IOObjectClass</key>
+																								<string>IOMedia</string>
+																								<key>IORegistryEntryName</key>
+																								<string>Untitled 1</string>
+																								<key>Leaf</key>
+																								<true/>
+																								<key>Removable</key>
+																								<true/>
+																								<key>Size</key>
+																								<integer>124923150336</integer>
+																								<key>Whole</key>
+																								<false/>
+																								<key>Writable</key>
+																								<true/>
+																							</dict>
+																						</array>
+																						<key>IORegistryEntryName</key>
+																						<string>IOFDiskPartitionScheme</string>
+																					</dict>
+																				</array>
+																				<key>IORegistryEntryName</key>
+																				<string>SONY WALKMAN Media</string>
+																				<key>Leaf</key>
+																				<false/>
+																				<key>Removable</key>
+																				<true/>
+																				<key>Size</key>
+																				<integer>124939927552</integer>
+																				<key>Whole</key>
+																				<true/>
+																				<key>Writable</key>
+																				<true/>
+																			</dict>
+																		</array>
+																		<key>IORegistryEntryName</key>
+																		<string>IOBlockStorageDriver</string>
+																	</dict>
+																</array>
+																<key>IORegistryEntryName</key>
+																<string>IOBlockStorageServices</string>
+															</dict>
+														</array>
+														<key>IORegistryEntryName</key>
+														<string>IOSCSIPeripheralDeviceType00</string>
+													</dict>
+												</array>
+												<key>IORegistryEntryName</key>
+												<string>IOSCSILogicalUnitNub</string>
+												<key>Product Identification</key>
+												<string>WALKMAN</string>
+												<key>Product Revision Level</key>
+												<string>1.00</string>
+												<key>SCSI Logical Unit Number</key>
+												<integer>1</integer>
+												<key>Vendor Identification</key>
+												<string>SONY</string>
+											</dict>
+										</array>
+										<key>IORegistryEntryName</key>
+										<string>IOUSBMassStorageDriver</string>
+									</dict>
+								</array>
+								<key>IORegistryEntryName</key>
+								<string>IOUSBMassStorageDriverNub</string>
+								<key>USB Product Name</key>
+								<string>WALKMAN</string>
+								<key>idProduct</key>
+								<integer>3184</integer>
+								<key>idVendor</key>
+								<integer>1356</integer>
+							</dict>
+						</array>
+						<key>IORegistryEntryName</key>
+						<string>IOUSBMassStorageInterfaceNub</string>
+						<key>USB Product Name</key>
+						<string>WALKMAN</string>
+						<key>bcdDevice</key>
+						<integer>256</integer>
+						<key>idProduct</key>
+						<integer>3184</integer>
+						<key>idVendor</key>
+						<integer>1356</integer>
+						<key>locationID</key>
+						<integer>1048576</integer>
+					</dict>
+				</array>
+				<key>IORegistryEntryName</key>
+				<string>Mass Storage</string>
+				<key>USB Product Name</key>
+				<string>WALKMAN</string>
+				<key>USB Serial Number</key>
+				<string>REDACTED-ZX300-01</string>
+				<key>USB Vendor Name</key>
+				<string>Sony</string>
+				<key>bcdDevice</key>
+				<integer>256</integer>
+				<key>idProduct</key>
+				<integer>3184</integer>
+				<key>idVendor</key>
+				<integer>1356</integer>
+				<key>locationID</key>
+				<integer>1048576</integer>
+			</dict>
+		</array>
+		<key>IORegistryEntryName</key>
+		<string>WALKMAN</string>
+		<key>USB Product Name</key>
+		<string>WALKMAN</string>
+		<key>USB Serial Number</key>
+		<string>REDACTED-ZX300-01</string>
+		<key>USB Vendor Name</key>
+		<string>Sony</string>
+		<key>UsbLinkSpeed</key>
+		<integer>480000000</integer>
+		<key>bcdDevice</key>
+		<integer>256</integer>
+		<key>idProduct</key>
+		<integer>3184</integer>
+		<key>idVendor</key>
+		<integer>1356</integer>
+		<key>locationID</key>
+		<integer>1048576</integer>
+	</dict>
+</array>
+</plist>

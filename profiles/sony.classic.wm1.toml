@@ -8,6 +8,7 @@ inherits = "sony.classic.base"
 
 [detect]
 usb_product_ids = []                    # [VERIFY]
+capability_models = ["NW-WM1Series"]  # [VERIFY] by analogy with "NW-ZX300Series"
 
 [[models]]
 name = "NW-WM1A"

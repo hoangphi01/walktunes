@@ -62,6 +62,14 @@ pub struct DetectRules {
     pub group_by: Option<String>,
     /// Root files WalkTunes must never create, modify or delete.
     pub protected_root_files: Option<Vec<String>>,
+    /// Files the vendor places at the volume root (e.g. `DevIcon.fil`).
+    pub marker_files: Option<Vec<String>>,
+    /// Expected vendor in `default-capability.xml` (prefix match, e.g. `Sony`).
+    pub capability_vendor: Option<String>,
+    /// Expected device class prefix in `default-capability.xml` (e.g. `WALKMAN`).
+    pub capability_class: Option<String>,
+    /// Model series names in `default-capability.xml` that identify this profile.
+    pub capability_models: Option<Vec<String>>,
 }
 
 /// One model within a profile (a series may have several capacities).
@@ -267,7 +275,11 @@ fn merge_detect(base: &mut DetectRules, over: &DetectRules) {
         sd_volume_labels,
         required_dirs,
         group_by,
-        protected_root_files
+        protected_root_files,
+        marker_files,
+        capability_vendor,
+        capability_class,
+        capability_models
     );
 }
 

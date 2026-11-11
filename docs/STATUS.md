@@ -42,7 +42,7 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 
 | Device | Profile | Verified on hardware |
 |---|---|---|
-| Sony NW-ZX300 | `sony.classic.zx300` | ⬜ (the maintainer owns one) |
+| Sony NW-ZX300 | `sony.classic.zx300` | 🟡 Probe verified (R-003 part 1, fw 2.02): recognized with score 220; playlists/artwork pending |
 
 ## Research done
 - R-006 (2026-11-11): static analysis of the Sony updater shows how Walkmans are identified. This feeds ADR-0014 (passive device probe). Next step: a probe dump from the real ZX300 (R-003).
@@ -53,5 +53,5 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 ## Next actions
 1. GPUI spike (M0): font, icons, tiles, virtual list, chart on macOS, Windows and Linux.
 2. DSP spike (M0, R-004): spectrogram speed on NEON vs AVX2, RISC-V scalar build.
-3. Probe dump from the real ZX300 (R-003, part 1) to fill PIDs and strings.
+3. ZX300 part 2 (R-003): playlist location, artwork limits, DB rebuild time.
 4. Fixture generator (`xtask fixtures`).
