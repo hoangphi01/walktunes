@@ -38,4 +38,9 @@ Entries are append-only, numbered `L-001`, `L-002`, …
 
 ## Entries
 
-_No entries yet._
+### L-003 — Keep vendor firmware out of the repository
+- **Date:** 2026-11-11   **Area:** Repository, security
+- **What happened:** about 1.3 GB of Walkman firmware packages (Windows executables containing copyrighted Sony firmware) were downloaded into the repository folder, which was not gitignored.
+- **Why:** research material and project code shared one folder.
+- **Lesson:** analyze vendor binaries statically, **outside** the working tree, and never execute them.
+- **Action:** moved them to `../research/`; `.gitignore` now blocks `/research/`, `*.UPG`, `*StockRevert*`, `*.exe` and `*.dll`; rule added to [SECURITY §7](SECURITY.md#7-licenses-and-supply-chain).

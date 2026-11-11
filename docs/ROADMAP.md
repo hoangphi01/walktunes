@@ -45,10 +45,11 @@ flowchart LR
 ## M2 — Dock & Push Sync (CLI)
 **Goal:** reliably put music on a ZX300.
 - [ ] Volume discovery and pairing; profile `sony.classic.zx300`
+- [ ] Device probe: passive fingerprint with macOS / Windows / Linux backends, scoring, volume grouping by USB serial, `wtunes device probe --json` (FR-040, FR-056, FR-057; ADR-0014)
 - [ ] Device manifest read/write with atomic semantics
 - [ ] `SyncPlan` and executor (Add/Replace/Remove), checkpoints, resume
 - [ ] `wtunes device list|pair`, `wtunes sync plan|run`
-- [ ] Real-device test session on the ZX300: answer PRD Q2 and Q3, and remove the related `[VERIFY]` markers — R-003
+- [ ] Real-device test session on the ZX300 (probe dump first): answer PRD Q2, Q3 and Q5, and remove the related `[VERIFY]` markers — R-003
 - [ ] Unplug-during-sync test passes (NFR-007)
 
 ## M3 — Health & Forge

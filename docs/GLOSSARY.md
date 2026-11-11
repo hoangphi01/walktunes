@@ -23,6 +23,7 @@ Terms are listed alphabetically. Service names are listed in
 | **content_hash** | blake3 hash of a whole file. It changes when tags change. |
 | **dBFS** | Decibels relative to full scale; 0 dBFS is the loudest possible digital level. Spectrograms show -120…0 dBFS. |
 | **Device** | A paired player. It may expose several *volumes*. Identified by `device_id` in `device.json`. |
+| **Destination / SubIdentification** | Sony's regional variant code for a model (for example `00010000`). Changing the region changes it; WalkTunes treats all destinations of a model as the same model. |
 | **Device file** | A file on a device that is tracked in the device manifest. |
 | **Dry run** | A sync plan shown to the user without executing anything. |
 | **Fake lossless** | A lossless file (for example FLAC) made from a lossy source (MP3, AAC, a YouTube rip). It is bigger but no better than the source. Detected by its lowpass cutoff. |
@@ -33,13 +34,17 @@ Terms are listed alphabetically. Service names are listed in
 | **Identity ladder** | The ordered evidence used to decide that two files are the same track (MBID → audio_hash → fingerprint → heuristic). |
 | **Inbox root** | A root where files pulled from a device land on this machine. |
 | **Ledger** | The local SQLite catalog (`wt-ledger`). |
+| **iSerialNumber / iProduct** | USB string descriptors with the device's serial number and product name. WalkTunes uses the serial to group volumes and recognize a player again. |
 | **Live tile** | A tile on the Start page that shows current information (for example, free space on a device) and may occasionally "peek" to a second face. |
 | **Lowpass cutoff** | The frequency above which a lossy encoder removes all content, visible as a sharp edge in the spectrogram. |
 | **Lossless / lossy** | Lossless (FLAC, ALAC, WAV, AIFF, DSD) keeps all audio data. Lossy (MP3, AAC, Opus, Vorbis) discards some. |
 | **LRC** | A lyrics file with timestamps (`[mm:ss.xx] line`), stored next to the track with the same base name. |
+| **LUN** | Logical Unit Number: one USB mass-storage device can expose several drives (for example internal storage and SD card) as LUN 0, 1, … |
 | **Machine** | One computer running WalkTunes. It has a `MachineId` (UUID) created at first run. |
 | **Manifest** | `/.walktunes/manifest.json` on each device volume: the record of what WalkTunes put there. See [DATABASE §6](DATABASE.md#6-device-manifest). |
 | **MBID** | MusicBrainz Identifier (UUID) for a recording, release or artist. |
+| **NVP** | Non-volatile parameters stored in a Sony player (model ID, destination…). WalkTunes never reads or writes them directly. |
+| **NW_WM_FW.UPG** | Sony's encrypted firmware update file, placed at the volume root by the official updater. Protected: WalkTunes never touches it. |
 | **MSC / Mass storage** | USB Mass Storage Class. The device mounts like a USB drive. Tier 1–3 devices use it. |
 | **MTP** | Media Transfer Protocol. Devices that do not mount as drives. **Tier 4**, after 1.0. |
 | **NEON** | The SIMD unit present on every ARMv8-A (ARM64) CPU, including Apple Silicon. |
@@ -70,4 +75,6 @@ Terms are listed alphabetically. Service names are listed in
 | **`[VERIFY]`** | A doc marker for a hardware claim that has not yet been tested on a real device. |
 | **Virtual device** | A folder that acts as a mounted device in tests. See [TESTING §4](TESTING.md#4-virtual-devices). |
 | **UX rule** | A numbered design decision rule (`UX-01`…) derived from a UX law. See [STYLE_RULE Part C](STYLE_RULE.md#part-c--ux-laws-decision-rules). |
+| **SCSI INQUIRY** | Standard identity data (vendor, product, revision) a USB drive reports; the OS caches it. Sony players report vendor `SONY`. |
+| **VID / PID** | USB Vendor ID and Product ID. Sony's VID is `0x054C`; the PID identifies the model and mode. |
 | **Volume** | One mounted file system (for example, a Walkman's internal storage or its SD card). |

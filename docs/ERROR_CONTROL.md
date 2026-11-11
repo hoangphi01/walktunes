@@ -124,6 +124,9 @@ Codes are never reused. Retire a code by marking it ~~struck through~~.
 | WT-DOCK-0004 | Error | UserAction | Manifest unreadable; previous generation also unreadable; offer Rebuild |
 | WT-DOCK-0005 | Fatal | Abort | Manifest generation went backwards (**safety**) |
 | WT-DOCK-0006 | Warning | UserAction | Eject failed (files in use) |
+| WT-DOCK-0007 | Info | — | Platform probe unavailable for this volume; detection fell back to volume heuristics |
+| WT-DOCK-0008 | Warning | UserAction | `device.json` belongs to a different USB serial (copied or restored); confirm before trusting the manifest |
+| WT-DOCK-0009 | Info | UserAction | A Sony device is connected in MTP mode only; switch its USB mode to mass storage |
 | WT-SYNC-0001 | Error | UserAction | Plan is stale (device or library changed since planning); re-plan |
 | WT-SYNC-0002 | Error | UserAction | Insufficient free space |
 | WT-SYNC-0003 | Fatal | Abort | Device disconnected during sync; resume on reattach |

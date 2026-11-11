@@ -190,6 +190,10 @@ CREATE TABLE devices (
   id               TEXT PRIMARY KEY,       -- DeviceId (also in device.json)
   name             TEXT NOT NULL,          -- "My ZX300"
   profile_id       TEXT NOT NULL,          -- e.g. "sony.classic.zx300"
+  model            TEXT,                   -- e.g. "NW-ZX300" (from probe or user)
+  usb_vid          INTEGER, usb_pid INTEGER,
+  usb_serial       TEXT,                   -- iSerialNumber; groups volumes, re-recognizes after reformat
+  firmware_rev     TEXT,                   -- INQUIRY revision, last seen [VERIFY = firmware version]
   last_seen_at     INTEGER,
   last_generation  INTEGER,                -- manifest generation we last read
   created_at       INTEGER NOT NULL
@@ -197,6 +201,7 @@ CREATE TABLE devices (
 CREATE TABLE device_volumes (
   device_id   TEXT NOT NULL REFERENCES devices(id),
   role        TEXT NOT NULL CHECK (role IN ('internal','sd','single')),
+  lun         INTEGER,                     -- SCSI LUN of this volume on the USB device
   volume_uid  TEXT,                        -- FS UUID/serial when available
   label       TEXT,
   capacity    INTEGER, free INTEGER, fs_type TEXT,
@@ -372,9 +377,16 @@ Location: `<volume>/.walktunes/` on **each** volume of a paired device.
   "profile_id": "sony.classic.zx300",
   "volume_role": "internal",
   "paired_at": "2026-11-09T06:00:00Z",
-  "paired_by_machine": "0193f0aa-…"
+  "paired_by_machine": "0193f0aa-…",
+  "model": "NW-ZX300",
+  "usb_serial": "<iSerialNumber>",
+  "firmware_rev": "<INQUIRY revision at pairing>"
 }
 ```
+
+If `usb_serial` in `device.json` differs from the probed USB serial, the
+file was copied from another device or restored onto a different player:
+raise `WT-DOCK-0008` and ask the user before trusting the manifest.
 
 ### 6.2 `manifest.json`
 

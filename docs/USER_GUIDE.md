@@ -52,9 +52,13 @@ which is included in the packages.
 4. Optional: **Online services** (*Settings → Online services*). Each one is off until you turn it on: MusicBrainz (tags), Cover Art Archive (artwork), AcoustID (identifying untagged songs) and LRCLIB (lyrics).
 
 ## 5. Pair your player
-1. Connect the player. WalkTunes shows *"New device found"*.
-2. Confirm the model (for example, *Sony NW-ZX300*). If you have a microSD card, WalkTunes shows it as part of the same device.
-3. Give it a name, such as "My ZX300".
+1. Connect the player with its USB cable. WalkTunes **recognizes a Sony Walkman by itself** within a few seconds and shows *"Sony NW-ZX300 connected"*. The microSD card, if any, is shown as part of the same player.
+2. The first time, give it a name, such as "My ZX300", and confirm. For players WalkTunes cannot identify for sure, it suggests the closest model and you choose.
+3. From then on, the player is recognized automatically on every computer with WalkTunes.
+
+WalkTunes only *reads* the identity your computer already sees. It never sends special commands to the player and never touches its firmware files.
+
+If WalkTunes says the player is connected in **MTP mode**, change the player's USB connection setting to mass storage (USB drive) and reconnect.
 
 WalkTunes creates a folder named `.walktunes` on the player. **Please do not
 delete it.** It is how your computers know what is on the player.

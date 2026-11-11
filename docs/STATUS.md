@@ -44,6 +44,9 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 |---|---|---|
 | Sony NW-ZX300 | `sony.classic.zx300` | ⬜ (the maintainer owns one) |
 
+## Research done
+- R-006 (2026-11-11): static analysis of the Sony updater shows how Walkmans are identified. This feeds ADR-0014 (passive device probe). Next step: a probe dump from the real ZX300 (R-003).
+
 ## Blockers / decisions needed
 - None. (PRD Q1 resolved: the product is named **WalkTunes**, 2026-11-09.)
 

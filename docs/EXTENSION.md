@@ -57,12 +57,17 @@ tier        = 1
 inherits    = "sony.classic.base"        # shared Classic Walkman defaults
 maintainers = ["@hoangphi01"]
 
-[detect]                                 # heuristics only suggest; the user confirms
-volume_labels   = ["WALKMAN"]            # [VERIFY]
-sd_volume_labels = ["SD_CARD"]          # [VERIFY]
-required_dirs   = ["MUSIC"]
-marker_files    = []                     # [VERIFY] any Sony-specific files at volume root
-usb_ids         = [{ vid = 0x054c, pid = "TBD" }]   # [VERIFY]; informational in v1
+[detect]                                 # passive evidence, scored (ADR-0014); see §3.6
+usb_vendor_id    = 0x054c                # Sony; strong
+usb_product_ids  = []                    # [VERIFY] fill from the R-003 probe dump
+scsi_vendor      = "SONY"                # INQUIRY vendor, confirmed by R-006 (updater checks "SONY    ")
+product_contains = ["WALKMAN"]           # INQUIRY product or USB iProduct  [VERIFY exact string]
+model_names      = ["NW-ZX300", "NW-ZX300A"]   # from the updater's SWUpdate.xml (R-006)
+volume_labels    = ["WALKMAN"]           # weak  [VERIFY]
+sd_volume_labels = ["SD_CARD"]           # weak  [VERIFY]
+required_dirs    = ["MUSIC"]             # weak
+group_by         = "usb_serial"          # internal + SD = one device; LUN order [VERIFY]
+protected_root_files = ["NW_WM_FW.UPG"]  # firmware update file: never create, modify or delete
 
 [layout]
 music_dir       = "MUSIC"
@@ -105,6 +110,25 @@ by     = []                              # ["R-003"]
 firmware = []                            # e.g. ["2.03"]
 ```
 
+### 3.1.1 Detection scoring
+Each `[detect]` rule contributes evidence. The probe sums the weights per profile:
+
+| Evidence | Weight |
+|---|---|
+| `usb_vendor_id` matches | 40 |
+| `scsi_vendor` matches | 25 |
+| `product_contains` matches (INQUIRY product or USB iProduct) | 20 |
+| `usb_product_ids` contains the PID | 30 (identifies the model) |
+| `model_names` string found in iProduct / INQUIRY product | 30 (identifies the model) |
+| Volume label matches | 5 |
+| `required_dirs` present | 5 |
+| A `device.json` on the volume names this profile | 100 (paired) |
+
+- **≥ 85** → recognized automatically (FR-040). The user only confirms the name on first pairing.
+- **50–84** → suggested. The pairing dialog preselects this profile, and the user confirms.
+- **< 50** → generic. The user picks a profile, or `generic.msc`.
+- Within a family (for example `sony.classic.*`), the model-identifying rules decide. If none matches, the family's models are offered with the best guess first.
+
 ### 3.2 Profile inheritance
 - `sony.classic.base`: shared defaults for Tier 1.
 - `generic.msc`: the Tier-3 baseline. Every field is user-editable in the pairing dialog (music folder, formats, artwork size, write order, filename charset, `8.3` names).
@@ -135,7 +159,14 @@ must not delete files.
 1. Pair, then sync the fixture album set `fixtures/hwtest/` (all formats, multi-disc, Vietnamese titles, long names, artwork variants: baseline/progressive, 300/600/1000/1500 px, PNG).
 2. On the device, record: which tracks appear, the artwork shown for each variant, title and diacritics rendering, album grouping, multi-disc order, playlist visibility, lyrics display, and database rebuild time.
 3. Unplug during a sync, re-attach, and resume.
-4. Write R-entry, update the profile values, and remove `[VERIFY]` markers.
+4. **Probe dump** (read-only) with the device connected and each volume mounted:
+   - WalkTunes: `wtunes device probe --json > probe-<model>.json`
+   - macOS: `diskutil info -plist /Volumes/<vol>`, `ioreg -p IOUSB -l -w0`, `system_profiler SPUSBDataType -json`
+   - Linux: `udevadm info --query=all --name=/dev/sdX`, `lsusb -v -d 054c:`
+   - Windows: `pnputil /enum-devices /connected /class DiskDrive /properties`
+
+   Remove serial numbers before sharing a dump publicly.
+5. Write R-entry, update the profile values (`usb_product_ids`, `product_contains`, labels, LUN order), and remove `[VERIFY]` markers.
 
 ---
 

@@ -23,6 +23,7 @@ assets to protect, in priority order:
 | Threat | Example | Control |
 |---|---|---|
 | **Our own bug destroys files** | A wrong diff removes a user's album | §3 rules, ops log, trash, safety errors |
+| Altering device state through low-level commands | A vendor SCSI command rewrites the model or region (NVP) | Never sent: passive probing only (S-10, ADR-0014) |
 | Malicious or corrupted device manifest | `path: "../../Users/me/Documents"` | §4 path confinement |
 | Hostile files in the library | A crafted tag, image or audio stream crashes a parser or exhausts memory | Fuzzing of parsers and audio decoding entry points (TESTING), a panic boundary per job, decode and analysis limits (§4) |
 | Network eavesdropping or tampering | Fake provider responses | TLS only (rustls); responses treated as untrusted proposals |
@@ -47,6 +48,7 @@ breaks them.
 | S-6 | Destructive plans need a reviewed dry run. The CLI requires `--yes` or an interactive confirmation; the GUI requires a confirm dialog listing the removal count and size. | `wt-sync`, front ends |
 | S-7 | Device removals in a run are capped (default: 30% of manifest entries, or more than 500 files). Exceeding the cap needs a second confirmation. | `wt-sync` |
 | S-8 | Tag writes to originals create an in-Ledger undo record (old tag values) and are undoable for 30 days. | Vault + Ledger |
+| S-10 | Device probing is **passive and read-only**: no vendor or raw SCSI commands, no USB control transfers, no admin rights. Files listed in a profile's `protected_root_files` (for example `NW_WM_FW.UPG`) and anything at a volume root outside `.walktunes/` and the profile's music / playlist / lyrics folders are never created, modified or deleted. | `wt-dock` API has no command channel; Vault scope check |
 | S-9 | Any safety error (`Abort` class, [ERROR_CONTROL §4](ERROR_CONTROL.md#4-recovery-classes)) stops the job immediately. | Queue |
 
 ## 4. File-system confinement
@@ -96,6 +98,7 @@ breaks them.
 
 - `deny.toml` allow-list: MIT, Apache-2.0, Apache-2.0 WITH LLVM-exception, BSD-2/3-Clause, ISC, Zlib, MPL-2.0, Unicode-3.0, CC0-1.0, OFL-1.1, GPL-3.0-or-later, LGPL-2.1+ (sidecar only).
 - CI runs `cargo deny check` (licenses, bans, advisories, sources) and `cargo audit` on every PR and every night.
+- **Vendor firmware and copyrighted binaries are never committed** (no `.UPG`, `.exe`, `.dll`, firmware images). Research copies live outside the repository; `.gitignore` guards against accidents (L-003).
 - A new dependency needs a reason in its PR, a license check, and a maintenance check (recent release, more than one maintainer if possible).
 - `THIRD_PARTY_NOTICES.md` is generated at release (`cargo about`).
 

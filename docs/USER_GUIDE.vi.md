@@ -53,9 +53,13 @@ Tính năng chuyển định dạng (đổi những định dạng máy không p
 4. Tuỳ chọn: **Dịch vụ trực tuyến** (*Cài đặt → Dịch vụ trực tuyến*). Mỗi dịch vụ đều tắt cho đến khi bạn bật: MusicBrainz (tag), Cover Art Archive (ảnh bìa), AcoustID (nhận diện bài không có tag) và LRCLIB (lời bài hát).
 
 ## 5. Ghép đôi máy nghe nhạc
-1. Cắm máy nghe nhạc vào. WalkTunes hiện thông báo *"Tìm thấy thiết bị mới"*.
-2. Xác nhận đúng dòng máy (ví dụ *Sony NW-ZX300*). Nếu có thẻ microSD, WalkTunes coi thẻ là một phần của cùng thiết bị.
-3. Đặt tên cho máy, ví dụ "ZX300 của tôi".
+1. Cắm máy nghe nhạc bằng cáp USB. Chỉ sau vài giây, WalkTunes **tự nhận ra đó là Sony Walkman** và hiện thông báo *"Đã kết nối Sony NW-ZX300"*. Nếu máy có thẻ microSD, thẻ được hiển thị là một phần của cùng máy.
+2. Lần đầu tiên, hãy đặt tên cho máy, ví dụ "ZX300 của tôi", rồi xác nhận. Với những máy WalkTunes chưa nhận diện chắc chắn, ứng dụng sẽ gợi ý dòng máy gần nhất để bạn chọn.
+3. Từ đó trở đi, máy được nhận diện tự động trên mọi máy tính có cài WalkTunes.
+
+WalkTunes chỉ *đọc* thông tin nhận dạng mà máy tính vốn đã thấy. Ứng dụng không bao giờ gửi lệnh đặc biệt tới máy nghe nhạc và không bao giờ đụng vào file firmware của máy.
+
+Nếu WalkTunes báo máy đang kết nối ở **chế độ MTP**, hãy đổi chế độ kết nối USB của máy nghe nhạc sang dạng ổ đĩa (mass storage) rồi cắm lại.
 
 WalkTunes tạo một thư mục tên `.walktunes` trên máy nghe nhạc. **Vui lòng đừng
 xoá thư mục này.** Nhờ nó mà các máy tính của bạn biết trên máy nghe nhạc

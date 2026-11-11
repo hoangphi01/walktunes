@@ -3,3 +3,10 @@
 /fixtures/media/
 /fixtures/large/
 *.bak-v*
+
+# Vendor firmware / binaries must never be committed (SECURITY §7, L-003)
+/research/
+*.UPG
+*StockRevert*
+*.exe
+*.dll

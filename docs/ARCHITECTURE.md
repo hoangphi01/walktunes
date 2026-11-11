@@ -152,7 +152,20 @@ and what it must never do.
 - **Rule:** never modifies originals. Output always goes to a staging folder in Vault.
 
 ### 3.13 `wt-dock` — IoT Core
-- **Owns:** volume discovery (polling mounted volumes plus OS notifications where available), **pairing** (writing `/.walktunes/device.json`), matching a volume to a `DeviceProfile`, multi-volume devices (internal storage + SD card), and reading and writing the device manifest ([DATABASE §6](DATABASE.md#6-device-manifest)).
+- **Owns:** volume discovery (polling mounted volumes plus OS notifications where available), the **device probe**, **pairing** (writing `/.walktunes/device.json`), matching a volume to a `DeviceProfile`, multi-volume devices (internal storage + SD card), and reading and writing the device manifest ([DATABASE §6](DATABASE.md#6-device-manifest)).
+- **Device probe (passive, read-only, unprivileged):** for each mounted volume it builds a `DeviceFingerprint`, using a small backend per OS (§8):
+
+  ```rust
+  pub struct DeviceFingerprint {
+      pub usb_vid: Option<u16>, pub usb_pid: Option<u16>,
+      pub usb_serial: Option<String>, pub usb_manufacturer: Option<String>, pub usb_product: Option<String>,
+      pub scsi_vendor: Option<String>, pub scsi_product: Option<String>, pub scsi_revision: Option<String>,
+      pub lun: Option<u8>, pub volume_label: Option<String>, pub volume_uuid: Option<String>,
+      pub fs_type: Option<String>, pub capacity: u64, pub root_markers: Vec<String>,
+  }
+  ```
+
+  Profiles score the fingerprint ([EXTENSION §3.1](EXTENSION.md#31-profile-file-format)). Volumes that share a `usb_serial` are grouped into one device. `nusb::list_devices()` cross-checks the USB strings. The probe **never** sends SCSI or USB control commands of its own ([ADR-0014](#adr-0014-passive-hardware-fingerprinting-never-send-vendor-scsi-commands)).
 - **Profiles:** data files (`profiles/*.toml`) plus an optional Rust hook. See [EXTENSION.md](EXTENSION.md).
 
 ### 3.14 `wt-sync` — DataSync
@@ -322,6 +335,7 @@ walktunes/
 | Topic | macOS | Windows | Linux |
 |---|---|---|---|
 | Volume discovery | `/Volumes/*` + DiskArbitration events (later) | Drive letters + `WM_DEVICECHANGE` (later) | `/proc/self/mountinfo` (`/media`, `/run/media`) + udev (later) |
+| Volume → USB identity (probe) | DiskArbitration `DADiskCopyDescription` (DeviceVendor / Model / Revision, Protocol, VolumeUUID) + IORegistry parent `IOUSBHostDevice` (idVendor, idProduct, USB Serial Number, USB Product Name) | `IOCTL_STORAGE_GET_DEVICE_NUMBER` → SetupDi `GUID_DEVINTERFACE_DISK` → `USBSTOR\DISK&VEN_…&PROD_…&REV_…\<serial>&<lun>` → `CM_Get_Parent` → `USB\VID_…&PID_…` | `/proc/self/mountinfo` → `/sys/dev/block/M:m` → `device/{vendor,model,rev}` + USB ancestor `{idVendor,idProduct,manufacturer,product,serial}` |
 | Safe eject | `diskutil eject` | `CM_Request_Device_Eject` | `udisksctl unmount/power-off` |
 | Hidden metadata on device | `._*` AppleDouble files must be avoided or cleaned | — | — |
 | ffmpeg | bundled in the `.app` or Homebrew | bundled `ffmpeg.exe` | system package or bundled in the AppImage |
@@ -385,3 +399,6 @@ change one, write a new ADR that supersedes it.
 
 #### ADR-0013 Native performance first, multi-architecture SIMD
 *2026-11-09 · Accepted.* **Context:** quality and performance are the project's top priority. Audio analysis is CPU-heavy, and users run Apple Silicon, x86-64 PCs, ARM64 Windows/Linux machines and, in future, RISC-V boards. **Decision:** (1) native compiled app only, never a web stack; (2) algorithms before micro-optimizations (sparse seeking for previews, single-pass full checks, streaming STFT); (3) use proven SIMD libraries (`rustfft`) and portable SIMD with **runtime dispatch** for our own kernels; (4) release builds never use `target-cpu=native`: x86-64 baseline is `x86-64-v2`, ARM64 relies on NEON, RISC-V builds are scalar `RV64GC` until RVV intrinsics are stable; (5) `wt-dsp` may use a bounded `rayon` pool, which is an explicit exception to ADR-0004's "queue workers only" model for pure compute; (6) analysis results must agree across architectures within documented tolerances. **Consequences:** CI must build and test on x86-64 and ARM64, plus cross-built RISC-V under QEMU; every DSP change carries a benchmark (RESULT).
+
+#### ADR-0014 Passive hardware fingerprinting; never send vendor SCSI commands
+*2026-11-11 · Accepted. Amends ADR-0010.* **Context:** static analysis of Sony's updater (R-006) shows how Sony identifies a Walkman: INQUIRY vendor `SONY`, USB iProduct / iSerialNumber, and a vendor `REQUEST DEVINFO` command. Rockbox research shows that Sony vendor commands can also *write* device NVP (model ID, destination). **Decision:** `wt-dock` identifies devices **only from data the OS already exposes** (cached INQUIRY strings, USB descriptors, volume metadata), through per-OS backends that need no admin rights. It never issues vendor SCSI commands, raw SCSI pass-through or USB control transfers. Auto-detection becomes the normal path: a confident match is recognized within 3 s and the user only confirms the name. Pairing (`device.json`) remains the final authority, and it now records the USB serial, the model and the firmware revision. **Consequences:** three small platform backends (macOS IOKit/DiskArbitration, Windows SetupAPI, Linux sysfs). The model may stay ambiguous until the PID / iProduct table is filled from real devices (R-003); the pairing dialog then preselects the best guess. Zero risk of altering device state.
