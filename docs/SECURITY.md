@@ -112,8 +112,9 @@ and credited in the changelog unless you prefer otherwise.
 
 ## 9. Content sources
 
-- WalkTunes contains **no code that downloads audio from streaming or video platforms**, and no integration with ripping services ([ADR-0016](ARCHITECTURE.md#adr-0016-discover--get-legal-sources-and-inbox-no-built-in-ripping-proposed), PRD Q6). It links to legal sources and imports files the user provides.
-- Imported files are treated as untrusted input (§2, §4) and inspected before sync.
+- The WalkTunes core contains **no code that downloads audio from streaming or video platforms** ([ADR-0016](ARCHITECTURE.md#adr-0016-discover--get-through-source-plugins-accepted)). Downloading happens in **Source plugins** (EXTENSION §8).
+- The repository ships only first-party plugins for legal sources and the external-tool adapter. Third-party plugins are installed explicitly by the user and are their responsibility; the plugin UI says so (FR-108).
+- **Plugins are untrusted code:** they run as child processes with the user's rights, without device or library access, write only into a staging folder imported by Vault, have a time and size limit per fetch, and can be disabled at any time. Their output is untrusted input (§2, §4) and is inspected before sync.
 
 ## 10. Trademarks
 

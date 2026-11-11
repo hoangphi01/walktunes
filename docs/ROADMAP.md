@@ -143,7 +143,8 @@ the Mac as a backup. Every device write is listed in `ops_log`.
 ## M8 — Discover & on the go *(after 1.0, vision)*
 **Goal:** find music in the app and have it reach the player with no manual steps.
 - [ ] Unified search: library + MusicBrainz "missing albums" (FR-100)
-- [ ] Legal "Get" links (FR-101); Q6 decided by the maintainer (ADR-0016)
+- [ ] Source plugin protocol + host (FR-106), trust UI (FR-108)
+- [ ] First-party plugins: legal sources + store links (FR-101); external-tool adapter for user-installed tools such as yt-dlp (FR-107)
 - [ ] Inbox watch folder with automatic tagging and inspection (FR-102)
 - [ ] On-the-go updates through the Helper (FR-103), wish list (FR-104)
 - [ ] Mobile companion feasibility study (FR-105)

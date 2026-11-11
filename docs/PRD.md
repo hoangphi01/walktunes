@@ -68,7 +68,7 @@ power of the CPU it runs on (x86-64, ARM64 and, later, RISC-V).
 
 ### 4.2 Out of scope (v1.0)
 - Audio playback beyond a short preview. WalkTunes is a manager, not a player.
-- Streaming services, or downloading from YouTube or other platforms. (A legal "Discover & Get" flow is planned after 1.0; see §10 and Q6.)
+- Streaming services, or downloading from YouTube or other platforms, in 1.0. (After 1.0, "Discover & Get" with Source plugins is planned; see §10 and Q6.)
 - Firmware flashing or modification, including custom firmware. WalkTunes only touches the user-data volumes.
 - Cloud accounts or a server. Machine-to-machine networking.
 - MTP devices (planned after 1.0; see [ROADMAP](ROADMAP.md)).
@@ -201,7 +201,7 @@ Priority: **P0** = required for 1.0, **P1** = should be in 1.0,
 | Q3 | Maximum embedded artwork size or resolution that the ZX300 displays reliably `[VERIFY]` | Hardware test | M2 |
 | Q4 | Smart-selection rule language (simple filters vs. a small DSL) | Design | M5 |
 | Q5 | **ZX300 answered (R-003 part 1):** PID 0x0C70, iProduct and INQUIRY product `WALKMAN`, LUN 0 internal / LUN 1 SD, INQUIRY revision `1.00` ≠ firmware (firmware comes from `default-capability.xml`). Still open: A30/A40/A50/WM1 PIDs and capability model names `[VERIFY]` | Hardware test | M2 |
-| Q6 | Should WalkTunes ever download music itself (SmartTube- or lucida.to-style) instead of only linking to legal sources and importing what the user saves? Recommendation: **no**. Copyright, platform terms and DRM rules apply, and a DMCA takedown of the repository (the youtube-dl precedent, 2020) would end the project. See §10 and [ADR-0016](ARCHITECTURE.md#adr-0016-discover--get-legal-sources-and-inbox-no-built-in-ripping-proposed) | Maintainer | Before M8 |
+| Q6 | ~~Should WalkTunes download music itself?~~ **Decided 2026-11-12 by the maintainer: yes, through Source plugins** (ADR-0016). The core stays neutral; downloading is done by out-of-process plugins. The repository ships plugins for legal sources and an adapter for external tools the user installs; third-party plugins are installed by users at their own responsibility | Maintainer | Done |
 
 ---
 
@@ -209,13 +209,16 @@ Priority: **P0** = required for 1.0, **P1** = should be in 1.0,
 
 The maintainer's long-term wish (2026-11-12): find a song **inside WalkTunes**, in the
 spirit of SmartTube or lucida.to, get it into the library, and have it land on the ZX300
-right away, **on the go**. The requirements below keep that experience while respecting
-copyright and the legal constraints in Q6 and ADR-0016.
+right away, **on the go**. Decided (Q6): getting music is done by **Source plugins**, so the
+core stays neutral and the repository stays distributable (ADR-0016).
 
 | ID | Requirement | P | M |
 |---|---|---|---|
 | FR-100 | **Unified search:** one search box over the local library **and** the MusicBrainz catalog, showing tracks and albums you do not own yet ("missing from your library") | P2 | M8 |
-| FR-101 | **Get from legal sources:** for a missing album, show where it can be bought or downloaded DRM-free (Bandcamp, Qobuz store, 7digital, HDtracks, the artist's own site, free/CC catalogs) and open the page; never scrape or rip a streaming service | P2 | M8 |
+| FR-101 | **Get via Source plugins:** search results can be fetched through installed Source plugins into the Inbox, with a download queue, progress (UX-12) and per-plugin settings. First-party plugins: legal sources (Bandcamp purchases, Internet Archive and other free/CC catalogs) and store links (Qobuz store, 7digital, HDtracks) | P2 | M8 |
+| FR-106 | **Source plugin protocol:** out-of-process plugins speaking JSON over stdin/stdout (`search`, `resolve`, `fetch`), declared in a manifest (name, version, author, homepage, capabilities). They run as a child process with the user's rights, never touch devices or the library directly, and write only into a staging folder that Vault imports into the Inbox | P2 | M8 |
+| FR-107 | **External-tool adapter:** a first-party plugin that runs a command-line tool the **user installs and configures** (for example `yt-dlp`), passing the query/URL and collecting the output files | P2 | M8 |
+| FR-108 | **Plugin trust UI:** installing a third-party plugin shows its manifest, source URL and a responsibility notice; plugins can be disabled or removed at any time; nothing is installed by default except first-party plugins | P2 | M8 |
 | FR-102 | **Inbox watch folder:** files saved into the Inbox root (from a store, a CD rip, any tool the user chooses) are imported automatically: tagged via enrichment proposals, checked by `wt-inspect` (fake lossless, integrity), then queued for the device | P2 | M8 |
 | FR-103 | **Update on the go:** when a paired player is plugged into any computer running WalkTunes, the Helper (FR-058) offers the pending additions as a ready-made plan ("12 new tracks for My ZX300 · Sync"), so the library on the player stays current without opening anything | P2 | M8 |
 | FR-104 | **Wish list:** remember albums searched for but not yet available, and notify when they appear in the Inbox | P2 | M8 |

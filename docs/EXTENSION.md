@@ -18,6 +18,7 @@
 | A new audio format | `wt-crawler` (read) + `wt-forge` (convert) + `wt-vault` (`audio_hash`) | Rust | §4 |
 | A new metadata, artwork or lyrics source | `EnrichProvider` trait in `wt-enrich` | Rust | §5 |
 | A new quality detector (for example, a new lossy-codec signature) | `Detector` trait in `wt-inspect` | Rust | §7 |
+| A source of music to search and get (M8) | **Source plugin** (separate process, JSON over stdio) | Any language | §8 |
 | A whole new capability | A new service crate | Rust + ADR | §6 |
 
 There are no runtime plugins in v1. Extensions are compiled in, or shipped as
@@ -285,3 +286,35 @@ Known false-positive sources: old or analog-mastered recordings with little
 high-frequency content, intentionally low-passed productions, and very quiet
 tracks. That is why verdicts are always "suspect / likely", and why the user
 can mark them as reviewed.
+
+## 8. Source plugins *(M8, ADR-0016)*
+
+A Source plugin lets WalkTunes **search** a source and **get** tracks from it into the
+Inbox. Plugins are separate executables in `<data_dir>/plugins/<id>/`, written in any language.
+
+### 8.1 Manifest (`plugin.toml`)
+```toml
+id          = "org.example.bandcamp"
+name        = "Bandcamp purchases"
+version     = "0.1.0"
+author      = "…"
+homepage    = "https://…"          # shown in the trust dialog (FR-108)
+command     = ["./bandcamp-plugin"] # started by WalkTunes
+capabilities = ["search", "fetch"]
+first_party = false
+```
+
+### 8.2 Protocol (JSON lines over stdin/stdout)
+| Request | Response | Notes |
+|---|---|---|
+| `{"op":"hello","api":1}` | `{"ok":true,"api":1,"name":…}` | Version handshake |
+| `{"op":"search","query":"…","limit":20}` | `{"results":[{"id","title","artist","album","duration_ms","format_hint","source_url"}]}` | Feeds the unified search (FR-100) |
+| `{"op":"fetch","id":"…","staging_dir":"…"}` | Progress lines `{"progress":0.4}`, then `{"files":["…"]}` | Plugin writes **only** inside `staging_dir` |
+| `{"op":"cancel"}` | `{"ok":true}` | |
+
+### 8.3 Rules
+- WalkTunes moves fetched files from staging into the Inbox through Vault (hash, `ops_log`), then runs tagging, `wt-inspect` and the usual sync plan. A plugin never sees devices, the Ledger or library roots.
+- Each fetch has time and size limits. Errors are reported with the plugin id; three consecutive crashes disable the plugin.
+- **External-tool adapter** (first-party, FR-107): a plugin whose `command` is configured by the user (for example a local `yt-dlp` with the user's own options). WalkTunes passes the query or URL and collects the files written to `staging_dir`. The tool itself is not bundled.
+- First-party plugins in this repository cover legal sources only; see SECURITY §9.
+

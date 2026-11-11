@@ -36,7 +36,7 @@ Terms are listed alphabetically. Service names are listed in
 | **Generation** | A counter in the device manifest that increases by one on every successful write. Used to detect rollbacks. |
 | **Identity ladder** | The ordered evidence used to decide that two files are the same track (MBID → audio_hash → fingerprint → heuristic). |
 | **Helper (WalkTunes Helper)** | The planned background login item (`wt-helper`) that notices a player being plugged in and opens WalkTunes or shows a notification, like iTunesHelper. See [ARCHITECTURE §3.17.1](ARCHITECTURE.md#3171-wt-helper--plug-in-detection-planned-adr-0015). |
-| **Discover & Get** | Planned post-1.0 flow (M8): search library + catalog, get missing albums from legal sources, auto-import via the Inbox. See [PRD §10](PRD.md#10-future-vision-after-10-discover-get-and-update-on-the-go). |
+| **Discover & Get** | Planned post-1.0 flow (M8): search library + catalog, get tracks through Source plugins, auto-import via the Inbox. See [PRD §10](PRD.md#10-future-vision-after-10-discover-get-and-update-on-the-go). |
 | **Inbox root** | A root where new files land: pulls from a device and, from M8, files the user saves for automatic import (watch folder). |
 | **Ledger** | The local SQLite catalog (`wt-ledger`). |
 | **iSerialNumber / iProduct** | USB string descriptors with the device's serial number and product name. WalkTunes uses the serial to group volumes and recognize a player again. |
@@ -72,6 +72,7 @@ Terms are listed alphabetically. Service names are listed in
 | **Service** | One crate with one job (see DOCS_GUIDE §3). |
 | **SIMD** | Single Instruction, Multiple Data: CPU instructions that process several samples at once. |
 | **Spectrogram** | A picture of a track: time left to right, frequency bottom to top, loudness as colour. WalkTunes draws it in the Inspect hub, similar to Spek. |
+| **Source plugin** | An out-of-process plugin (JSON over stdio) that searches a music source and fetches tracks into the Inbox staging folder (EXTENSION §8, ADR-0016). |
 | **Stream rip** | A file obtained by recording or downloading from a streaming or video platform (for example, an MP3 from YouTube). Usually lossy, with poor tags. |
 | **Sync plan** | The list of operations (`Add`, `Replace`, `Retag`, `Remove`, `WritePlaylist`, `WriteLyrics`) computed for a sync. |
 | **Upsampled** | A "hi-res" file (for example 96 kHz) made from a lower-rate source; it has no real content above the original Nyquist frequency. |
