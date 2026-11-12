@@ -1,0 +1,153 @@
+# SPDX-License-Identifier: MIT OR Apache-2.0
+# Recipe for `cargo xtask fixtures` (docs/TESTING.md §3).
+#
+# Every clip is synthetic (sine or noise, 1–3 s): no copyrighted audio is ever committed
+# or generated. Names are invented, except the artist tag "Sơn Tùng", kept because the
+# Day 2 exit check searches for it (`search "son tung"`).
+#
+# clip fields: path (under fixtures/media/), codec (flac|mp3|aac|alac|wav|aiff),
+# rate, bits (lossless only), bitrate or vbr_quality (lossy), seconds, signal
+# ("sine:<hz>" | "noise"), art (an [[art]] id), tags (title, artist, album,
+# album_artist, track, disc, date, genre).
+
+[[art]]
+id = "jpeg500"
+kind = "jpeg"            # baseline JPEG
+size = 500
+color = "21A89B"
+
+[[art]]
+id = "progressive1000"
+kind = "jpeg-progressive"
+size = 1000
+color = "2E7D32"
+
+[[art]]
+id = "png300"
+kind = "png"
+size = 300
+color = "B7410E"
+
+# --- A tagged Vietnamese album (FLAC 16/44.1, baseline art) --------------------------
+
+[[clip]]
+path = "Sơn Tùng/Hà Nội Mùa Thu/01 Bài Mở Đầu.flac"
+codec = "flac"
+rate = 44100
+bits = 16
+seconds = 2
+signal = "sine:440"
+art = "jpeg500"
+tags = { title = "Bài Mở Đầu", artist = "Sơn Tùng", album = "Hà Nội Mùa Thu", album_artist = "Sơn Tùng", track = "1/2", disc = "1/1", date = "2026", genre = "V-Pop" }
+
+[[clip]]
+path = "Sơn Tùng/Hà Nội Mùa Thu/02 Mưa Rơi Trên Phố.flac"
+codec = "flac"
+rate = 44100
+bits = 16
+seconds = 2
+signal = "sine:523"
+art = "jpeg500"
+tags = { title = "Mưa Rơi Trên Phố", artist = "Sơn Tùng", album = "Hà Nội Mùa Thu", album_artist = "Sơn Tùng", track = "2/2", disc = "1/1", date = "2026", genre = "V-Pop" }
+
+# --- Hi-res FLAC 24/96 with progressive art -----------------------------------------
+
+[[clip]]
+path = "Nguyễn Văn Âm/Phòng Thu Đêm/01 Đêm Hi-Res.flac"
+codec = "flac"
+rate = 96000
+bits = 24
+seconds = 2
+signal = "sine:1000"
+art = "progressive1000"
+tags = { title = "Đêm Hi-Res", artist = "Nguyễn Văn Âm", album = "Phòng Thu Đêm", album_artist = "Nguyễn Văn Âm", track = "1/3", date = "2025", genre = "Jazz" }
+
+# --- ALAC, WAV, AIFF in the same album ----------------------------------------------
+
+[[clip]]
+path = "Nguyễn Văn Âm/Phòng Thu Đêm/02 Phiên Lossless.m4a"
+codec = "alac"
+rate = 44100
+bits = 16
+seconds = 1
+signal = "sine:660"
+tags = { title = "Phiên Lossless", artist = "Nguyễn Văn Âm", album = "Phòng Thu Đêm", album_artist = "Nguyễn Văn Âm", track = "2/3", date = "2025", genre = "Jazz" }
+
+[[clip]]
+path = "Nguyễn Văn Âm/Phòng Thu Đêm/03 Phiên Wave.wav"
+codec = "wav"
+rate = 44100
+bits = 16
+seconds = 1
+signal = "sine:880"
+tags = { title = "Phiên Wave", artist = "Nguyễn Văn Âm", album = "Phòng Thu Đêm", track = "3" }
+
+[[clip]]
+path = "Nguyễn Văn Âm/Phòng Thu Đêm/04 Phiên AIFF.aiff"
+codec = "aiff"
+rate = 48000
+bits = 16
+seconds = 1
+signal = "sine:990"
+tags = { title = "Phiên AIFF", artist = "Nguyễn Văn Âm", album = "Phòng Thu Đêm", track = "4" }
+
+# --- Two-disc AAC album with PNG art --------------------------------------------------
+
+[[clip]]
+path = "Ban Nhạc Phố Cổ/Tuyển Tập/1-01 Đĩa Một.m4a"
+codec = "aac"
+rate = 44100
+bitrate = "256k"
+seconds = 2
+signal = "sine:330"
+art = "png300"
+tags = { title = "Đĩa Một", artist = "Ban Nhạc Phố Cổ", album = "Tuyển Tập", album_artist = "Ban Nhạc Phố Cổ", track = "1/1", disc = "1/2", date = "2024", genre = "Rock" }
+
+[[clip]]
+path = "Ban Nhạc Phố Cổ/Tuyển Tập/2-01 Đĩa Hai.m4a"
+codec = "aac"
+rate = 44100
+bitrate = "256k"
+seconds = 2
+signal = "sine:392"
+art = "png300"
+tags = { title = "Đĩa Hai", artist = "Ban Nhạc Phố Cổ", album = "Tuyển Tập", album_artist = "Ban Nhạc Phố Cổ", track = "1/1", disc = "2/2", date = "2024", genre = "Rock" }
+
+# --- Compilation (MP3 320, CBR) and a wrong album artist (MP3 V0) ----------------------
+
+[[clip]]
+path = "Various Artists/Tổng Hợp 2026/01 Khách Mời.mp3"
+codec = "mp3"
+rate = 44100
+bitrate = "320k"
+seconds = 2
+signal = "sine:587"
+art = "jpeg500"
+tags = { title = "Khách Mời", artist = "Ca Sĩ Khách", album = "Tổng Hợp 2026", album_artist = "Various Artists", track = "1/1", date = "2026", genre = "Pop" }
+
+[[clip]]
+path = "Ban Nhạc Phố Cổ/Đĩa Đơn/01 Sai Nghệ Sĩ Album.mp3"
+codec = "mp3"
+rate = 44100
+vbr_quality = 0
+seconds = 2
+signal = "sine:698"
+tags = { title = "Sai Nghệ Sĩ Album", artist = "Ban Nhạc Phố Cổ", album = "Đĩa Đơn", album_artist = "Wrong Artist", track = "1" }
+
+# --- Untagged rips (the Inbox case) ----------------------------------------------------
+
+[[clip]]
+path = "Inbox/Sơn Tùng - Bài Hát Thử (Official Video) [HD].mp3"
+codec = "mp3"
+rate = 44100
+bitrate = "128k"
+seconds = 2
+signal = "sine:784"
+
+[[clip]]
+path = "Inbox/track03.flac"
+codec = "flac"
+rate = 48000
+bits = 24
+seconds = 3
+signal = "noise"

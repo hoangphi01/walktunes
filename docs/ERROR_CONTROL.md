@@ -98,12 +98,16 @@ Codes are never reused. Retire a code by marking it ~~struck through~~.
 | WT-LEDGER-0002 | Fatal | UserAction | Database schema is newer than this app; update the app |
 | WT-LEDGER-0003 | Error | Abort | Migration failed; rolled back, backup kept |
 | WT-LEDGER-0004 | Warning | Retry | Database busy |
+| WT-LEDGER-0005 | Error | Abort | Query failed or stored value invalid (bug or constraint violation, e.g. a duplicate root path) |
 | WT-VAULT-0001 | Error | UserAction | Root not found or not mounted |
 | WT-VAULT-0002 | Error | Skip | Permission denied on file |
 | WT-VAULT-0003 | Fatal | Abort | Hash mismatch after write (**safety**) |
 | WT-VAULT-0004 | Fatal | Abort | Refused: delete or overwrite outside an allowed scope (**safety**) |
 | WT-VAULT-0005 | Error | UserAction | Disk full |
 | WT-VAULT-0006 | Error | Skip | Path too long or has illegal characters for the target file system |
+| WT-VAULT-0007 | Warning | None | Interrupted operation found at startup: its temp file was removed and it was marked failed. The target is either unchanged or fully written, never partial |
+| WT-VAULT-0008 | Error | UserAction | New root is inside, or contains, an existing root |
+| WT-VAULT-0009 | Error | Skip | Other I/O error on a file |
 | WT-GATE-0001 | Info | UserAction | Provider not consented; enable it in Settings |
 | WT-GATE-0002 | Warning | Retry | Network unavailable or timeout |
 | WT-GATE-0003 | Warning | Retry | Rate limited by provider (HTTP 429/503) |

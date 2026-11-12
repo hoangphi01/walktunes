@@ -143,9 +143,18 @@ Errors show a code such as **WT-SYNC-0002**. Common ones:
 If you need help, use *Settings → Export diagnostics* and attach the file to
 a GitHub issue. It contains no music and no personal file paths.
 
-## 12. Command line *(planned)*
+## 12. Command line *(in progress)*
+Available now:
 ```bash
-wtunes root add ~/Music
+wtunes info                              # version, data folder, database schema
+wtunes root add ~/Music                  # register a music folder (adding it again is harmless)
+wtunes root add /Volumes/NAS/Music --kind watch   # read-only folder
+wtunes root list
+wtunes root remove ~/Music               # forget the folder; your files are not touched
+wtunes device probe                      # detect a connected player (read-only)
+```
+Planned:
+```bash
 wtunes scan
 wtunes device list
 wtunes sync plan  --device "My ZX300"

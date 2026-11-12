@@ -4,11 +4,12 @@
 //!
 //! Exit codes follow `docs/ERROR_CONTROL.md` §3: 0 ok, 1 error, 2 fatal, 64 usage.
 
+use std::path::PathBuf;
 use std::process::ExitCode;
 
 use clap::{Parser, Subcommand};
 use wt_core::{Severity, WtError};
-use wt_sdk::{MatchStatus, Sdk, SdkError, VolumeRole};
+use wt_sdk::{MatchStatus, RootKind, Sdk, SdkError, VolumeRole};
 
 #[derive(Parser)]
 #[command(
@@ -39,6 +40,41 @@ enum Command {
         #[command(subcommand)]
         command: DeviceCommand,
     },
+    /// Library folders (roots) that WalkTunes catalogs.
+    Root {
+        #[command(subcommand)]
+        command: RootCommand,
+    },
+}
+
+#[derive(Subcommand)]
+enum RootCommand {
+    /// Register a music folder. Adding the same folder again is harmless.
+    Add {
+        /// The folder, e.g. ~/Music.
+        path: PathBuf,
+        /// library (your music), inbox (where pulls land) or watch (read-only, e.g. a NAS).
+        #[arg(long, default_value = "library", value_parser = parse_kind)]
+        kind: RootKind,
+        /// Print JSON instead of text.
+        #[arg(long)]
+        json: bool,
+    },
+    /// List registered folders.
+    List {
+        /// Print JSON instead of text.
+        #[arg(long)]
+        json: bool,
+    },
+    /// Unregister a folder (by id or path). Your files are never touched.
+    Remove {
+        /// Root id or path.
+        root: String,
+    },
+}
+
+fn parse_kind(s: &str) -> Result<RootKind, String> {
+    s.parse()
 }
 
 #[derive(Subcommand)]
@@ -68,7 +104,20 @@ enum DeviceCommand {
 
 fn main() -> ExitCode {
     wt_watch::init_tracing();
-    let cli = Cli::parse();
+    let cli = match Cli::try_parse() {
+        Ok(cli) => cli,
+        Err(e) if e.use_stderr() => {
+            // Usage errors exit 64 (WT-CLI-0001), not clap's default 2 (= fatal here).
+            let _ = e.print();
+            eprintln!("[WT-CLI-0001]");
+            return ExitCode::from(64);
+        }
+        Err(e) => {
+            // --help / --version.
+            let _ = e.print();
+            return ExitCode::SUCCESS;
+        }
+    };
     match run(cli) {
         Ok(()) => ExitCode::SUCCESS,
         Err(e) => {
@@ -85,7 +134,8 @@ fn main() -> ExitCode {
 fn run(cli: Cli) -> Result<(), SdkError> {
     let sdk = Sdk::open()?;
     match cli.command {
-        Command::Info { json } => info(&sdk, json),
+        Command::Info { json } => info(&sdk, json)?,
+        Command::Root { command } => root(&sdk, command)?,
         Command::Profiles {
             command: ProfilesCommand::List,
         } => profiles(&sdk),
@@ -115,11 +165,57 @@ fn print_json<T: serde::Serialize>(value: &T) {
     }
 }
 
-fn info(sdk: &Sdk, json: bool) {
-    let i = sdk.system_info();
+fn root(sdk: &Sdk, command: RootCommand) -> Result<(), SdkError> {
+    match command {
+        RootCommand::Add { path, kind, json } => {
+            let added = sdk.roots().add(&path, kind)?;
+            if json {
+                print_json(&added);
+            } else if added.created {
+                println!(
+                    "Added {} root {}",
+                    added.root.kind,
+                    added.root.path.display()
+                );
+                println!("  id  {}", added.root.id);
+            } else {
+                println!(
+                    "Already registered as a {} root: {}",
+                    added.root.kind,
+                    added.root.path.display()
+                );
+            }
+        }
+        RootCommand::List { json } => {
+            let roots = sdk.roots().list()?;
+            if json {
+                print_json(&roots);
+            } else if roots.is_empty() {
+                println!("No folders registered. Add one with: wtunes root add ~/Music");
+            } else {
+                for r in &roots {
+                    let state = if r.enabled { "" } else { "  (disabled)" };
+                    println!("{:<8} {}{state}", r.kind.as_str(), r.path.display());
+                    println!("{:<8} id {}", "", r.id);
+                }
+            }
+        }
+        RootCommand::Remove { root } => {
+            let r = sdk.roots().remove(&root)?;
+            println!(
+                "Removed root {} (files on disk were not touched)",
+                r.path.display()
+            );
+        }
+    }
+    Ok(())
+}
+
+fn info(sdk: &Sdk, json: bool) -> Result<(), SdkError> {
+    let i = sdk.system_info()?;
     if json {
         print_json(&i);
-        return;
+        return Ok(());
     }
     println!("WalkTunes {}", i.version);
     println!("platform   {} / {}", i.os, i.arch);
@@ -128,6 +224,12 @@ fn info(sdk: &Sdk, json: bool) {
     println!("data       {}", i.data_dir.display());
     println!("cache      {}", i.cache_dir.display());
     println!("logs       {}", i.log_dir.display());
+    println!(
+        "ledger     {} (schema v{})",
+        i.ledger_path.display(),
+        i.schema_version
+    );
+    Ok(())
 }
 
 fn profiles(sdk: &Sdk) {

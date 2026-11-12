@@ -81,6 +81,10 @@ define_id!(
     /// A background job.
     JobId
 );
+define_id!(
+    /// One sync run (push, pull or reconcile) against a device.
+    SyncRunId
+);
 
 #[cfg(test)]
 mod tests {

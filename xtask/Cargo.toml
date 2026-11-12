@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT OR Apache-2.0
 [package]
 name = "xtask"
-description = "WalkTunes repository tasks: layer check, docs check"
+description = "WalkTunes repository tasks: layer check, docs check, test fixtures"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -12,6 +12,10 @@ publish.workspace = true
 
 [dependencies]
 serde_json = { workspace = true }
+serde = { workspace = true }
+toml = { workspace = true }
+blake3 = { workspace = true }
+jpeg-encoder = { workspace = true }
 
 [lints]
 workspace = true

@@ -4,7 +4,7 @@
 |---|---|
 | Status | Live document |
 | Owner | Maintainer |
-| Last updated | 2026-11-09 |
+| Last updated | 2026-11-12 |
 
 > Update this file whenever a roadmap item moves. Keep it short: history
 > belongs in [RESULT.md](RESULT.md) and the git log.
@@ -15,10 +15,10 @@
 |---|---|---|
 | Docs system | ✅ Done | 21 docs + README, license: MIT OR Apache-2.0 (since 2026-11-12) |
 | Brand & design language | ✅ Done | Name WalkTunes, logo (`assets/brand/`), Tile design language (ADR-0011). Needs SVG / 1024 px logo before M4 |
-| Cargo workspace | ✅ Done (2026-11-11) | 21 crates; 36 tests; `xtask layers` + `docs-check` pass |
+| Cargo workspace | ✅ Done (2026-11-11) | 21 crates; 86 tests (2026-11-12); `xtask layers` + `docs-check` pass |
 | CI (3 OS) | 🟡 Written | `.github/workflows/ci.yml` (macOS ARM64/x64, Linux x64/ARM64, Windows); first run after push |
 | GPUI spike (R-001) | ⬜ Not started | Highest-risk item; do it first |
-| Fixtures tooling | ⬜ Not started | |
+| Fixtures tooling | ✅ Media (P1 Day 1) | `cargo xtask fixtures`: 12 synthetic clips + 3 art variants; `large/` later |
 
 Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 
@@ -31,10 +31,10 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 | wt-watch | 🟡 skeleton | wt-forge | ⬜ |
 | wt-bus | 🟡 skeleton | wt-dock | 🟡 probe + scoring (fake, sysinfo, macOS diskutil) |
 | wt-queue | ⬜ | wt-sync | ⬜ |
-| wt-i18n | ⬜ | wt-sdk | 🟡 skeleton |
-| wt-ledger | ⬜ | wt-kit | ⬜ |
-| wt-vault | ⬜ | wt-console | ⬜ |
-| wt-gate | ⬜ | wt-cli | 🟡 skeleton |
+| wt-i18n | ⬜ | wt-sdk | 🟡 devices, roots |
+| wt-ledger | 🟡 schema v1, roots, ops journal | wt-kit | ⬜ |
+| wt-vault | 🟡 confinement, atomic write, recovery | wt-console | ⬜ |
+| wt-gate | ⬜ | wt-cli | 🟡 info, profiles, device probe, root |
 | wt-cache | ⬜ | wt-dsp | 🟡 SIMD detection |
 | wt-inspect | ⬜ | | |
 
@@ -52,6 +52,6 @@ Legend: ✅ done · 🟡 in progress · ⬜ not started · 🔴 blocked
 
 ## Next actions
 **Prototype sprint P1** (7 days, 2026-11-12 → 2026-11-18): see [ROADMAP](ROADMAP.md#prototype-sprint-p1-first-working-prototype-in-7-days-2026-11-12--2026-11-18).
-1. Day 1 (2026-11-12): `wt-ledger` + `wt-vault` safety core, minimal `xtask fixtures`.
+1. ✅ Day 1 (2026-11-12): `wt-ledger` + `wt-vault` safety core, minimal `xtask fixtures`.
 2. Day 2: crawler, search, R-002 lite.
 3. Day 3: pairing + manifest (first `.walktunes/` write on the real ZX300).

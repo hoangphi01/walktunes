@@ -1,2 +1,19 @@
 allow-unwrap-in-tests = true
 allow-expect-in-tests = true
+
+# SECURITY S-1: only wt-vault writes, moves or deletes files. Crates with a documented
+# reason (app data, dev tooling, tests building temp trees) opt out with
+# `#![allow(clippy::disallowed_methods)]` and a comment.
+disallowed-methods = [
+  { path = "std::fs::write", reason = "S-1: use wt-vault" },
+  { path = "std::fs::copy", reason = "S-1: use wt-vault" },
+  { path = "std::fs::rename", reason = "S-1: use wt-vault" },
+  { path = "std::fs::remove_file", reason = "S-1: use wt-vault" },
+  { path = "std::fs::remove_dir", reason = "S-1: use wt-vault" },
+  { path = "std::fs::remove_dir_all", reason = "S-1: use wt-vault" },
+  { path = "std::fs::create_dir", reason = "S-1: use wt-vault" },
+  { path = "std::fs::create_dir_all", reason = "S-1: use wt-vault" },
+  { path = "std::fs::File::create", reason = "S-1: use wt-vault" },
+  { path = "std::fs::File::create_new", reason = "S-1: use wt-vault" },
+  { path = "std::fs::OpenOptions::open", reason = "S-1: use wt-vault" },
+]

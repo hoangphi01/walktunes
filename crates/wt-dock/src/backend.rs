@@ -279,6 +279,7 @@ mod macos {
 }
 
 #[cfg(test)]
+#[allow(clippy::disallowed_methods)] // tests build temp volume trees
 mod tests {
     use super::*;
 

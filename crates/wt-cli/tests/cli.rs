@@ -2,7 +2,7 @@
 //! End-to-end tests of `wtunes` against virtual devices (`docs/TESTING.md` §4).
 
 // Test helpers may panic: unwrap is allowed in tests (ERROR_CONTROL §2).
-#![allow(clippy::unwrap_used)]
+#![allow(clippy::unwrap_used, clippy::disallowed_methods)]
 
 use std::path::PathBuf;
 
@@ -132,5 +132,77 @@ fn raw_dump_redacts_serials_by_default() {
 #[test]
 fn unknown_command_is_a_usage_error() {
     let data = tempfile::tempdir().unwrap();
-    wtunes(&data).arg("frobnicate").assert().code(2);
+    wtunes(&data).arg("frobnicate").assert().code(64);
+}
+
+// --- roots (sprint P1 Day 1) -------------------------------------------------------
+
+fn run_json(data: &tempfile::TempDir, args: &[&str]) -> Value {
+    let out = wtunes(data).args(args).output().unwrap();
+    assert!(
+        out.status.success(),
+        "{}",
+        String::from_utf8_lossy(&out.stderr)
+    );
+    serde_json::from_slice(&out.stdout).unwrap()
+}
+
+#[test]
+fn root_add_list_remove() {
+    let data = tempfile::tempdir().unwrap();
+    let music = tempfile::tempdir().unwrap();
+    let m = music.path().to_str().unwrap();
+
+    let added = run_json(&data, &["root", "add", m, "--json"]);
+    assert_eq!(added["created"], true);
+    assert_eq!(added["root"]["kind"], "library");
+    let again = run_json(&data, &["root", "add", m, "--json"]);
+    assert_eq!(again["created"], false);
+    assert_eq!(again["root"]["id"], added["root"]["id"]);
+
+    let list = run_json(&data, &["root", "list", "--json"]);
+    assert_eq!(list.as_array().unwrap().len(), 1);
+
+    let id = added["root"]["id"].as_str().unwrap();
+    wtunes(&data)
+        .args(["root", "remove", id])
+        .assert()
+        .success();
+    let list = run_json(&data, &["root", "list", "--json"]);
+    assert!(list.as_array().unwrap().is_empty());
+    assert!(music.path().exists());
+}
+
+#[test]
+fn root_errors_have_codes_and_exit_1() {
+    let data = tempfile::tempdir().unwrap();
+    let music = tempfile::tempdir().unwrap();
+    std::fs::create_dir(music.path().join("Rips")).unwrap();
+    let m = music.path().to_str().unwrap();
+    wtunes(&data).args(["root", "add", m]).assert().success();
+
+    let nested = music.path().join("Rips");
+    wtunes(&data)
+        .args(["root", "add", nested.to_str().unwrap()])
+        .assert()
+        .code(1)
+        .stderr(predicates::str::contains("WT-VAULT-0008"));
+    wtunes(&data)
+        .args(["root", "add", "/definitely/not/here"])
+        .assert()
+        .code(1)
+        .stderr(predicates::str::contains("WT-VAULT-0001"));
+    wtunes(&data)
+        .args(["root", "add", m, "--kind", "nas"])
+        .assert()
+        .code(64)
+        .stderr(predicates::str::contains("WT-CLI-0001"));
+}
+
+#[test]
+fn info_reports_ledger_schema() {
+    let data = tempfile::tempdir().unwrap();
+    let info = run_json(&data, &["info", "--json"]);
+    assert_eq!(info["schema_version"], 1);
+    assert!(info["ledger_path"].as_str().unwrap().ends_with("ledger.db"));
 }

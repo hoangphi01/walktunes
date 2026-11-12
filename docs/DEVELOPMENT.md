@@ -59,8 +59,12 @@ Z=fixtures/devices/sony.classic.zx300; A=fixtures/devices/sony.classic.a40
 WT_DATA_DIR=$(mktemp -d) WT_FAKE_VOLUMES=$Z/internal,$Z/sd,$A/internal \
   cargo run -p wt-cli -- device probe
 
+# Library roots (stored in the Ledger at <data dir>/ledger.db):
+WT_DATA_DIR=$(mktemp -d) cargo run -p wt-cli -- root add ~/Music
+cargo run -p wt-cli -- root list --json
+
 cargo run -p wt-console       # desktop app (GPUI window arrives with R-001)
-cargo xtask fixtures          # planned: generate test audio (needs ffmpeg)
+cargo xtask fixtures          # generate test audio into fixtures/media (needs ffmpeg; --force)
 ```
 
 ### Useful environment variables

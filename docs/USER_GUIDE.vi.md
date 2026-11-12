@@ -146,9 +146,18 @@ Nếu cần hỗ trợ, vào *Cài đặt → Xuất thông tin chẩn đoán* v
 một issue trên GitHub. File này không chứa nhạc và không chứa đường dẫn cá
 nhân của bạn.
 
-## 12. Dòng lệnh *(dự kiến)*
+## 12. Dòng lệnh *(đang làm)*
+Đã dùng được:
 ```bash
-wtunes root add ~/Music
+wtunes info                              # phiên bản, thư mục dữ liệu, phiên bản schema
+wtunes root add ~/Music                  # thêm thư mục nhạc (thêm lại lần nữa cũng không sao)
+wtunes root add /Volumes/NAS/Music --kind watch   # thư mục chỉ đọc
+wtunes root list
+wtunes root remove ~/Music               # bỏ thư mục khỏi thư viện; file của bạn không bị đụng tới
+wtunes device probe                      # nhận diện máy nghe nhạc đang cắm (chỉ đọc)
+```
+Dự kiến:
+```bash
 wtunes scan
 wtunes device list
 wtunes sync plan  --device "ZX300 của tôi"

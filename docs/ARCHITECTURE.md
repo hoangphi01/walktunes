@@ -97,7 +97,7 @@ Each entry gives the service's **contract**: what it owns, what it exposes,
 and what it must never do.
 
 ### 3.0 `wt-core` — shared kernel
-- **Owns:** typed IDs (`TrackId`, `FileId`, `RootId`, `DeviceId`, `MachineId`, `JobId`), shared value types (`AudioFormat`, `Duration`, `ContentHash`, `Codec`), the `WtError` trait and `ErrorCode`.
+- **Owns:** typed IDs (`TrackId`, `FileId`, `RootId`, `DeviceId`, `MachineId`, `JobId`, `SyncRunId`), shared value types (`AudioFormat`, `Duration`, `ContentHash`, `Codec`), the `WtError` trait and `ErrorCode`, and the **operation journal contract** (`OpsJournal`, `OpRecord`, `OpKind`, `OpState`, plus `MemoryJournal` for tests; ADR-0018).
 - **Never:** does I/O or depends on anything except `serde`, `thiserror` and `uuid`.
 
 ### 3.1 `wt-config` — Parameter Store
@@ -126,10 +126,12 @@ and what it must never do.
 ### 3.6 `wt-ledger` — RDS
 - **Owns:** the SQLite catalog, migrations and repository types (`TrackRepo`, `FileRepo`, …). Schema: [DATABASE.md](DATABASE.md).
 - **Rule:** the only crate that issues SQL. Other crates use repository methods.
+- **Built (P1 Day 1):** `rusqlite` with bundled SQLite (same version and FTS5 on every OS), schema v1 from `migrations/V1__initial.sql`, version in `PRAGMA user_version`, pre-migration backups via the SQLite backup API, `roots()` and `ops()` repositories, and `impl OpsJournal for Ledger`.
 
 ### 3.7 `wt-vault` — S3
 - **Owns:** library **roots** (folders on a machine), every file read, write, move and delete, atomic writes (temp file, then `fsync`, then rename), the trash (an operation log plus moving files into a holding area instead of deleting them), and content hashing (`blake3`, plus the audio-payload hash; see [DATABASE §4](DATABASE.md#4-track-identity-ladder)).
 - **Rule:** **no other crate touches the filesystem for user music.** This is the single choke point for data safety.
+- **Built (P1 Day 1):** `RelPath` (validated, NFC) and `Scope` (library root, or device volume with allowed folders and protected root files) for confinement; `check_root` / `ensure_no_overlap`; `content_hash` (blake3); `Vault::write_atomic` with `WriteMode::{CreateNew, Replace{expected_old}}` (never a blind overwrite); `Vault::recover` at startup. Vault journals through `Arc<dyn OpsJournal>` (ADR-0018), so it does not depend on `wt-ledger`.
 
 ### 3.8 `wt-gate` — API Gateway
 - **Owns:** the only HTTP client (`ureq`, blocking, rustls), a per-host rate limiter (MusicBrainz: 1 request per second), the user agent `WalkTunes/<ver> (+repo URL)`, offline mode, the per-provider consent check, and response caching via Cache.
@@ -424,4 +426,7 @@ change one, write a new ADR that supersedes it.
 
 #### ADR-0017 License: MIT OR Apache-2.0 (supersedes ADR-0009)
 *2026-11-12 · Accepted.* **Context:** the maintainer wants WalkTunes to be as reusable as possible: it is a community, non-commercial project and anyone should be able to reuse any part of it. A public-domain dedication (Unlicense) was considered and rejected: it is not reliably valid in civil-law countries (e.g. Vietnam, Czechia, Germany, where moral rights cannot be waived) and some organisations refuse it. All code so far was written for the maintainer, who holds the rights needed to relicense. **Decision:** dual-license WalkTunes under **MIT OR Apache-2.0**, at the user's option, the Rust ecosystem convention; SPDX identifier `MIT OR Apache-2.0` in every file and in `Cargo.toml`; license texts in `LICENSE-MIT` and `LICENSE-APACHE`. **Consequences:** anyone may fork, including into closed-source or commercial products, with no obligation to share changes (the copyleft protection of GPL-3.0 is given up on purpose); redistributors must keep the copyright and license notice; Apache-2.0 adds an explicit patent grant. Dependencies must be permissive: GPL/LGPL/AGPL crates are not allowed (`cargo-deny`), while copyleft tools remain usable as separate programs (ffmpeg sidecar, user-installed tools via Source plugins). Third-party license notices are still shipped. Contributions are accepted under the same dual license (Apache-2.0 §5 inbound = outbound, stated in the PR template).
+
+#### ADR-0018 Operation journal contract lives in `wt-core`
+*2026-11-12 · Accepted.* **Context:** SECURITY S-5 requires Vault to record every mutation in `ops_log` before it happens, but `ops_log` is a Ledger table, only `wt-ledger` may issue SQL, and Vault and Ledger are both Layer 2, so neither may depend on the other. **Decision:** define the contract (`OpsJournal` trait with `begin` / `finish` / `pending`, and the `OpRecord`, `OpKind`, `OpState`, `OpEntry` types) in `wt-core`. `wt-ledger` implements it, `wt-vault` takes an `Arc<dyn OpsJournal>`, and `wt-sdk` wires them together; tests use `wt_core::MemoryJournal`. **Consequences:** no layer exception is needed; Vault can be tested without SQLite; if the journal cannot record an operation, Vault does not perform it.
 

@@ -48,11 +48,16 @@ clap = { version = "4.6.7", features = ["derive"] }
 sysinfo = { version = "0.40.1", default-features = false, features = ["disk"] }
 plist = "1.10.3"
 roxmltree = "0.21.2"
+rusqlite = { version = "0.42.0", features = ["bundled", "backup"] }
+blake3 = "1.8.7"
+unicode-normalization = "0.1.26"
+jpeg-encoder = "0.7.1"
 
 # dev
 tempfile = "3.27.0"
 assert_cmd = "2.2.2"
 predicates = "3.1.4"
+proptest = "1.12.0"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
@@ -63,6 +68,10 @@ unwrap_used = "deny"
 expect_used = "deny"
 dbg_macro = "deny"
 todo = "deny"
+
+# Dependencies are built without debug info to save disk space (ROADMAP P1 constraints).
+[profile.dev.package."*"]
+debug = false
 
 [profile.release]
 lto = "thin"

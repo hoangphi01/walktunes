@@ -54,6 +54,7 @@ Terms are listed alphabetically. Service names are listed in
 | **MTP** | Media Transfer Protocol. Devices that do not mount as drives. **Tier 4**, after 1.0. |
 | **NEON** | The SIMD unit present on every ARMv8-A (ARM64) CPU, including Apple Silicon. |
 | **On-the-go update** | Planned (FR-103): plugging a paired player into any computer with WalkTunes offers the pending additions as a ready sync plan. |
+| **Ops journal** | The `ops_log` record of every file mutation, written *before* the change (`pending`) and finished after (`done` / `failed`). Contract `OpsJournal` in `wt-core`, stored by the Ledger (ADR-0018, SECURITY S-5). |
 | **Origin** | The machine that first put a file on a device (recorded in the manifest). |
 | **Padded bit depth** | A 24-bit file whose lowest 8 bits are always zero, so it really carries only 16-bit audio. |
 | **Pivot** | A hub's horizontal set of large lowercase headers (for example "albums · artists · tracks"); switching pivots slides the content. |
@@ -68,6 +69,7 @@ Terms are listed alphabetically. Service names are listed in
 | **Rendition** | A device-specific copy of a library file (transcoded, artwork normalized, tags simplified, filename sanitized). Originals are untouched. |
 | **Root** | A folder registered in the library (`library`, `inbox` or `watch`). |
 | **Safety error** | An error of recovery class `Abort` that stops a job to protect data. See [ERROR_CONTROL §4](ERROR_CONTROL.md#4-recovery-classes). |
+| **Scope** | The base folder Vault may write under plus its rules (a library root, or a device volume limited to e.g. `MUSIC/` and `.walktunes/` with protected root files). Every path is resolved inside a scope or refused (`WT-VAULT-0004`). |
 | **Selection** | What the user wants on a device (all, artists, albums, playlists, tracks, smart rules). |
 | **Service** | One crate with one job (see DOCS_GUIDE §3). |
 | **SIMD** | Single Instruction, Multiple Data: CPU instructions that process several samples at once. |

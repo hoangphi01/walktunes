@@ -5,6 +5,9 @@
 //! Skeleton scope (M0): resolving the data, cache and log directories, and the
 //! `MachineId` created once per install. `settings.toml` arrives in M1.
 
+// Settings and the machine id are app data, not user music (SECURITY S-1).
+#![allow(clippy::disallowed_methods)]
+
 use std::fs;
 use std::io;
 use std::path::{Path, PathBuf};

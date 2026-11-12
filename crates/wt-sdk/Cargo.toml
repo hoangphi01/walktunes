@@ -16,11 +16,14 @@ wt-config = { workspace = true }
 wt-bus = { workspace = true }
 wt-dsp = { workspace = true }
 wt-dock = { workspace = true }
+wt-ledger = { workspace = true }
+wt-vault = { workspace = true }
 serde = { workspace = true }
 thiserror = { workspace = true }
 tracing = { workspace = true }
 
 [dev-dependencies]
+tempfile = { workspace = true }
 
 [lints]
 workspace = true

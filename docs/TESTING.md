@@ -35,8 +35,8 @@ No target for UI crates.
 | A plan never contains `Remove` for a path absent from the manifest, or whose hash differs from the manifest | `wt-sync` |
 | Executing a plan, then planning again with no changes, yields an **empty** plan (idempotence) | `wt-sync` |
 | Interrupting execution at any op index, then resuming, yields the same final device state as an uninterrupted run | `wt-sync` |
-| Joined paths never escape their root, whatever the manifest says | `wt-vault` |
-| `write_atomic` leaves either the old file or the new file, never a partial one (simulated crash at every step) | `wt-vault` |
+| Joined paths never escape their root, whatever the manifest says ✅ `path::tests::resolved_paths_never_escape` | `wt-vault` |
+| `write_atomic` leaves either the old file or the new file, never a partial one (simulated crash at every step) ✅ `tests::crash_at_every_step` (7 failpoints × fail/crash × create/replace, then `recover`) | `wt-vault` |
 | Manifest round-trip preserves unknown fields | `wt-dock` |
 | Filename sanitizing is idempotent and the result is valid on FAT32 and exFAT | `wt-forge` |
 
@@ -58,6 +58,15 @@ This generates the following under `fixtures/` (git-ignored, except the recipe f
 - `http/<provider>/`: recorded API responses (JSON) for offline provider tests.
 
 The recipes live in `xtask/src/fixtures/*.toml` and are committed.
+
+**Built so far (P1 Day 1):** `media/` from `xtask/src/fixtures/media.toml`: 12 clips
+(FLAC 16/44.1, 24/96 and 24/48 noise; MP3 320 CBR, V0 and 128k; AAC and ALAC in M4A; WAV;
+AIFF) with Vietnamese tags, a two-disc album, a compilation, a wrong album artist, an
+untagged YouTube-style file name and an untagged file, and embedded art as baseline JPEG
+500 px, **progressive** JPEG 1000 px (written with `jpeg-encoder`, since ffmpeg cannot) and
+PNG 300 px. About 1.4 MB. The run is skipped while the recipe is unchanged (`--force`
+regenerates), and `ffprobe` checks every title tag and embedded picture. `large/`,
+`ledger/` and `http/` are still planned.
 
 ---
 

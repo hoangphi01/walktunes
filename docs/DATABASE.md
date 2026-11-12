@@ -348,10 +348,12 @@ lazily (during dedupe and before sync) and cached.
 - When an app opens a Ledger written by a **newer** schema version, it refuses with `WT-LEDGER-0002` and does not attempt a downgrade.
 - Every migration needs a test that loads a fixture database of the previous version (see [TESTING](TESTING.md)).
 - Log each schema change in the table below.
+- **Implementation:** the schema version is `PRAGMA user_version`; migrations are embedded with `include_str!`. Backups use the SQLite **backup API**, not `VACUUM INTO`: `tracks` has no `INTEGER PRIMARY KEY`, so a vacuum may renumber rowids and break the external-content FTS index. After any manual `VACUUM`, run `INSERT INTO tracks_fts(tracks_fts) VALUES('rebuild')`.
+- While schema v1 is unreleased, `V1__initial.sql` may still change; it is generated from the SQL blocks in §3, so edit this document first.
 
 | Version | Date | Change |
 |---|---|---|
-| 1 | (M1) | Initial schema (this document) |
+| 1 | 2026-11-12 (unreleased) | Initial schema (this document), plus triggers keeping `tracks_fts` in step with `tracks` |
 
 ---
 

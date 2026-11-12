@@ -3,6 +3,12 @@
 //!
 //! - `cargo xtask layers`: enforce the crate layer rules of `docs/ARCHITECTURE.md` §2.
 //! - `cargo xtask docs-check`: doc headers, relative links/anchors, error-code registry.
+//! - `cargo xtask fixtures [--force]`: generate test audio under `fixtures/media/` (ffmpeg).
+
+// Dev tooling: generating fixtures writes files by design (SECURITY S-1 does not apply).
+#![allow(clippy::disallowed_methods)]
+
+mod fixtures;
 
 use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
@@ -16,8 +22,9 @@ fn main() -> ExitCode {
     let result = match task.as_str() {
         "layers" => layers(),
         "docs-check" => docs_check(),
+        "fixtures" => fixtures::run(&std::env::args().skip(2).collect::<Vec<_>>()),
         _ => {
-            eprintln!("usage: cargo xtask <layers|docs-check>");
+            eprintln!("usage: cargo xtask <layers|docs-check|fixtures [--force]>");
             return ExitCode::from(64);
         }
     };
@@ -33,7 +40,7 @@ fn main() -> ExitCode {
     }
 }
 
-fn repo_root() -> PathBuf {
+pub(crate) fn repo_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .map_or_else(|| PathBuf::from("."), Path::to_path_buf)

@@ -43,7 +43,7 @@ breaks them.
 | S-1 | Only `wt-vault` writes, moves or deletes user files. | Layer check (`xtask layers`); `std::fs` mutations are banned in other crates via clippy `disallowed_methods` |
 | S-2 | Library originals are **never deleted** by WalkTunes. "Remove from library" removes rows; "Delete file" moves it to the OS trash (`trash` crate) after explicit confirmation. | Vault API has no hard delete for library roots |
 | S-3 | On devices, WalkTunes removes **only files listed in its manifest whose hash still matches**. A changed or foreign file is never removed. | `wt-sync` planner + `WT-SYNC-0004` |
-| S-4 | Every write is atomic: write a temp file in the same directory, `fsync`, verify the hash, rename. | `Vault::write_atomic` |
+| S-4 | Every write is atomic: write a temp file in the same directory, `fsync`, re-read it and verify the hash, rename, `fsync` the directory. A write either creates a new file or replaces one whose hash still matches the plan; there is no blind overwrite. | `Vault::write_atomic` (`WriteMode`), crash-at-every-step test |
 | S-5 | Every mutation is recorded in `ops_log` **before** it happens (`pending`) and updated after (`done` / `failed`). | Vault |
 | S-6 | Destructive plans need a reviewed dry run. The CLI requires `--yes` or an interactive confirmation; the GUI requires a confirm dialog listing the removal count and size. | `wt-sync`, front ends |
 | S-7 | Device removals in a run are capped (default: 30% of manifest entries, or more than 500 files). Exceeding the cap needs a second confirmation. | `wt-sync` |
@@ -54,6 +54,8 @@ breaks them.
 
 ## 4. File-system confinement
 
+- **Enforcement of S-1:** `clippy.toml` bans `std::fs` mutations (`write`, `copy`, `rename`, `remove_*`, `create_dir*`, `File::create*`, `OpenOptions::open`). Only these opt out with `#![allow(clippy::disallowed_methods)]` and a comment: `wt-vault`, `wt-config` and `wt-ledger` (app data, not music), `xtask` (dev tooling) and test modules that build temp trees.
+- **Implementation:** `RelPath::parse` (NFC, `/` only; rejects empty, absolute, drive-prefixed, `.`/`..`, backslash, NUL and control characters, components over 255 bytes) and `Scope::resolve` (resolves existing ancestors through symlinks and requires the result to stay under the canonical base; the final component may not be a symlink). A property test feeds thousands of hostile paths.
 - Every path coming from a manifest, playlist, profile or provider is treated as **untrusted**. It is normalized and rejected if it is absolute, contains `..`, contains NUL or control characters, or escapes its volume or root after joining.
 - Symlinks inside roots are followed only if their target is inside a root (configurable; off by default).
 - Profile `path_template` output is sanitized for the target file system before use.

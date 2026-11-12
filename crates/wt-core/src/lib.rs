@@ -7,8 +7,12 @@
 
 mod error;
 mod format;
+mod hash;
 mod id;
+mod ops;
 
 pub use error::{ErrorCode, Recovery, Severity, WtError};
 pub use format::AudioFormat;
-pub use id::{DeviceId, FileId, JobId, MachineId, RootId, TrackId};
+pub use hash::{ContentHash, ParseHashError};
+pub use id::{DeviceId, FileId, JobId, MachineId, RootId, SyncRunId, TrackId};
+pub use ops::{JournalError, MemoryJournal, OpEntry, OpId, OpKind, OpRecord, OpState, OpsJournal};
